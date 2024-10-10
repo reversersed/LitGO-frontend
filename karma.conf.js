@@ -3,6 +3,8 @@ module.exports = function (config) {
     basePath: "",
     frameworks: ["jasmine", "@angular-devkit/build-angular"],
     plugins: [
+      require("karma-htmlfile-reporter"),
+      require("karma-jasmine-html-reporter"),
       require("karma-chrome-launcher"),
       require("karma-coverage"),
       require("karma-jasmine"),
@@ -12,12 +14,22 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: false,
-    browsers: ["EdgeHeadless"],
     singleRun: true,
-    restartOnFileChange: true,
+    browsers: ["Edge"],
+    reporters: ["kjhtml", "html"],
     coverageReporter: {
       type: "html",
-      dir: "../data/tests/frontend",
+      dir: "../data/tests/frontend/coverage",
+    },
+    htmlReporter: {
+      outputFile: "../data/tests/frontend/result.html",
+
+      // Optional
+      pageTitle: "LitGO Frontend Unit Tests",
+      groupSuites: true,
+      useCompactStyle: true,
+      useLegacyStyle: true,
+      showOnlyFailed: false,
     },
   });
 };
