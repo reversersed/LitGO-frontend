@@ -1,0 +1,99 @@
+<!-- logout modal -->
+<app-modal
+  [title]="'Выход'"
+  [disabled]="logoutAttemptingState"
+  (onSubmit)="logoutUser()"
+  [danger]="true"
+  [(visible)]="logoutModalOpen"
+  ok="Выйти из аккаунта"
+  ><span class="text-mainblack text-center"
+    >Для подтверждения действия нажмите кнопку ниже</span
+  ></app-modal
+>
+<!-- login modal -->
+<app-modal
+  ok="Войти"
+  title="Авторизация"
+  [disabled]="loginAttemptingState"
+  [(visible)]="loginModalOpen"
+>
+  <!--LoginForm-->
+</app-modal>
+<!-- main block -->
+<header
+  class="z-50 pl-2 flex flex-col lg:flex-row lg:items-center justify-center lg:pr-[10%] lg:pl-[10%] h-12 lg:h-16 bg-mainbg font-semibold"
+>
+  <div class="z-50 flex flex-row w-full lg:w-auto justify-center h-full">
+    <h1
+      class="text-maintext m-0 font-main pt-2 pl-2 text-xl lg:p-0 tracking-[2px] lg:my-auto h-fit sm:block hidden"
+    >
+      <a class="no-underline text-maintext" routerLink="/">LitGO</a>
+    </h1>
+    <div class="block">
+      <button
+        (click)="catalogueOpen = !catalogueOpen"
+        [ngClass]="catalogueOpen ? 'bg-mainshadow' : 'bg-accent'"
+        class="transition-colors duration-200 z-[100] lg:min-w-[110px] p-2 text-sm lg:px-5 lg:py-3 m-1.5 border-0 rounded-xl cursor-pointer lg:m-2.5 text-maintext lg:text-sm font-semibold font-main hover:bg-neutral-700"
+      >
+        <fa-icon
+          *ngIf="catalogueOpen"
+          [icon]="faClose"
+          size="1x"
+          class="mr-[2px]"
+        />
+        <fa-icon
+          *ngIf="!catalogueOpen"
+          [icon]="faBook"
+          size="1x"
+          class="mr-[2px]"
+        />
+        <span class="hidden lg:contents">Каталог</span>
+      </button>
+      <div
+        *ngIf="catalogueOpen"
+        class="absolute w-full lg:min-h-[calc(100%-64px)] min-h-[calc(100%-48px)] z-50 lg:top-16 top-12 left-0"
+      >
+        <!---catalogue component-->
+        <div
+          class="bg-mainblack/50 w-full h-full top-0 absolute"
+          (click)="catalogueOpen = !catalogueOpen"
+        ></div>
+      </div>
+    </div>
+    <button
+      class="lg:hidden ml-auto mr-2 my-auto"
+      (click)="sideMenuOpen = !sideMenuOpen"
+    >
+      <fa-icon
+        [icon]="sideMenuOpen ? faClose : faBars"
+        class="text-maintext"
+        size="xl"
+      />
+    </button>
+  </div>
+
+  <div class="flex-1 pr-[2%] h-auto">
+    <app-searchbar />
+  </div>
+  <div
+    class="bg-mainbg lg:left-0 top-8 w-full mt-2 mb-1 lg:top-0 lg:w-auto z-40 flex flex-col absolute lg:bg-transparent lg:flex-row lg:relative duration-800 transition-all ease-in"
+    [ngClass]="[sideMenuOpen ? 'left-0' : '-left-full']"
+  >
+    <div *ngFor="let link of links" class="text-maintext">
+      <a
+        *ngIf="link.visible"
+        class="font-normal px-2 py-2 hover:text-accent hover:font-semibold lg:hover:text-maintext lg:hover:font-normal lg:hover:bg-accent/30 rounded-md transition-all m-2.5 text-md lg:w-15 xl:w-18 items-center font-main no-underline cursor-pointer flex lg:flex-col"
+        [routerLink]="link.link"
+        [ngClass]="link.addClass === undefined ? '' : link.addClass"
+        (click)="link.action && link.action()"
+      >
+        <fa-icon
+          class="w-8 mr-2 -ml-2 h-7 lg:h-5 xl:h-5 lg:w-auto lg:m-0"
+          [icon]="link.icon"
+          size="xl"
+        />
+        <span class="text-base lg:text-xs xl:text-sm">{{ link.label }}</span>
+      </a>
+    </div>
+  </div>
+</header>

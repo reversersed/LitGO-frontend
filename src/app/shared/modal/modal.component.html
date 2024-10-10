@@ -1,0 +1,49 @@
+<div
+  class="absolute z-[1000] w-dvw h-dvh flex flex-row items-center justify-center top-0"
+  [ngClass]="background ? 'bg-mainblack/80' : ''"
+  *ngIf="visible"
+  (click)="background && ChangeModalState(false)"
+>
+  <div
+    (click)="$event.stopPropagation()"
+    [ngClass]="background ? 'bg-mainwhite' : 'bg-accent/20'"
+    class="z-10 -translate-y-20 max-w-[300px] xl:max-w-[500px] px-[30px] rounded-2xl flex grow-[1] pb-5 flex-col items-center justify-center"
+  >
+    <a
+      [ngClass]="disabled ? '' : 'hover:rotate-180 cursor-pointer'"
+      class="self-end mt-2 -mr-4 transition-all duration-300 z-50"
+      ><fa-icon
+        [icon]="faClose"
+        size="xl"
+        [ngClass]="disabled ? 'text-mainblack/40' : 'text-mainblack'"
+        (click)="ChangeModalState(false)"
+    /></a>
+    <div class="w-full h-full flex flex-col items-center">
+      <h1
+        class="mb-5 text-xl font-semibold tracking-wider font-main"
+        [ngClass]="disabled ? 'text-accent/40' : 'text-accent'"
+      >
+        {{ title }}
+      </h1>
+      <ng-content></ng-content>
+      <input
+        type="submit"
+        (click)="(onSubmit)"
+        [value]="ok"
+        [disabled]="disabled"
+        [ngClass]="
+          danger
+            ? 'bg-error/80 enabled:hover:bg-error'
+            : 'bg-mainshadow/80 enabled:hover:bg-mainbg'
+        "
+        class="enabled:cursor-pointer w-fit px-6 py-1 enabled:hover:tracking-widest text-maintext rounded-xl transition-all duration-300 mt-5"
+      /><fa-icon
+        [icon]="faSpinner"
+        spin-pulse
+        size="xl"
+        class="text-maintext -mt-7 select-none"
+        *ngIf="disabled"
+      />
+    </div>
+  </div>
+</div>
