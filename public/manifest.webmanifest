@@ -1,0 +1,18 @@
+{
+  "id": "litgo-app",
+  "name": "LitGO",
+  "short_name": "LitGO",
+  "theme_color": "#3aafa9",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "named-icon.png",
+      "sizes": "348x348",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
