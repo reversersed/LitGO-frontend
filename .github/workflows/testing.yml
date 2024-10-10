@@ -2,7 +2,9 @@ name: Karma tests
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
 
 # Job Setup
 jobs:
