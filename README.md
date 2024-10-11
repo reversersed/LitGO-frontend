@@ -1,27 +1,63 @@
-# LitGO
+# LitGO | Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.8.
+This is a frontend part of [LitGO ecosystem](https://github.com/reversersed/LitGO)
 
-## Development server
+## Table of contents
+- [System purpose](#system-purpose)
+- [Functional](#functional)
+- [Frontend stack](#frontend-stack)
+- [Backend stack](#backend-stack)
+- [Interface prototype](#interface-prototype)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## System purpose
 
-## Code scaffolding
+The main purpose of system is to provide to users functional that allows to read books, search them and save to personal lists (as favourites).
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Functional
 
-## Build
+System is planned to has:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+1. Book search
+    - Search bar
+    - Dynamic search suggestions
+    - Search page with filters
+2. Genre/category catalogue
+    - Short category list
+    - Extended information about each category
+    - Fulfilled page with information about every category and genre
+3. UI/UX
+4. Books and authors data
+5. Built-in book reader
 
-## Running unit tests
+## Frontend stack
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Frontend part of system is progressive web application (PWA) deploying as standalone application on desktop, web and mobile devices.
 
-## Running end-to-end tests
+Stack:
+  - `Angular v18`
+  - `Tailwind`
+  - `Karma (for testing)`
+  - `Docker Compose (deploying)`
+  - `Nginx (docker routing)`
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Backend stack
 
-## Further help
+[Backend](https://github.com/reversersed/LitGO-backend) is written in `Golang v1.22.5` in microservices architecture.<br>
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Stack:
+  - `Golang v1.12.5`
+  - `RESTful gateway + gRPC`
+  - `RabbitMQ`
+  - `MongoDB`
+  - `Gin router (gateway)`
+
+## Interface prototype
+
+Here's examples of interface prototype made in [Figma](https://figma.com)
+
+![Main page](https://i.imgur.com/YewJ6uN.png)<br>
+![Catalogue](https://i.imgur.com/PsNILSb.png)<br>
+![Extended category information](https://i.imgur.com/PeAU1nC.png)<br>
+![Category's page](https://github.com/user-attachments/assets/1f277b52-ae3a-46e2-b573-bbcd6182d366)<br>
+![404 page](https://github.com/user-attachments/assets/b0a91657-ca74-4bf2-b7ad-5e09b9c63e00)<br>
+![Side menu](https://github.com/user-attachments/assets/276f5887-33eb-430c-92e2-bedc5a943c89)<br>
