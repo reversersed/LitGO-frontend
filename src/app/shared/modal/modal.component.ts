@@ -18,7 +18,9 @@ export class ModalComponent {
   @Input() danger: boolean = false; // Marks that modal action is dangerous
   @Input() title!: string;
   @Input() background = true;
-  @Output() visibleChange = new EventEmitter<boolean>();
+  @Input('error') errorValue?: string;
+  @Output()
+  visibleChange = new EventEmitter<boolean>();
   @Output() onSubmit = new EventEmitter();
   ChangeModalState(state: boolean) {
     this.visible = state;

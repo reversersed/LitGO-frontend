@@ -1,0 +1,143 @@
+<div
+  class="w-full h-auto bg-mainwhite flex flex-col justify-center z-[5] min-h-[60%] relative"
+  (click)="$event.stopPropagation()"
+>
+  <ng-container
+    *ngIf="CategoryList$ | async as Categories; else LoadingTemplate"
+  >
+    <div *ngIf="currentCategory !== null" class="w-full flex flex-row mt-5">
+      <div
+        class="w-8 h-8 py-0.5 px-2.5 sm:w-10 sm:ml-5 text-xl sm:h-10 sm:py-1.5 sm:px-3.5 rounded-lg bg-contrast/30 text-contrast/80 hover:bg-contrast/40 hover:text-contrast cursor-pointer transition-colors duration-150"
+        (click)="currentCategory = null"
+      >
+        <fa-icon [icon]="faAngleLeft" />
+      </div>
+      <div class="ml-4 sm:ml-20 flex flex-col h-full">
+        <div class="flex flex-row">
+          <span class="text-base sm:text-2xl sm:font-bold">{{
+            currentCategory.name
+          }}</span>
+          <a
+            [routerLink]="'/genre/' + currentCategory.translitName"
+            class="ml-2 sm:ml-5 block pt-1 sm:pt-[5px] text-center items-center text-xs sm:text-lg sm:font-semibold text-contrast cursor-pointer hover:text-contrast/80 transition-colors duration-200"
+            >Все книги жанра <fa-icon [icon]="faAngleRight" />
+          </a>
+        </div>
+        <div
+          class="mt-2 mb-8 font-main min-h-full"
+          [ngClass]="[
+            currentCategory.genres.length > 18 * 3
+              ? 'md:columns-2 lg:columns-3 xl:columns-4'
+              : currentCategory.genres.length > 18 * 2
+              ? 'md:columns-2 lg:columns-3'
+              : currentCategory.genres.length > 18
+              ? 'md:columns-2'
+              : ''
+          ]"
+        >
+          <ul class="w-auto">
+            <li
+              *ngFor="let genre of currentCategory.genres"
+              [id]="genre.translitName"
+              class="mb-2 w-fit"
+            >
+              <a
+                class="font-normal font-main hover:text-contrast text-mainblack break-words transition-colors duration-300 text-xs sm:text-base"
+                [routerLink]="'/genre/' + genre.translitName"
+                >{{ genre.name }}</a
+              >
+              <span
+                *ngIf="genre.bookCount > 0"
+                class="ml-1 text-sm font-light text-mainblack/60 underline decoration-dotted select-none"
+                >{{ genre.bookCount }} {{ getBookNoun(genre.bookCount) }}</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="w-[90%] h-full sm:columns-3 md:columns-4 columns-2 mt-[30px]"
+      *ngIf="currentCategory === null"
+    >
+      <div
+        *ngFor="let category of Categories"
+        [id]="category.translitName"
+        class="inline-block w-full pl-4 sm:pl-[40px] lg:pl-[60px] pb-[30px]"
+      >
+        <a
+          class="text-mainblack hover:text-mainblack/60 transition-all break-words duration-200 text-sm sm:text-xl font-semibold font-main mb-5"
+          [routerLink]="'/genre/' + category.translitName"
+          >{{ category.name }}</a
+        >
+        <ul class="mt-2">
+          <li
+            *ngFor="let genre of category.genres.slice(0, 5)"
+            [id]="genre.translitName"
+            class="mb-1.5 lg:mb-0"
+          >
+            <a
+              [title]="
+                genre.bookCount > 0
+                  ? genre.bookCount + ' ' + getBookNoun(genre.bookCount)
+                  : ''
+              "
+              class="mb-1 font-normal font-main hover:text-contrast text-mainblack break-words transition-colors duration-300 text-xs sm:text-base"
+              [routerLink]="'/genre/' + genre.translitName"
+              >{{ genre.name }}</a
+            >
+          </li>
+        </ul>
+
+        <a (click)="currentCategory = category" class="cursor-pointer">
+          <p
+            *ngIf="category.genres.length > 5"
+            class="underline decoration-dotted hover:text-contrast text-mainblack/50 font-normal transition-colors duration-300 text-xs sm:text-base"
+          >
+            Все {{ category.genres.length }}
+          </p>
+        </a>
+      </div>
+    </div>
+    <div class="flex justify-center mt-auto py-2 bg-accent/20 w-full">
+      <a
+        routerLink="/genres"
+        class="text-contrast hover:text-contrast/60 transition-colors duration-200"
+        >Все {{ totalGenres }} {{ getGenreNoun(totalGenres) }}</a
+      >
+    </div>
+  </ng-container>
+
+  <ng-template #LoadingTemplate>
+    <div
+      class="w-full h-auto min-h-[60%] bg-maintext flex flex-col justify-center items-center z-[100] relative"
+    >
+      <div class="w-[90%] h-full sm:columns-3 md:columns-4 columns-2 mt-[30px]">
+        <div
+          *ngFor="let index of [0, 1, 2, 3, 4, 5, 6, 7]"
+          [id]="index"
+          class="inline-block w-full lg:pl-[60px] pb-[30px]"
+        >
+          <app-skeleton />
+          <ul class="mt-4">
+            <li class="mb-1"><app-skeleton /></li>
+            <li class="mb-1"><app-skeleton /></li>
+            <li class="mb-1"><app-skeleton /></li>
+            <li class="mb-1"><app-skeleton /></li>
+            <li class="mb-1"><app-skeleton /></li>
+          </ul>
+
+          <p
+            class="mt-1 underline decoration-dotted hover:text-contrast text-mainblack/50 font-normal transition-colors duration-300 text-xs sm:text-base"
+          >
+            <app-skeleton />
+          </p>
+        </div>
+      </div>
+      <div class="flex mt-auto justify-center py-2 bg-accent/20 w-full">
+        <app-skeleton width="160px" />
+      </div>
+    </div>
+  </ng-template>
+</div>

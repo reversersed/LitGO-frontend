@@ -1,0 +1,23 @@
+<div class="flex flex-row gap-2">
+  <input
+    class="w-4 h-4 cursor-pointer disabled:cursor-default bg-mainbg select-none"
+    type="checkbox"
+    [disabled]="disabled"
+    [value]="value"
+    (change)="changeValue($event)"
+    [id]="id"
+  />
+  <label
+    *ngIf="labelValue"
+    [for]="id"
+    class="select-none font-main text-sm duration-150 -mt-[1px]"
+    [class]="
+      disabled
+        ? 'text-mainblack/30'
+        : value
+        ? 'text-mainblack cursor-pointer'
+        : 'text-mainblack/70 cursor-pointer'
+    "
+    >{{ labelValue }}</label
+  >
+</div>

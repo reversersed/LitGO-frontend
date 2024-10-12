@@ -13,11 +13,37 @@
 <!-- login modal -->
 <app-modal
   ok="Войти"
-  title="Авторизация"
+  [title]="'Авторизация'"
   [disabled]="loginAttemptingState"
   [(visible)]="loginModalOpen"
+  (onSubmit)="loginUser()"
+  [error]="loginGeneralError"
 >
-  <!--LoginForm-->
+  <div class="w-[80%] gap-4 flex flex-col">
+    <app-input
+      id="login"
+      label="Логин или почта"
+      [(error)]="loginError"
+      [(value)]="loginValue"
+      [disabled]="loginAttemptingState"
+    />
+    <app-input
+      id="password"
+      label="Пароль"
+      type="password"
+      [(error)]="passwordError"
+      [(value)]="passwordValue"
+      [disabled]="loginAttemptingState"
+    />
+    <div class="flex flex-col w-full items-center">
+      <app-checkbox
+        label="Запомнить меня"
+        [disabled]="loginAttemptingState"
+        componentId="rememberMe"
+        [(checked)]="rememberMe"
+      />
+    </div>
+  </div>
 </app-modal>
 <!-- main block -->
 <header
@@ -53,7 +79,7 @@
         *ngIf="catalogueOpen"
         class="absolute w-full lg:min-h-[calc(100%-64px)] min-h-[calc(100%-48px)] z-50 lg:top-16 top-12 left-0"
       >
-        <!---catalogue component-->
+        <app-catalogue />
         <div
           class="bg-mainblack/50 w-full h-full top-0 absolute"
           (click)="catalogueOpen = !catalogueOpen"
@@ -81,11 +107,15 @@
   >
     <div *ngFor="let link of links" class="text-maintext">
       <a
-        *ngIf="link.visible"
+        *ngIf="
+          link.visible === 'All' ||
+          (link.visible === 'Auth' && userState() !== null) ||
+          (link.visible === 'Unauth' && userState() === null)
+        "
         class="font-normal px-2 py-2 hover:text-accent hover:font-semibold lg:hover:text-maintext lg:hover:font-normal lg:hover:bg-accent/30 rounded-md transition-all m-2.5 text-md lg:w-15 xl:w-18 items-center font-main no-underline cursor-pointer flex lg:flex-col"
         [routerLink]="link.link"
         [ngClass]="link.addClass === undefined ? '' : link.addClass"
-        (click)="link.action && link.action()"
+        (click)="link.action !== undefined && link.action()"
       >
         <fa-icon
           class="w-8 mr-2 -ml-2 h-7 lg:h-5 xl:h-5 lg:w-auto lg:m-0"
