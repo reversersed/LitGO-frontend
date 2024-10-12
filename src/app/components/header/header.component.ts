@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, Signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
@@ -21,6 +21,7 @@ import { InputComponent } from '../../shared/input/input.component';
 import HttpError from '../../models/httperror.model';
 import { CheckboxComponent } from '../../shared/checkbox/checkbox.component';
 import { CatalogueComponent } from './catalogue/catalogue.component';
+import { UserLoginModel } from '../../models/user.model';
 
 @Component({
   selector: 'app-header',
@@ -37,10 +38,10 @@ import { CatalogueComponent } from './catalogue/catalogue.component';
   ],
   templateUrl: './header.component.html',
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   userService = inject(UserService);
 
-  userState = this.userService.CurrentUser();
+  userState: Signal<UserLoginModel | null> = signal(null);
   faClose = faClose;
   faBook = faBook;
   faBars = faBars;
@@ -122,6 +123,9 @@ export class HeaderComponent {
       visible: 'Auth',
     },
   ];
+  ngOnInit(): void {
+    this.userState = this.userService.CurrentUser();
+  }
   logoutUser() {
     this.logoutAttemptingState = true;
     this.userService.LogoutUser().subscribe(() => {
