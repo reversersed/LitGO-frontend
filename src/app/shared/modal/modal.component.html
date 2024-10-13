@@ -51,6 +51,22 @@
         class="text-maintext -mt-7 select-none"
         *ngIf="disabled"
       />
+      <span
+        *ngIf="footerComponent"
+        class="text-xs mt-2 select-none w-full text-center"
+        [ngClass]="disabled ? 'text-accent/30' : 'text-accent/70'"
+      >
+        {{ footerComponent.text }}
+        <a
+          *ngIf="footerComponent.link && footerComponent.linkText"
+          [routerLink]="disabled ? undefined : footerComponent.link"
+          [ngClass]="
+            disabled ? 'text-accent/30' : 'text-accent/80 hover:text-contrast'
+          "
+          class="transition-all duration-200"
+          >{{ footerComponent.linkText }}</a
+        ></span
+      >
     </div>
   </div>
 </div>

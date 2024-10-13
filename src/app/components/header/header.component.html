@@ -18,6 +18,11 @@
   [(visible)]="loginModalOpen"
   (onSubmit)="loginUser()"
   [error]="loginGeneralError"
+  [footer]="{
+    text: 'Еще нет аккаунта?',
+    linkText: 'Зарегистрироваться',
+    link: '/signin'
+  }"
 >
   <div class="w-[80%] gap-4 flex flex-col">
     <app-input
