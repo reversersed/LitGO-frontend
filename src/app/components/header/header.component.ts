@@ -30,12 +30,12 @@ import { ModalComponent } from '../../shared/modal/modal.component';
 import { SearchbarComponent } from './searchbar/searchbar.component';
 import { UserService } from '../../service/http/user.service';
 import { InputComponent } from '../../shared/input/input.component';
-import HttpError from '../../models/httperror.model';
+import HttpError, { HttpCodes } from '../../models/httperror.model';
 import { CheckboxComponent } from '../../shared/checkbox/checkbox.component';
 import { CatalogueComponent } from './catalogue/catalogue.component';
 import { UserLoginModel } from '../../models/user.model';
 import { Subscription } from 'rxjs';
-import { NotFoundPageComponent } from "../../pages/not-found-page/not-found-page.component";
+import { NotFoundPageComponent } from '../../pages/not-found-page/not-found-page.component';
 
 @Component({
   selector: 'app-header',
@@ -49,8 +49,8 @@ import { NotFoundPageComponent } from "../../pages/not-found-page/not-found-page
     InputComponent,
     CheckboxComponent,
     CatalogueComponent,
-    NotFoundPageComponent
-],
+    NotFoundPageComponent,
+  ],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent implements OnInit, OnDestroy {
@@ -140,7 +140,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       visible: 'Auth',
     },
   ];
-  eventSubscribe!: Subscription;
+  eventSubscribe?: Subscription;
   ngOnInit(): void {
     this.userState = this.userService.CurrentUser();
     this.eventSubscribe = this.router.events.subscribe((event) => {
@@ -165,7 +165,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy(): void {
-    this.eventSubscribe.unsubscribe();
+    this.eventSubscribe?.unsubscribe();
   }
   logoutUser() {
     this.logoutAttemptingState = true;
@@ -199,7 +199,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.loginModalOpen = false;
         },
         error: (err) => {
-          if ((err as HttpError).code == 500) {
+          if (
+            (err as HttpError).code == HttpCodes.Internal ||
+            (err as HttpError).code == HttpCodes.Unavailable
+          ) {
             this.loginGeneralError = 'Сервис временно недоступен';
           } else {
             this.loginGeneralError = 'Неправильный логин или пароль';

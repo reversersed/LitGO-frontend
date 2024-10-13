@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { UnauthorizedGuard } from './guards/unauthorized.guard';
 
 export const routes: Routes = [
   {
@@ -14,6 +15,40 @@ export const routes: Routes = [
           import(
             './pages/genre-observable-page/genre-observable-page.component'
           ).then((c) => c.GenreObservablePageComponent),
+      },
+    ],
+  },
+  {
+    path: 'signin',
+    canActivate: [UnauthorizedGuard],
+    loadComponent: () =>
+      import('./layouts/login-layout/login-layout.component').then(
+        (c) => c.LoginLayoutComponent
+      ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/registration-page/registration-page.component').then(
+            (c) => c.RegistrationPageComponent
+          ),
+      },
+    ],
+  },
+  {
+    path: 'login',
+    canActivate: [UnauthorizedGuard],
+    loadComponent: () =>
+      import('./layouts/login-layout/login-layout.component').then(
+        (c) => c.LoginLayoutComponent
+      ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/login-page/login-page.component').then(
+            (c) => c.LoginPageComponent
+          ),
       },
     ],
   },

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { UserService } from './service/http/user.service';
 
 @Component({
   selector: 'app-root',

@@ -34,8 +34,8 @@ export default interface HttpError {
 export function createNullError(): HttpError {
   return {
     details: [],
-    code: 500,
+    code: HttpCodes.Internal,
     message: 'server not responding',
-    type: 'InternalServerError',
+    type: 'Internal',
   };
 }
