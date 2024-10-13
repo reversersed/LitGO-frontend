@@ -7,7 +7,15 @@ export const routes: Routes = [
       import('./layouts/default-layout/default-layout.component').then(
         (c) => c.DefaultLayoutComponent
       ),
-    children: [],
+    children: [
+      {
+        path: 'genres',
+        loadComponent: () =>
+          import(
+            './pages/genre-observable-page/genre-observable-page.component'
+          ).then((c) => c.GenreObservablePageComponent),
+      },
+    ],
   },
   {
     path: '**',

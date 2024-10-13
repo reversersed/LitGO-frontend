@@ -10,13 +10,14 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { errorInterceptor } from './service/http/interceptors/error.interceptor';
 import { credentialsInterceptor } from './service/http/interceptors/credentials.interceptor';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideServiceWorker('ngsw-worker.js', {
-      enabled: !isDevMode(),
+      enabled: environment.production,
       registrationStrategy: 'registerWhenStable:30000',
     }),
     provideHttpClient(

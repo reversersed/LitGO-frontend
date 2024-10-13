@@ -1,6 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal, Signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  Signal,
+} from '@angular/core';
+import {
+  NavigationSkipped,
+  NavigationStart,
+  Router,
+  RouterLink,
+} from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faBars,
@@ -22,6 +34,7 @@ import HttpError from '../../models/httperror.model';
 import { CheckboxComponent } from '../../shared/checkbox/checkbox.component';
 import { CatalogueComponent } from './catalogue/catalogue.component';
 import { UserLoginModel } from '../../models/user.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -38,18 +51,20 @@ import { UserLoginModel } from '../../models/user.model';
   ],
   templateUrl: './header.component.html',
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
+  constructor(private router: Router) {}
+
   userService = inject(UserService);
 
   userState: Signal<UserLoginModel | null> = signal(null);
   faClose = faClose;
   faBook = faBook;
   faBars = faBars;
+  faSpinner = faSpinner;
   logoutModalOpen = false;
   loginModalOpen = false;
   loginAttemptingState = false;
   logoutAttemptingState = false;
-  faSpinner = faSpinner;
   catalogueOpen = false;
   sideMenuOpen = false;
 
@@ -123,8 +138,32 @@ export class HeaderComponent implements OnInit {
       visible: 'Auth',
     },
   ];
+  eventSubscribe!: Subscription;
   ngOnInit(): void {
     this.userState = this.userService.CurrentUser();
+    this.eventSubscribe = this.router.events.subscribe((event) => {
+      if (
+        event instanceof NavigationStart ||
+        event instanceof NavigationSkipped
+      ) {
+        this.logoutModalOpen = false;
+        this.loginModalOpen = false;
+        this.loginAttemptingState = false;
+        this.logoutAttemptingState = false;
+        this.catalogueOpen = false;
+        this.sideMenuOpen = false;
+
+        this.loginValue = '';
+        this.loginError = undefined;
+        this.passwordValue = '';
+        this.passwordError = undefined;
+        this.loginGeneralError = undefined;
+        this.rememberMe = false;
+      }
+    });
+  }
+  ngOnDestroy(): void {
+    this.eventSubscribe.unsubscribe();
   }
   logoutUser() {
     this.logoutAttemptingState = true;

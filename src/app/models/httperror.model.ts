@@ -39,6 +39,3 @@ export function createNullError(): HttpError {
     type: 'InternalServerError',
   };
 }
-export function isHttpError(object: any): boolean {
-  return (object as HttpError).details !== undefined;
-}
