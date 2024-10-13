@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import GenericService from './generic.service';
-import { first } from 'rxjs';
+import { catchError, first, of } from 'rxjs';
 import Category from '../../models/category.model';
 
 @Injectable({
@@ -15,6 +15,9 @@ export class CategoryService extends GenericService {
   public getAll() {
     return this.http
       .get<Category[]>(this.buildPath('all'), { headers: this.getHeaders() })
-      .pipe(first());
+      .pipe(
+        first(),
+        catchError(() => of([]))
+      );
   }
 }

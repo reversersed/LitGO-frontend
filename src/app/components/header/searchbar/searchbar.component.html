@@ -1,5 +1,5 @@
 <div
-  class="z-50 bg-mainwhite lg:w-auto rounded-2xl border-2 w-[70%] mr-[36px] sm:mr-0 border-mainshadow flex sm:min-w-[100px] md:min-w-[300px] items-center h-10 lg:h-12 lg:relative absolute top-1 lg:left-0 left-[15%] sm:left-[18%] lg:top-0"
+  class="z-50 bg-mainwhite lg:w-auto h-auto rounded-2xl border-2 w-[70%] mr-[36px] sm:mr-0 border-mainshadow flex sm:min-w-[100px] md:min-w-[300px] items-center lg:h-12 lg:relative absolute top-1 lg:left-0 left-[15%] sm:left-[18%] lg:top-0"
 >
   <input
     placeholder="Искать на LitGO"
@@ -18,14 +18,14 @@
     type="button"
     routerLink="/search"
     [queryParams]="{ query: query }"
-    class="z-50 h-full w-fit px-2 lg:px-4 border-0 bg-mainshadow text-maintext rounded-xl rounded-tl-xl rounded-bl-xl cursor-pointer hover:bg-mainbg transition-colors duration-300"
+    class="z-50 h-full py-1 lg:py-0 w-fit px-2 lg:px-4 border-0 bg-mainshadow text-maintext rounded-xl rounded-tl-xl rounded-bl-xl cursor-pointer hover:bg-mainbg transition-colors duration-300"
   >
     <fa-icon [icon]="faSearch" size="lg" />
   </button>
 </div>
 <div
   *ngIf="data$ | async as data"
-  class="absolute mt-2 ml-[3%] sm:ml-[16.5%] lg:ml-0 shadow-sm shadow-mainblack flex flex-col transition-all ease-in-out duration-200 w-auto max-w-[90%] sm:max-w-[70%] 2xl:max-w-[45%] lg:max-w-[50%] h-auto max-h-[90%] overflow-y-auto overflow-x-hidden bg-mainwhite rounded z-50 p-2"
+  class="absolute mt-2 ml-[3%] sm:ml-[16.5%] lg:ml-0 min-h-fit shadow-sm shadow-mainblack flex flex-col transition-all ease-in-out duration-200 w-auto max-w-[90%] sm:max-w-[70%] 2xl:max-w-[45%] lg:max-w-[50%] max-h-[90%] overflow-y-auto overflow-x-hidden bg-mainwhite rounded z-50 p-2"
   [ngClass]="
     suggestionOpen &&
     (data.book.length > 0 || data.author.length > 0) &&

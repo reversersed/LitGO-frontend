@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import GenericService from './generic.service';
-import { first } from 'rxjs';
+import { catchError, first, of } from 'rxjs';
 import Author from '../../models/author.model';
 
 @Injectable({
@@ -18,6 +18,9 @@ export class AuthorService extends GenericService {
         headers: this.getHeaders(),
         params: new HttpParams().set('query', query),
       })
-      .pipe(first());
+      .pipe(
+        first(),
+        catchError(() => of([]))
+      );
   }
 }

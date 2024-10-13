@@ -1,1 +1,45 @@
-<p>genre-observable-page works!</p>
+<div
+  class="h-auto w-full px-[2%] md:pl-[6%] md:pr-[2%] py-8 flex flex-col flex-1"
+>
+  <span
+    class="text-mainblack font-bold font-main text-xl md:text-3xl mb-2 md:mb-4"
+    >Жанры</span
+  >
+  <ng-container *ngIf="genres$ | async as genres; else loader"
+    ><div *ngFor="let category of genres" class="mb-2 mt-4 flex flex-col">
+      <a
+        [routerLink]="'/genre/' + category.translitName"
+        class="hover:text-contrast transition-colors duration-200 w-fit cursor-pointer font-semibold font-main text-lg md:text-xl"
+        >{{ category.name }}
+        <fa-icon size="1x" class="ml-1 font-normal" [icon]="faAngleRight"
+      /></a>
+      <div class="flex flex-row flex-wrap break-words w-full h-auto mt-2">
+        <a
+          *ngFor="let genre of category.genres"
+          [routerLink]="'/genre/' + genre.translitName"
+          class="cursor-pointer mr-4 md:mr-8 mb-1 md:mb-2 text-sm md:text-base sm:font-semibold text-contrast hover:text-contrast/60"
+          ><span class="transition-all duration-200">{{ genre.name }}</span
+          ><span class="font-main !text-mainblack/60 ml-1">{{
+            genre.bookCount
+          }}</span></a
+        >
+      </div>
+    </div></ng-container
+  >
+  <ng-template #loader
+    ><div
+      *ngFor="let i of [0, 1, 2, 3, 4, 5, 6]"
+      class="mb-2 mt-4 flex flex-col"
+    >
+      <app-skeleton width="180px" />
+      <div class="flex flex-row flex-wrap break-words w-full h-auto mt-2">
+        <a
+          *ngFor="let genre of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
+          class="cursor-pointer mr-4 md:mr-8 mb-1 md:mb-2 text-sm md:text-base sm:font-semibold text-contrast hover:text-contrast/60"
+          ><span class="transition-all duration-200"
+            ><app-skeleton width="120px" /></span
+        ></a>
+      </div>
+    </div>
+  </ng-template>
+</div>

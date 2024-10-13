@@ -6,10 +6,14 @@ import Author from '../models/author.model';
   providedIn: 'root',
 })
 export class FileService {
+  book_folder = 'books';
   book_cover_folder = 'book_covers';
   author_profile_picture_folder = '';
   constructor() {}
 
+  getBookFile(book: Book) {
+    return 'files/' + this.book_folder + '/' + book.filepath;
+  }
   getBookCoverPath(book: Book) {
     if (
       book.picture.startsWith('http://') ||

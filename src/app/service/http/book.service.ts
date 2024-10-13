@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import GenericService from './generic.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import Book from '../../models/book.model';
-import { first } from 'rxjs';
+import { catchError, first, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +17,9 @@ export class BookService extends GenericService {
         headers: this.getHeaders(),
         params: new HttpParams().set('query', query),
       })
-      .pipe(first());
+      .pipe(
+        first(),
+        catchError(() => of([]))
+      );
   }
 }
