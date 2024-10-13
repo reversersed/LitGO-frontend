@@ -1,5 +1,5 @@
 <div
-  class="w-full h-auto bg-mainwhite flex flex-col justify-center z-[5] min-h-[60%] relative"
+  class="w-full h-auto bg-mainwhite flex flex-col justify-center z-[5] min-h-[50%] relative"
   (click)="$event.stopPropagation()"
 >
   <ng-container
@@ -12,9 +12,9 @@
       >
         <fa-icon [icon]="faAngleLeft" />
       </div>
-      <div class="ml-4 sm:ml-20 flex flex-col h-full">
+      <div class="ml-4 sm:ml-20 flex flex-col h-full font-main">
         <div class="flex flex-row">
-          <span class="text-base sm:text-2xl sm:font-bold">{{
+          <span class="text-base font-semibold sm:text-2xl sm:font-bold">{{
             currentCategory.name
           }}</span>
           <a
@@ -103,7 +103,7 @@
     <div class="flex justify-center mt-auto py-2 bg-accent/20 w-full">
       <a
         routerLink="/genres"
-        class="text-contrast hover:text-contrast/60 transition-colors duration-200"
+        class="text-contrast hover:text-contrast/60 transition-colors duration-200 font-semibold"
         >Все {{ totalGenres }} {{ getGenreNoun(totalGenres) }}</a
       >
     </div>

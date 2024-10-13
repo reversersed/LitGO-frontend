@@ -35,6 +35,7 @@ import { CheckboxComponent } from '../../shared/checkbox/checkbox.component';
 import { CatalogueComponent } from './catalogue/catalogue.component';
 import { UserLoginModel } from '../../models/user.model';
 import { Subscription } from 'rxjs';
+import { NotFoundPageComponent } from "../../pages/not-found-page/not-found-page.component";
 
 @Component({
   selector: 'app-header',
@@ -48,7 +49,8 @@ import { Subscription } from 'rxjs';
     InputComponent,
     CheckboxComponent,
     CatalogueComponent,
-  ],
+    NotFoundPageComponent
+],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent implements OnInit, OnDestroy {

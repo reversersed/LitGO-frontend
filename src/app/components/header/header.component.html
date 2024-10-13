@@ -1,5 +1,6 @@
 <!-- logout modal -->
 <app-modal
+  *ngIf="logoutModalOpen"
   [title]="'Выход'"
   [disabled]="logoutAttemptingState"
   (onSubmit)="logoutUser()"
@@ -12,6 +13,7 @@
 >
 <!-- login modal -->
 <app-modal
+  *ngIf="loginModalOpen"
   ok="Войти"
   [title]="'Авторизация'"
   [disabled]="loginAttemptingState"
@@ -52,7 +54,7 @@
 </app-modal>
 <!-- main block -->
 <header
-  class="z-50 pl-2 flex flex-col lg:flex-row lg:items-center justify-center lg:pr-[10%] lg:pl-[10%] h-12 lg:h-16 bg-mainbg font-semibold w-full"
+  class="sticky z-50 pl-2 flex flex-col lg:flex-row lg:items-center justify-center lg:pr-[10%] lg:pl-[10%] h-12 lg:h-16 bg-mainbg font-semibold w-full"
 >
   <div class="z-50 flex flex-row w-full lg:w-auto justify-center h-full">
     <h1
@@ -80,16 +82,6 @@
         />
         <span class="hidden lg:contents">Каталог</span>
       </button>
-      <div
-        *ngIf="catalogueOpen"
-        class="absolute w-full lg:min-h-[calc(100%-64px)] min-h-[calc(100%-48px)] z-50 lg:top-16 top-12 left-0"
-      >
-        <app-catalogue />
-        <div
-          class="bg-mainblack/50 w-full h-full top-0 absolute"
-          (click)="catalogueOpen = !catalogueOpen"
-        ></div>
-      </div>
     </div>
     <button
       class="lg:hidden ml-auto mr-2 my-auto"
@@ -102,7 +94,6 @@
       />
     </button>
   </div>
-
   <div class="flex-1 pr-[2%] h-auto">
     <app-searchbar />
   </div>
@@ -132,3 +123,14 @@
     </div>
   </div>
 </header>
+
+<div
+  *ngIf="catalogueOpen"
+  class="absolute w-full h-auto lg:top-16 top-12 left-0 z-40"
+>
+  <app-catalogue />
+  <div
+    class="bg-mainblack/50 w-full h-full top-0 fixed"
+    (click)="catalogueOpen = !catalogueOpen"
+  ></div>
+</div>
