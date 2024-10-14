@@ -15,7 +15,7 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: false,
     singleRun: true,
-    browsers: ["Edge"],
+    browsers: ["EdgeHeadless"],
     reporters: ["kjhtml", "html"],
     coverageReporter: {
       type: "html",
