@@ -5,6 +5,8 @@
     [id]="componentId"
     [disabled]="disabled"
     [value]="inputValue"
+    [autocomplete]="autocomplete"
+    (keyup.enter)="submitEvent.emit()"
     [ngClass]="
       errorMessage !== undefined
         ? 'border-error text-error placeholder-shown:text-error placeholder-shown:border-error focus:border-error'
@@ -24,10 +26,14 @@
     "
     >{{ labelValue }}</label
   >
-  <p
-    *ngIf="errorMessage !== undefined"
-    class="text-sm text-error ml-2 -mt-[2px] select-none"
-  >
-    {{ errorMessage }}
-  </p>
+  <div *ngIf="errorMessage !== undefined" class="flex flex-col">
+    <p
+      *ngFor="
+        let message of isArray(errorMessage) ? errorMessage : [errorMessage]
+      "
+      class="text-sm text-error ml-2 -mt-[2px] select-none"
+    >
+      {{ message }}
+    </p>
+  </div>
 </div>

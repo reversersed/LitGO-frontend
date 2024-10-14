@@ -13,6 +13,7 @@
       [disabled]="attempingState"
       [(value)]="form.login"
       [(error)]="form.loginError"
+      autocomplete="username nickname email"
     />
     <app-input
       id="password"
@@ -21,6 +22,7 @@
       [disabled]="attempingState"
       [(value)]="form.password"
       [(error)]="form.passwordError"
+      autocomplete="current-password"
     />
     <app-checkbox
       class="self-center"

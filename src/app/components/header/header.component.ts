@@ -119,6 +119,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.passwordValue = '';
         this.rememberMe = false;
         this.loginModalOpen = !this.loginModalOpen;
+        this.loginGeneralError = undefined;
       },
       addClass: 'hidden sm:flex',
       label: 'Войти',

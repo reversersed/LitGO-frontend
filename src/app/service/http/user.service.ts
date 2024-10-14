@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import GenericService from './generic.service';
 import { UserLoginModel } from '../../models/user.model';
 import { catchError, EMPTY, first, map, of } from 'rxjs';
+import HttpError from '../../models/httperror.model';
 
 @Injectable({
   providedIn: 'root',
@@ -62,6 +63,33 @@ export class UserService extends GenericService {
         first(),
         map((user) => {
           this.user.set(user as UserLoginModel);
+          return user;
+        })
+      );
+  }
+  public Register(
+    login: string,
+    password: string,
+    repeat: string,
+    email: string,
+    rememberMe: boolean
+  ) {
+    return this.http
+      .post<UserLoginModel>(
+        this.buildPath('signin'),
+        {
+          login: login,
+          password: password,
+          password_repeat: repeat,
+          email: email,
+          rememberMe: rememberMe,
+        },
+        { headers: this.getHeaders() }
+      )
+      .pipe(
+        first(),
+        map((user) => {
+          this.user.set(user);
           return user;
         })
       );

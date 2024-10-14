@@ -10,13 +10,17 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class InputComponent {
   @Input('id') componentId!: string;
   @Input('disabled') disabled = false;
-  @Input('error') errorMessage?: string;
+  @Input('error') errorMessage?: string | string[];
   @Input('value') inputValue!: string;
   @Input('label') labelValue?: string;
   @Input('type') inputType: 'text' | 'password' = 'text';
+  @Input('autocomplete') autocomplete: string = 'on';
   @Output('valueChange')
   valueChange = new EventEmitter<string>();
-  @Output('errorChange') errorChange = new EventEmitter<string | undefined>();
+  @Output('errorChange') errorChange = new EventEmitter<
+    string[] | string | undefined
+  >();
+  @Output('submit') submitEvent = new EventEmitter();
 
   onInput(e: Event) {
     this.inputValue = (e.target as HTMLInputElement).value;
@@ -24,5 +28,9 @@ export class InputComponent {
 
     this.errorMessage = undefined;
     this.errorChange.emit(undefined);
+  }
+
+  isArray(value: string | string[] | undefined): value is string[] {
+    return Array.isArray(value);
   }
 }

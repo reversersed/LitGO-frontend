@@ -1,1 +1,75 @@
-<p>registration-page works!</p>
+<div class="flex flex-col items-center w-full mt-[5%] xl:mt-[2%]">
+  <h1
+    class="text-center text-2xl font-main text-mainblack font-semibold mb-[20%] sm:mb-[10%] md:mb-[5%]"
+  >
+    Регистрация
+  </h1>
+  <div
+    class="flex flex-col gap-4 w-full px-[8%] sm:px-[20%] xl:px-[10%] max-w-[800px]"
+  >
+    <app-input
+      id="login"
+      label="Логин"
+      [disabled]="form.attempting"
+      [(value)]="form.login"
+      [(error)]="form.loginError"
+      autocomplete="username nickname"
+    />
+    <app-input
+      id="email"
+      label="Почта"
+      [disabled]="form.attempting"
+      [(value)]="form.email"
+      [(error)]="form.emailError"
+      autocomplete="email"
+    />
+    <app-input
+      id="password"
+      label="Пароль"
+      [disabled]="form.attempting"
+      [(value)]="form.password"
+      [(error)]="form.passwordError"
+      autocomplete="new-password"
+    />
+    <app-input
+      id="passwordRepeat"
+      label="Повторите пароль"
+      type="password"
+      [disabled]="form.attempting"
+      [(value)]="form.repeat"
+      [(error)]="form.repeatError"
+      autocomplete="off"
+    />
+    <app-checkbox
+      class="self-center"
+      label="Запомнить меня"
+      [disabled]="form.attempting"
+      [(checked)]="form.remember"
+    />
+
+    <span
+      *ngIf="form.generalError"
+      class="text-error text-center -mb-4 mt-2 text-sm md:text-base"
+      >{{ form.generalError }}</span
+    >
+    <button
+      (click)="submit()"
+      [disabled]="form.attempting"
+      [ngClass]="
+        form.attempting
+          ? 'border-mainshadow/60 bg-mainshadow/80'
+          : 'hover:bg-mainshadow hover:px-5 hover:text-maintext active:bg-mainbg active:border-mainbg'
+      "
+      class="mt-2 text-base font-main tracking-wider border-mainshadow border-2 rounded-lg w-fit self-center py-1 px-4 transition-all duration-200"
+    >
+      <span *ngIf="!form.attempting">Зарегистрироваться</span>
+      <fa-icon
+        *ngIf="form.attempting"
+        [icon]="faSpinner"
+        animation="spin-pulse"
+        size="lg"
+        class="text-maintext"
+      />
+    </button>
+  </div>
+</div>

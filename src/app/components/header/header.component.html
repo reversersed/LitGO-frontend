@@ -30,17 +30,21 @@
     <app-input
       id="login"
       label="Логин или почта"
+      (submit)="loginUser()"
       [(error)]="loginError"
       [(value)]="loginValue"
       [disabled]="loginAttemptingState"
+      autocomplete="username nickname email"
     />
     <app-input
       id="password"
       label="Пароль"
       type="password"
+      (submit)="loginUser()"
       [(error)]="passwordError"
       [(value)]="passwordValue"
       [disabled]="loginAttemptingState"
+      autocomplete="current-password"
     />
     <div class="flex flex-col w-full items-center">
       <app-checkbox
