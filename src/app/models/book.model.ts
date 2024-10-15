@@ -12,6 +12,9 @@ export default class Book {
   public genre: Genre;
   public category: Category;
   public authors: Author[];
+  public rating: number;
+  public reviews: number;
+  public price: number;
 
   constructor(
     _id: string,
@@ -22,7 +25,10 @@ export default class Book {
     _filepath: string,
     _genre: Genre,
     _category: Category,
-    _authors: Author[]
+    _authors: Author[],
+    _rating: number,
+    _reviews: number,
+    _price: number
   ) {
     this.id = _id;
     this.name = _name;
@@ -33,5 +39,8 @@ export default class Book {
     this.genre = _genre;
     this.category = _category;
     this.authors = _authors;
+    this.rating = _rating;
+    this.reviews = _reviews;
+    this.price = _price;
   }
 }

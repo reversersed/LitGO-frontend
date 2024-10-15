@@ -1,0 +1,42 @@
+<div
+  *ngIf="bookModel"
+  class="flex flex-row md:flex-col min-w-[150px] max-w-[300px] md:max-w-[160px] lg:max-w-[200px] relative"
+>
+  <img
+    #image
+    [routerLink]="'/book/' + bookModel.translitname"
+    [src]="fileService.getBookCoverPath(bookModel)"
+    [ngClass]="
+      animationStyle == 'scale'
+        ? 'md:hover:scale-110 md:hover:rotate-[2deg]'
+        : ''
+    "
+    class="object-contain w-fit max-h-[100px] md:max-h-max md:h-auto rounded cursor-pointer shadow-mainblack shadow-md transition-all duration-100 ease-in-out origin-center"
+  />
+  <div
+    class="ml-1 md:ml-0 mt-0 md:mt-2 text-xs md:text-sm w-full flex flex-col"
+  >
+    <a
+      class="text-mainblack font-semibold font-main mb-1 hyphens-auto"
+      [routerLink]="'/book/' + bookModel.translitname"
+      >{{ bookModel.name }}</a
+    >
+    <a
+      class="w-full h-auto font-main text-accent/80 break-words"
+      [routerLink]="'/author/' + bookModel.authors[0].translitname"
+      >{{ bookModel.authors[0].name }}
+      {{ bookModel.authors.length > 1 ? "и др." : "" }}</a
+    >
+    <p
+      class="text-contrast font-bold text-xs md:text-sm font-main mt-2 md:mt-1"
+    >
+      <fa-icon [icon]="faStar" class="mr-1" />{{ bookModel.rating }}
+      <span class="font-semibold text-accent/80">{{ bookModel.reviews }}</span>
+    </p>
+    <p
+      class="font-main text-mainblack font-bold mt-2 md:mt-1 text-xs md:text-sm"
+    >
+      {{ bookModel.price }} ₽
+    </p>
+  </div>
+</div>

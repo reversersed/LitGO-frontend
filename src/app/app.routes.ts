@@ -10,6 +10,13 @@ export const routes: Routes = [
       ),
     children: [
       {
+        path: '',
+        loadComponent: () =>
+          import('./pages/main-page/main-page.component').then(
+            (c) => c.MainPageComponent
+          ),
+      },
+      {
         path: 'genres',
         loadComponent: () =>
           import(
