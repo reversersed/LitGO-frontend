@@ -17,7 +17,7 @@
   <button
     type="button"
     routerLink="/search"
-    [queryParams]="{ query: query }"
+    [queryParams]="query.length > 0 ? { query: query } : null"
     class="z-50 h-full py-1 lg:py-0 w-fit px-2 lg:px-4 border-0 bg-mainshadow text-maintext rounded-xl rounded-tl-xl rounded-bl-xl cursor-pointer hover:bg-mainbg transition-colors duration-300"
   >
     <fa-icon [icon]="faSearch" size="lg" />
