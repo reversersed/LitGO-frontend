@@ -13,6 +13,7 @@ export default {
         "accent-light": "rgb(var(--color-accent-light) / <alpha-value>)",
         contrast: "rgb(var(--color-contrast) / <alpha-value>)",
         error: "rgb(var(--color-error) / <alpha-value>)",
+        blacktext: "rgb(var(--color-blacktext) / <alpha-value>)",
       },
       fontFamily: {
         main: ["ui-sans-serif", "system-ui"],
