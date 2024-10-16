@@ -21,6 +21,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 export class BookCardComponent {
   @Input('model') bookModel!: Book;
   @Input('animation') animationStyle: 'none' | 'scale' = 'none';
+  @Input('align') alignMode: 'auto' | 'row' | 'col' = 'auto';
 
   fileService = inject(FileService);
   faStar = faStar;

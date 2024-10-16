@@ -1,20 +1,39 @@
 <div
   *ngIf="bookModel"
-  class="flex flex-row md:flex-col min-w-[150px] max-w-[300px] md:max-w-[160px] lg:max-w-[200px] relative"
+  class="flex relative"
+  [ngClass]="
+    alignMode === 'auto'
+      ? 'flex-row md:flex-col min-w-[150px] max-w-[300px] md:max-w-[160px] lg:max-w-[200px]'
+      : alignMode === 'row'
+      ? 'flex-row min-w-[150px] max-w-[300px]'
+      : 'flex-col max-w-[160px] sm:max-w-[200px]'
+  "
 >
   <img
     #image
     [routerLink]="'/book/' + bookModel.translitname"
     [src]="fileService.getBookCoverPath(bookModel)"
     [ngClass]="
-      animationStyle == 'scale'
-        ? 'md:hover:scale-110 md:hover:rotate-[2deg]'
-        : ''
+      (animationStyle == 'scale'
+        ? 'md:hover:scale-110 md:hover:rotate-[2deg] '
+        : '') +
+      (alignMode === 'auto'
+        ? 'w-fit max-h-[100px] md:max-h-max md:h-auto'
+        : alignMode === 'row'
+        ? 'w-fit max-h-[100px]'
+        : 'max-h-max h-auto w-fit')
     "
-    class="object-contain w-fit max-h-[100px] md:max-h-max md:h-auto rounded cursor-pointer shadow-mainblack shadow-md transition-all duration-100 ease-in-out origin-center"
+    class="object-contain rounded cursor-pointer shadow-mainblack shadow-md transition-all duration-100 ease-in-out origin-center"
   />
   <div
-    class="ml-1 md:ml-0 mt-0 md:mt-2 text-xs md:text-sm w-full flex flex-col"
+    class="text-xs md:text-sm w-full flex flex-col"
+    [ngClass]="
+      alignMode === 'auto'
+        ? 'ml-1 md:ml-0 mt-0 md:mt-2'
+        : alignMode === 'row'
+        ? 'ml-1 mt-0'
+        : 'ml-0 mt-2'
+    "
   >
     <a
       class="text-blacktext font-semibold font-main mb-1 hyphens-auto"

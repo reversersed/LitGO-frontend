@@ -14,7 +14,7 @@ export class MainPageComponent {
     name: 'Книга о книгопечатании',
     translitname: 'kniga-o-kniga-23321',
     description: 'описание',
-    picture: 'https://cdn.litres.ru/pub/c/cover_415/51792214.webp',
+    picture: 'https://cdn.litres.ru/pub/c/cover_415/71141323.webp',
     filepath: 'file.epub',
     genre: { name: 'игры', translitName: 'igry-211342', bookCount: 0 },
     category: { name: 'игра', translitName: 'igra-12414', genres: [] },
