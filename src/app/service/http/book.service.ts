@@ -15,7 +15,7 @@ export class BookService extends GenericService {
     return this.http
       .get<Book[]>(this.buildPath('suggest'), {
         headers: this.getHeaders(),
-        params: new HttpParams().set('query', query),
+        params: new HttpParams().set('query', query).set('limit', 2),
       })
       .pipe(
         first(),

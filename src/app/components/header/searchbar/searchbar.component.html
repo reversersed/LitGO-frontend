@@ -1,5 +1,5 @@
 <div
-  class="z-50 bg-mainwhite lg:w-auto h-auto rounded-2xl border-2 w-[70%] mr-[36px] sm:mr-0 border-mainshadow flex sm:min-w-[100px] md:min-w-[300px] items-center lg:h-12 lg:relative absolute top-1 lg:left-0 left-[15%] sm:left-[18%] lg:top-0"
+  class="mt-[2px] z-[100] bg-mainwhite lg:w-auto h-auto rounded-2xl border-2 w-[70%] mr-[36px] sm:mr-0 border-mainshadow flex sm:min-w-[100px] md:min-w-[300px] items-center lg:h-12 lg:relative absolute top-1 lg:left-0 left-[15%] sm:left-[18%] lg:top-0"
 >
   <input
     placeholder="Искать на LitGO"
@@ -16,16 +16,16 @@
 
   <button
     type="button"
-    routerLink="/search"
-    [queryParams]="query.length > 0 ? { query: query } : null"
-    class="z-50 h-full py-1 lg:py-0 w-fit px-2 lg:px-4 border-0 bg-mainshadow text-maintext rounded-xl rounded-tl-xl rounded-bl-xl cursor-pointer hover:bg-mainbg transition-colors duration-300"
+    [routerLink]="query.length > 0 ? '/search' : undefined"
+    [queryParams]="{ query: query }"
+    class="z-50 h-full py-1 lg:py-0 w-fit px-2 lg:px-4 border-0 bg-mainshadow active:bg-mainbg/80 text-maintext rounded-xl rounded-tl-xl rounded-bl-xl cursor-pointer hover:bg-mainbg transition-colors duration-300"
   >
     <fa-icon [icon]="faSearch" size="lg" />
   </button>
 </div>
 <div
   *ngIf="data$ | async as data"
-  class="absolute mt-3 ml-[3%] sm:ml-[16.5%] lg:ml-0 min-h-fit shadow-sm shadow-mainblack flex flex-col transition-all ease-in-out duration-200 w-auto max-w-[90%] sm:max-w-[70%] 2xl:max-w-[45%] lg:max-w-[50%] max-h-[90%] overflow-y-auto overflow-x-hidden bg-mainwhite rounded z-50 p-2"
+  class="overflow-y-auto absolute mt-1 ml-[3%] sm:ml-[16.5%] lg:ml-0 min-h-fit shadow-sm shadow-mainblack flex flex-col transition-all ease-in-out duration-200 w-auto max-w-[90%] sm:max-w-[70%] 2xl:max-w-[45%] lg:max-w-[50%] max-h-[90%] overflow-x-hidden bg-mainwhite rounded z-[100] p-2"
   [ngClass]="
     suggestionOpen &&
     (data.book.length > 0 || data.author.length > 0) &&
@@ -36,7 +36,7 @@
 >
   <h1
     *ngIf="data.book.length > 0 && data.author.length > 0"
-    class="text-lg sm:text-xl font-semibold sm:font-bold ml-2 mb-1 sm:mb-2"
+    class="text-lg sm:text-xl font-semibold sm:font-bold ml-2 mb-1"
   >
     Книги
   </h1>
@@ -46,19 +46,19 @@
       [routerLink]="'/book/' + book.translitname"
     >
       <div
-        class="flex flex-1 w-full h-auto px-2 py-2 sm:py-4 hover:bg-accent/10 rounded-xl transition-colors duration-200"
+        class="flex flex-1 w-full h-auto px-1 py-1 sm:py-2 hover:bg-accent/10 rounded-xl transition-colors duration-200"
       >
         <img
           [src]="fileService.getBookCoverPath(book)"
           alt=""
-          class="rounded-[5%] w-auto min-h-20 max-h-24 md:min-h-24 md:max-h-28 xl:min-h-28 xl:max-h-32 object-cover sm:block hidden"
+          class="rounded-[5%] w-auto min-h-14 max-h-[72px] md:min-h-16 md:max-h-20 xl:min-h-20 xl:max-h-24 object-cover sm:block hidden"
         />
         <div class="flex ml-2 max-w-full w-fit flex-col">
           <span class="flex-wrap font-normal sm:font-semibold">{{
             book.name
           }}</span>
           <p
-            class="collapse h-0 sm:visible max-h-full max-w-fit sm:h-auto line-clamp-3 xl:line-clamp-4 font-normal text-ellipsis"
+            class="collapse h-0 sm:visible max-h-full max-w-fit sm:h-auto line-clamp-2 xl:line-clamp-3 font-normal text-ellipsis"
           >
             {{ book.description }}
           </p>
@@ -69,7 +69,7 @@
 
   <h1
     *ngIf="data.book.length > 0 && data.author.length > 0"
-    class="text-lg sm:text-xl font-semibold sm:font-bold ml-2 mt-2 mb-1 sm:mt-4 sm:mb-2"
+    class="text-lg sm:text-xl font-semibold sm:font-bold ml-2 mb-1 sm:mb-2"
   >
     Авторы
   </h1>
@@ -79,19 +79,19 @@
       [href]="'/author/' + author.translitname"
     >
       <div
-        class="flex w-full h-auto px-2 py-2 sm:py-4 hover:bg-accent/10 rounded-xl transition-colors duration-200"
+        class="flex w-full h-auto px-2 py-1 sm:py-1 hover:bg-accent/10 rounded-xl transition-colors duration-200"
       >
         <img
           [src]="fileService.getAuthorProfilePath(author)"
           alt=""
-          class="rounded-full min-w-14 md:min-w-24 h-14 md:h-24 object-cover sm:block hidden"
+          class="rounded-full min-w-10 md:min-w-[72px] h-10 md:h-[72px] object-cover sm:block hidden"
         />
-        <div class="flex flex-col ml-4 w-fit">
+        <div class="flex flex-col ml-1 sm:ml-4 w-fit">
           <span class="flex-wrap font-normal sm:font-semibold">{{
             author.name
           }}</span>
           <p
-            class="collapse h-0 sm:visible max-h-[78px] max-w-fit sm:h-auto line-clamp-2 md:line-clamp-3 font-normal text-ellipsis"
+            class="collapse h-0 sm:visible max-h-[78px] max-w-fit sm:h-auto line-clamp-1 md:line-clamp-2 font-normal text-ellipsis"
           >
             {{ author.about }}
           </p>

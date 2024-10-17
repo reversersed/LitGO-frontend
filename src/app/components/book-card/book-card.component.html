@@ -17,7 +17,6 @@
       [src]="fileService.getBookCoverPath(bookModel)"
       (mouseenter)="hover = true"
       (mouseleave)="hover = false"
-      [style.transform]="animationStyle === 'observe' && getRotationStyle()"
       [ngClass]="
         alignMode === 'auto'
           ? 'w-fit max-h-[100px] md:max-h-max md:h-auto'
@@ -39,7 +38,7 @@
         (animationStyle == 'scale'
           ? 'md:hover:scale-110 md:hover:rotate-[2deg] duration-100 ease-in-out '
           : animationStyle === 'observe'
-          ? ''
+          ? 'duration-0'
           : '') +
         (alignMode === 'auto'
           ? 'w-fit max-h-[100px] md:max-h-max md:h-auto'

@@ -38,7 +38,7 @@ describe('AuthorService', () => {
           environment.serverPort +
           '/' +
           environment.serverEntryPoint +
-          '/authors/suggest?query=query%20request'
+          '/authors/suggest?query=query%20request&limit=2'
       )
     ).toBeTruthy();
 

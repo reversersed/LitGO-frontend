@@ -1,8 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faClose, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { ScrollMutexService } from '../../service/scroll-mutex.service';
 
 @Component({
   selector: 'app-modal',
@@ -10,7 +20,8 @@ import { faClose, faSpinner } from '@fortawesome/free-solid-svg-icons';
   imports: [FontAwesomeModule, CommonModule, RouterLink],
   templateUrl: './modal.component.html',
 })
-export class ModalComponent {
+export class ModalComponent implements OnChanges, OnDestroy {
+  scrollService = inject(ScrollMutexService);
   faClose = faClose;
   faSpinner = faSpinner;
   @Input() disabled: boolean = false;
@@ -32,5 +43,17 @@ export class ModalComponent {
   ChangeModalState(state: boolean) {
     this.visible = state;
     this.visibleChange.emit(this.visible);
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['visible']) {
+      if (changes['visible'].currentValue == true) {
+        this.scrollService.Lock();
+      } else {
+        this.scrollService.Unlock();
+      }
+    }
+  }
+  ngOnDestroy(): void {
+    this.scrollService.Unlock();
   }
 }

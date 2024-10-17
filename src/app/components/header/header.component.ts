@@ -15,6 +15,7 @@ import {
 } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
+  faAreaChart,
   faBars,
   faBook,
   faBookBookmark,
@@ -22,6 +23,7 @@ import {
   faCartShopping,
   faClose,
   faHome,
+  faNewspaper,
   faSpinner,
   faUser,
   IconDefinition,
@@ -36,6 +38,7 @@ import { CatalogueComponent } from './catalogue/catalogue.component';
 import { UserLoginModel } from '../../models/user.model';
 import { Subscription } from 'rxjs';
 import { NotFoundPageComponent } from '../../pages/not-found-page/not-found-page.component';
+import { ScrollMutexService } from '../../service/scroll-mutex.service';
 
 @Component({
   selector: 'app-header',
@@ -57,6 +60,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(private router: Router) {}
 
   userService = inject(UserService);
+  scrollService = inject(ScrollMutexService);
 
   userState: Signal<UserLoginModel | null> = signal(null);
   faClose = faClose;
@@ -77,6 +81,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   loginGeneralError?: string;
   rememberMe: boolean = false;
 
+  bottomLinks: {
+    links: { link: string; label: string; icon: IconDefinition }[];
+    more?: { link: string; label: string; icon: IconDefinition }[];
+  } = {
+    links: [
+      { link: 'new', label: 'Новинки', icon: faNewspaper },
+      { link: 'popular', label: 'Популярное', icon: faAreaChart },
+    ],
+  };
   links: {
     link?: string;
     label: string;
@@ -162,10 +175,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.passwordError = undefined;
         this.loginGeneralError = undefined;
         this.rememberMe = false;
+
+        this.scrollService.Unlock();
       }
     });
   }
   ngOnDestroy(): void {
+    this.scrollService.Unlock();
     this.eventSubscribe?.unsubscribe();
   }
   logoutUser() {
