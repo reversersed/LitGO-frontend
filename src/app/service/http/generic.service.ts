@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { throwError } from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -14,9 +13,9 @@ export default abstract class GenericService {
 
   protected buildPath(route?: string): string {
     let server =
-      environment.serverString +
-      ':' +
-      environment.serverPort +
+      (environment.serverString.length > 0
+        ? environment.serverString + ':' + environment.serverPort
+        : '') +
       '/' +
       environment.serverEntryPoint +
       '/' +

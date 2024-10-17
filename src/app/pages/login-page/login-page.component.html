@@ -55,5 +55,21 @@
         class="text-maintext"
       />
     </button>
+    <span
+      class="text-xs select-none w-full text-center -mt-3"
+      [ngClass]="attempingState ? 'text-accent/30' : 'text-accent/70'"
+    >
+      Еще нет аккаунта?
+      <a
+        [routerLink]="attempingState ? undefined : '/signin'"
+        [ngClass]="
+          attempingState
+            ? 'text-accent/30'
+            : 'text-accent/80 hover:text-contrast'
+        "
+        class="transition-all duration-200"
+        >Зарегистрироваться</a
+      ></span
+    >
   </div>
 </div>

@@ -7,7 +7,7 @@ import { UserService } from '../../service/http/user.service';
 import { CheckboxComponent } from '../../shared/checkbox/checkbox.component';
 import { CatalogueComponent } from '../../components/header/catalogue/catalogue.component';
 import HttpError, { HttpCodes } from '../../models/httperror.model';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
     FontAwesomeModule,
     CheckboxComponent,
     CatalogueComponent,
+    RouterLink,
   ],
   templateUrl: './login-page.component.html',
   styles: ``,
