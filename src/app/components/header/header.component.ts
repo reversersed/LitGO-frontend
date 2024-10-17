@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  HostListener,
   inject,
+  OnChanges,
   OnDestroy,
   OnInit,
   signal,
   Signal,
+  SimpleChanges,
 } from '@angular/core';
 import {
   NavigationSkipped,
@@ -73,6 +76,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logoutAttemptingState = false;
   catalogueOpen = false;
   sideMenuOpen = false;
+  bottomMenuVisible = true;
 
   loginValue: string = '';
   loginError?: string;
@@ -191,6 +195,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.logoutModalOpen = false;
     });
   }
+  switchCatalogue() {
+    this.catalogueOpen = !this.catalogueOpen;
+    if (this.catalogueOpen) {
+      this.scrollService.Lock();
+    } else {
+      this.scrollService.Unlock();
+    }
+  }
   loginUser() {
     this.loginGeneralError = undefined;
     if (this.loginValue.length == 0) {
@@ -230,5 +242,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.loginAttemptingState = false;
         },
       });
+  }
+  lastScrollPosition = 0;
+  @HostListener('document:scroll', ['$event'])
+  onScroll(event: Event) {
+    this.bottomMenuVisible =
+      this.lastScrollPosition - window.scrollY > 0 || window.scrollY === 0;
+
+    this.lastScrollPosition = window.scrollY;
   }
 }

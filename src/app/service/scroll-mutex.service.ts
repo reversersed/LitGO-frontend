@@ -13,4 +13,7 @@ export class ScrollMutexService {
   Unlock() {
     document.body.style.overflow = this.originalOverflow;
   }
+  isLocked() {
+    return document.body.style.overflow === 'hidden';
+  }
 }

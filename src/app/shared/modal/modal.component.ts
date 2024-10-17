@@ -40,6 +40,8 @@ export class ModalComponent implements OnChanges, OnDestroy {
   @Output()
   visibleChange = new EventEmitter<boolean>();
   @Output() onSubmit = new EventEmitter();
+
+  lockedBy = false;
   ChangeModalState(state: boolean) {
     this.visible = state;
     this.visibleChange.emit(this.visible);
@@ -47,13 +49,19 @@ export class ModalComponent implements OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['visible']) {
       if (changes['visible'].currentValue == true) {
-        this.scrollService.Lock();
+        if (!this.scrollService.isLocked()) {
+          this.scrollService.Lock();
+          this.lockedBy = true;
+        }
       } else {
-        this.scrollService.Unlock();
+        if (this.lockedBy) {
+          this.scrollService.Unlock();
+          this.lockedBy = false;
+        }
       }
     }
   }
   ngOnDestroy(): void {
-    this.scrollService.Unlock();
+    if (this.lockedBy) this.scrollService.Unlock();
   }
 }

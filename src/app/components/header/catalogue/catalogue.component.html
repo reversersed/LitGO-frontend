@@ -5,7 +5,7 @@
   <ng-container
     *ngIf="CategoryList$ | async as Categories; else LoadingTemplate"
   >
-    <div *ngIf="currentCategory !== null" class="w-full flex flex-row mt-5">
+    <div *ngIf="currentCategory !== null" class="w-full flex flex-row mt-4">
       <div
         class="w-8 h-8 py-0.5 px-2.5 sm:w-10 sm:ml-5 text-xl sm:h-10 sm:py-1.5 sm:px-3.5 rounded-lg bg-contrast/30 text-contrast/80 hover:bg-contrast/40 hover:text-contrast cursor-pointer transition-colors duration-150"
         (click)="currentCategory = null"
@@ -58,7 +58,7 @@
     </div>
 
     <div
-      class="w-[90%] h-full sm:columns-3 md:columns-4 columns-2 mt-[30px]"
+      class="w-[90%] h-full sm:columns-3 md:columns-4 columns-2 mt-2"
       *ngIf="currentCategory === null"
     >
       <div
