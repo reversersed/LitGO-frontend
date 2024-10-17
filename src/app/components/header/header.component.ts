@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterContentInit,
+  AfterViewInit,
+  ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
   inject,
-  OnChanges,
   OnDestroy,
   OnInit,
   signal,
   Signal,
-  SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import {
   NavigationSkipped,
@@ -18,6 +21,7 @@ import {
 } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
+  faAngleDown,
   faAreaChart,
   faBars,
   faBook,
@@ -39,7 +43,7 @@ import HttpError, { HttpCodes } from '../../models/httperror.model';
 import { CheckboxComponent } from '../../shared/checkbox/checkbox.component';
 import { CatalogueComponent } from './catalogue/catalogue.component';
 import { UserLoginModel } from '../../models/user.model';
-import { Subscription } from 'rxjs';
+import { last, Subscription } from 'rxjs';
 import { NotFoundPageComponent } from '../../pages/not-found-page/not-found-page.component';
 import { ScrollMutexService } from '../../service/scroll-mutex.service';
 
@@ -59,7 +63,7 @@ import { ScrollMutexService } from '../../service/scroll-mutex.service';
   ],
   templateUrl: './header.component.html',
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private router: Router) {}
 
   userService = inject(UserService);
@@ -70,6 +74,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   faBook = faBook;
   faBars = faBars;
   faSpinner = faSpinner;
+  faAngleDown = faAngleDown;
   logoutModalOpen = false;
   loginModalOpen = false;
   loginAttemptingState = false;
@@ -77,6 +82,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   catalogueOpen = false;
   sideMenuOpen = false;
   bottomMenuVisible = true;
+  dropdownOpen = false;
 
   loginValue: string = '';
   loginError?: string;
@@ -87,13 +93,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   bottomLinks: {
     links: { link: string; label: string; icon: IconDefinition }[];
-    more?: { link: string; label: string; icon: IconDefinition }[];
+    more: { link: string; label: string; icon: IconDefinition }[];
   } = {
-    links: [
-      { link: 'new', label: 'Новинки', icon: faNewspaper },
-      { link: 'popular', label: 'Популярное', icon: faAreaChart },
-    ],
+    links: [],
+    more: [],
   };
+  bottomLinksArray: { link: string; label: string; icon: IconDefinition }[] = [
+    { link: 'new', label: 'Новинки', icon: faNewspaper },
+    { link: 'popular', label: 'Популярное', icon: faAreaChart },
+  ];
   links: {
     link?: string;
     label: string;
@@ -184,9 +192,37 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     });
   }
+  changeDetection = inject(ChangeDetectorRef);
+  ngAfterViewInit(): void {
+    this.updateDropDownContent(true);
+  }
   ngOnDestroy(): void {
     this.scrollService.Unlock();
     this.eventSubscribe?.unsubscribe();
+  }
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.updateDropDownContent();
+  }
+  @ViewChild('bottomWrapper') bottomMenuWrapper!: ElementRef;
+  updateDropDownContent(first?: boolean) {
+    this.bottomLinks.links = [];
+    this.bottomLinks.more = [];
+
+    let totalWidth = 0;
+    for (let item of this.bottomLinksArray) {
+      totalWidth +=
+        this.bottomMenuWrapper.nativeElement.children[
+          this.bottomMenuWrapper.nativeElement.children.length - 2
+        ]?.offsetWidth * (first ? 1.4 : 1) || 0;
+
+      if (totalWidth <= this.bottomMenuWrapper.nativeElement.clientWidth - 60) {
+        this.bottomLinks.links.push(item);
+      } else {
+        this.bottomLinks.more.push(item);
+      }
+      if (first) this.changeDetection.detectChanges();
+    }
   }
   logoutUser() {
     this.logoutAttemptingState = true;
@@ -248,7 +284,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onScroll(event: Event) {
     this.bottomMenuVisible =
       this.lastScrollPosition - window.scrollY > 0 || window.scrollY === 0;
-
+    this.dropdownOpen = false;
     this.lastScrollPosition = window.scrollY;
+  }
+  @ViewChild('dropDownMore') dropDownChild!: ElementRef;
+
+  @HostListener('document:click', ['$event'])
+  onGlobalClick(event: Event) {
+    if (
+      this.dropdownOpen &&
+      !this.dropDownChild.nativeElement.contains(event.target)
+    ) {
+      this.dropdownOpen = false;
+    }
   }
 }

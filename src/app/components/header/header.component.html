@@ -58,8 +58,8 @@
 </app-modal>
 <!-- main block -->
 <header
-  [ngClass]="bottomMenuVisible ? 'shadow-none' : 'shadow-md shadow-mainshadow'"
-  class="fixed top-0 z-[51] pl-2 flex flex-col lg:flex-row lg:items-center justify-center lg:pr-[10%] lg:pl-[10%] h-12 lg:h-16 bg-mainbg font-semibold w-full"
+  [ngClass]="bottomMenuVisible ? ' lg:shadow-none' : ''"
+  class="fixed top-0 z-[51] pl-2 flex flex-col lg:flex-row lg:items-center justify-center lg:pr-[10%] lg:pl-[10%] h-12 lg:h-16 bg-mainbg font-semibold w-full shadow-md shadow-mainshadow"
 >
   <div class="z-50 flex flex-row w-full lg:w-auto justify-center h-full">
     <h1
@@ -103,7 +103,7 @@
     <app-searchbar />
   </div>
   <div
-    class="shadow-sm shadow-mainblack lg:shadow-none bg-mainbg pr-6 pl-2 lg:pr-0 lg:pl-0 lg:left-0 top-10 w-fit mt-2 mb-1 lg:top-0 lg:w-auto z-30 flex flex-col absolute lg:bg-transparent lg:flex-row lg:relative duration-800 transition-all ease-in"
+    class="rounded-r-xl lg:rounded-none max-h-[50dvh] lg:max-h-max overflow-y-auto lg:overflow-y-hidden shadow-sm shadow-mainblack lg:shadow-none bg-mainbg pr-6 pl-2 lg:pr-0 lg:pl-0 lg:left-0 top-10 w-fit mt-2 lg:mb-1 lg:top-0 lg:w-auto z-30 flex flex-col absolute lg:bg-transparent lg:flex-row lg:relative duration-800 transition-all ease-in"
     [ngClass]="[sideMenuOpen ? 'left-0' : '-left-full']"
   >
     <div *ngFor="let link of links" class="text-maintext">
@@ -113,7 +113,7 @@
           (link.visible === 'Auth' && userState() !== null) ||
           (link.visible === 'Unauth' && userState() === null)
         "
-        class="font-normal px-2 pt-2 pb-1 hover:text-accent hover:font-semibold lg:hover:text-maintext lg:hover:font-normal lg:hover:bg-accent/30 rounded-md transition-all m-2.5 text-md lg:w-15 xl:w-18 items-center font-main no-underline cursor-pointer flex lg:flex-col"
+        class="font-normal px-2 lg:pt-2 lg:pb-1 hover:text-accent hover:font-semibold lg:hover:text-maintext lg:hover:font-normal lg:hover:bg-accent/30 rounded-md transition-all m-2.5 text-md lg:w-15 xl:w-18 items-center font-main no-underline cursor-pointer flex lg:flex-col"
         [routerLink]="link.link"
         [ngClass]="link.addClass === undefined ? '' : link.addClass"
         (click)="link.action !== undefined && link.action()"
@@ -131,7 +131,7 @@
       class="text-maintext block lg:hidden"
     >
       <a
-        class="font-normal px-2 py-2 hover:text-accent hover:font-semibold lg:hover:text-maintext lg:hover:font-normal lg:hover:bg-accent/30 rounded-md transition-all m-2.5 text-md lg:w-15 xl:w-18 items-center font-main no-underline cursor-pointer flex lg:flex-col"
+        class="font-normal px-2 hover:text-accent hover:font-semibold lg:hover:text-maintext rounded-md transition-all m-2.5 text-base items-center font-main no-underline cursor-pointer flex"
         [routerLink]="link.link"
       >
         <fa-icon
@@ -143,12 +143,11 @@
       </a>
     </div>
     <div
-      [ngIf]="bottomLinks.more !== undefined"
       *ngFor="let link of bottomLinks.more"
       class="text-maintext block lg:hidden"
     >
       <a
-        class="font-normal px-2 py-2 hover:text-accent hover:font-semibold lg:hover:text-maintext lg:hover:font-normal lg:hover:bg-accent/30 rounded-md transition-all m-2.5 text-md lg:w-15 xl:w-18 items-center font-main no-underline cursor-pointer flex lg:flex-col"
+        class="font-normal px-2 hover:text-accent hover:font-semibold lg:hover:text-maintext rounded-md transition-all m-2.5 text-base items-center font-main no-underline cursor-pointer flex"
         [routerLink]="link.link"
       >
         <fa-icon
@@ -164,7 +163,7 @@
 
 <div
   *ngIf="sideMenuOpen"
-  class="opacity-100 z-40 w-full h-full top-0 left-0 fixed lg:hidden"
+  class="opacity-100 z-[41] w-full h-full top-0 left-0 fixed lg:hidden"
   (click)="sideMenuOpen = !sideMenuOpen"
 ></div>
 <!-- bottom header nav buttons -->
@@ -172,12 +171,46 @@
   *ngIf="bottomMenuVisible"
   class="fixed pb-1 hidden lg:flex flex-row justify-center items-start bg-mainbg text-maintext font-main text-base font-semibold gap-1 top-[64px] z-50 w-full shadow-md shadow-mainshadow"
 >
-  <a
-    class="select-none px-2 py-1 hover:bg-accent/40 rounded-xl transition-all duration-100 ease-in-out"
-    *ngFor="let link of bottomLinks.links"
-    [routerLink]="link.link"
-    >{{ link.label }}</a
+  <div
+    #bottomWrapper
+    class="w-[80%] overflow-hidden flex flex-row items-start h-full"
+    [ngClass]="
+      bottomLinks.more.length > 0 ? 'justify-between' : 'justify-center'
+    "
   >
+    <a
+      class="select-none px-2 py-1 hover:bg-accent/40 rounded-xl transition-all duration-100 ease-in-out"
+      *ngFor="let link of bottomLinks.links"
+      [routerLink]="link.link"
+      >{{ link.label }}</a
+    >
+    <a
+      #dropDownMore
+      *ngIf="bottomLinks.more.length > 0"
+      (click)="dropdownOpen = !dropdownOpen"
+      class="select-none px-2 py-1 hover:bg-accent/40 rounded-xl transition-all duration-100 ease-in-out cursor-pointer flex gap-1"
+      >Ещё
+      <div
+        class="w-fit h-fit transition-all duration-150 origin-center"
+        [ngClass]="dropdownOpen ? 'rotate-180' : ''"
+      >
+        <fa-icon [icon]="faAngleDown" />
+      </div>
+      <div
+        [ngClass]="dropdownOpen ? 'opacity-100 visible' : 'opacity-0 collapse'"
+        class="transition-all duration-200 w-auto min-w-60 h-fit bg-mainwhite absolute translate-x-[-40%] translate-y-[40px] z-[1] rounded-xl before:block flex flex-col before:bg-white before:absolute before:content-normal before:rotate-45 before:w-4 before:h-4 before:z-0 before:self-center before:translate-y-[-50%] shadow-sm shadow-mainblack"
+      >
+        <div class="flex flex-col overflow-hidden rounded-xl h-full w-full">
+          <a
+            class="select-none w-full z-10 px-4 py-2 hover:bg-contrast/10 transition-all duration-200 ease-in-out text-blacktext font-normal"
+            *ngFor="let link of bottomLinks.more"
+            [routerLink]="link.link"
+            >{{ link.label }}</a
+          >
+        </div>
+      </div>
+    </a>
+  </div>
 </div>
 <div
   *ngIf="catalogueOpen"
