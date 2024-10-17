@@ -9,27 +9,47 @@
       : 'flex-col max-w-[160px] sm:max-w-[200px]'
   "
 >
-  <img
-    #image
-    [routerLink]="'/book/' + bookModel.translitname"
-    [src]="fileService.getBookCoverPath(bookModel)"
-    (mouseenter)="hover = true"
-    (mouseleave)="hover = false"
-    [style.transform]="animationStyle === 'observe' && getRotationStyle()"
-    [ngClass]="
-      (animationStyle == 'scale'
-        ? 'md:hover:scale-110 md:hover:rotate-[2deg] duration-100 ease-in-out '
-        : animationStyle === 'observe'
-        ? ''
-        : '') +
-      (alignMode === 'auto'
-        ? 'w-fit max-h-[100px] md:max-h-max md:h-auto'
-        : alignMode === 'row'
-        ? 'w-fit max-h-[100px]'
-        : 'max-h-max h-auto w-fit')
-    "
-    class="object-contain rounded cursor-pointer shadow-mainblack shadow-md transition-all origin-center"
-  />
+  <div>
+    <img
+      #image
+      *ngIf="animationStyle === 'observe'"
+      [routerLink]="'/book/' + bookModel.translitname"
+      [src]="fileService.getBookCoverPath(bookModel)"
+      (mouseenter)="hover = true"
+      (mouseleave)="hover = false"
+      [style.transform]="animationStyle === 'observe' && getRotationStyle()"
+      [ngClass]="
+        alignMode === 'auto'
+          ? 'w-fit max-h-[100px] md:max-h-max md:h-auto'
+          : alignMode === 'row'
+          ? 'w-fit max-h-[100px]'
+          : 'max-h-max h-auto w-fit'
+      "
+      class="absolute opacity-0 z-50 object-contain rounded cursor-pointer shadow-mainblack shadow-md transition-all origin-center"
+    />
+    <img
+      [routerLink]="
+        animationStyle !== 'observe'
+          ? '/book/' + bookModel.translitname
+          : undefined
+      "
+      [src]="fileService.getBookCoverPath(bookModel)"
+      [style.transform]="animationStyle === 'observe' && getRotationStyle()"
+      [ngClass]="
+        (animationStyle == 'scale'
+          ? 'md:hover:scale-110 md:hover:rotate-[2deg] duration-100 ease-in-out '
+          : animationStyle === 'observe'
+          ? ''
+          : '') +
+        (alignMode === 'auto'
+          ? 'w-fit max-h-[100px] md:max-h-max md:h-auto'
+          : alignMode === 'row'
+          ? 'w-fit max-h-[100px]'
+          : 'max-h-max h-auto w-fit')
+      "
+      class="object-contain rounded cursor-pointer shadow-mainblack shadow-md transition-all origin-center"
+    />
+  </div>
   <div
     class="text-xs md:text-sm w-full flex flex-col"
     [ngClass]="
