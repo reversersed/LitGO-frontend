@@ -33,9 +33,9 @@ describe('AuthorService', () => {
 
     expect(
       controller.expectOne(
-        environment.serverString +
-          ':' +
-          environment.serverPort +
+        (environment.serverString.length > 0
+          ? environment.serverString + ':' + environment.serverPort
+          : '') +
           '/' +
           environment.serverEntryPoint +
           '/authors/suggest?query=query%20request&limit=2'

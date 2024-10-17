@@ -30,9 +30,9 @@ describe('CategoryService', () => {
     let sub = service.getAll().subscribe();
     expect(
       controller.expectOne(
-        environment.serverString +
-          ':' +
-          environment.serverPort +
+        (environment.serverString.length > 0
+          ? environment.serverString + ':' + environment.serverPort
+          : '') +
           '/' +
           environment.serverEntryPoint +
           '/genres/all'
