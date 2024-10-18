@@ -23,6 +23,13 @@ export const routes: Routes = [
             './pages/genre-observable-page/genre-observable-page.component'
           ).then((c) => c.GenreObservablePageComponent),
       },
+      {
+        path: 'book/:name',
+        loadComponent: () =>
+          import('./pages/book-page/book-page.component').then(
+            (c) => c.BookPageComponent
+          ),
+      },
     ],
   },
   {
