@@ -11,6 +11,14 @@ export class BookService extends GenericService {
   constructor(private http: HttpClient) {
     super('books');
   }
+  getBook(query: string) {
+    return this.http
+      .get<Book>(this.buildPath(), {
+        headers: this.getHeaders(),
+        params: new HttpParams().set('query', query),
+      })
+      .pipe(first());
+  }
   getSuggestion(query: string) {
     return this.http
       .get<Book[]>(this.buildPath('suggest'), {

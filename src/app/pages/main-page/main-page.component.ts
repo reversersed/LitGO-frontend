@@ -11,27 +11,20 @@ import Book from '../../models/book.model';
 export class MainPageComponent {
   book: Book = {
     id: '3213132321',
-    name: 'Книга о книгопечатании',
-    translitname: 'kniga-o-kniga-23321',
+    name: 'Эрагон',
+    translitname: 'eragon-12768341',
     description: 'описание',
-    picture: 'https://cdn.litres.ru/pub/c/cover_415/71141323.webp',
+    picture:
+      'https://content.img-gorod.ru/pim/products/images/49/ea/018ed64b-6f97-7974-8afa-d2b5066649ea.jpg?width=0&height=1200&fit=bounds',
     filepath: 'file.epub',
     genre: { name: 'игры', translitName: 'igry-211342', bookCount: 0 },
     category: { name: 'игра', translitName: 'igra-12414', genres: [] },
     authors: [
       {
-        name: 'Филлип Киркоров',
+        name: 'Кристофер Паолини',
         about: '',
         profilepicture: '',
         id: '21',
-        translitname: '2',
-        rating: 0,
-      },
-      {
-        name: 'Джастин Бибер',
-        about: '',
-        profilepicture: '',
-        id: '2',
         translitname: '2',
         rating: 0,
       },

@@ -25,13 +25,13 @@
 </div>
 <div
   *ngIf="data$ | async as data"
-  class="overflow-y-auto absolute mt-1 ml-[3%] sm:ml-[16.5%] lg:ml-0 min-h-fit shadow-sm shadow-mainblack flex flex-col transition-all ease-in-out duration-200 w-auto max-w-[90%] sm:max-w-[70%] 2xl:max-w-[45%] lg:max-w-[50%] max-h-[90%] overflow-x-hidden bg-mainwhite rounded z-[100] p-2"
+  class="overflow-y-auto absolute mt-1 ml-[3%] sm:ml-[16.5%] lg:ml-0 min-h-fit shadow-sm shadow-mainblack flex flex-col transition-all ease-in-out duration-200 w-auto max-w-[90%] sm:max-w-[70%] 2xl:max-w-[45%] lg:max-w-[50%] max-h-[90%] overflow-x-hidden bg-mainwhite rounded z-[100] p-2 origin-top-left"
   [ngClass]="
     suggestionOpen &&
     (data.book.length > 0 || data.author.length > 0) &&
     query.length > 0
-      ? 'visible opacity-100'
-      : 'collapse opacity-0'
+      ? 'visible opacity-100 scale-1'
+      : 'collapse opacity-0 scale-0'
   "
 >
   <h1

@@ -1,1 +1,12 @@
-<p>book-page works!</p>
+<ng-container *ngIf="bookModel$ | async as book; else fallback">
+  <div class="min-h-full lg:px-[10%] flex flex-row">
+    <div class="hidden lg:flex w-[25%] h-full bg-contrast">
+      <div class="w-full h-dvh fixed">
+        <img [src]="fileService.getBookCoverPath(book)" />
+      </div>
+    </div>
+    <div class="w-full">dhfg</div>
+    <div class="hidden lg:flex w-[25%]">fhghfg</div>
+  </div>
+</ng-container>
+<ng-template #fallback>asd</ng-template>

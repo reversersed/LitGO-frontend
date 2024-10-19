@@ -20,7 +20,7 @@ export default abstract class GenericService {
       environment.serverEntryPoint +
       '/' +
       this.path +
-      (route && '/' + route);
+      (route !== undefined ? '/' + route : '');
 
     return server;
   }
