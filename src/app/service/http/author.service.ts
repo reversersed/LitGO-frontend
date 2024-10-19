@@ -14,7 +14,7 @@ export class AuthorService extends GenericService {
 
   getSuggestion(query: string) {
     return this.http
-      .get<Author[]>(this.buildPath('suggest'), {
+      .get<Author[]>(this.buildPath('search'), {
         headers: this.getHeaders(),
         params: new HttpParams().set('query', query).set('limit', 2),
       })
