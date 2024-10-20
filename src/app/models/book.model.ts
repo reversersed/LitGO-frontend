@@ -15,6 +15,9 @@ export default class Book {
   public rating: number;
   public reviews: number;
   public price: number;
+  public published: number;
+  public written: number;
+  public pages: number;
 
   constructor(
     _id: string,
@@ -28,7 +31,10 @@ export default class Book {
     _authors: Author[],
     _rating: number,
     _reviews: number,
-    _price: number
+    _price: number,
+    _published: number,
+    _written: number,
+    _pages: number
   ) {
     this.id = _id;
     this.name = _name;
@@ -42,5 +48,8 @@ export default class Book {
     this.rating = _rating;
     this.reviews = _reviews;
     this.price = _price;
+    this.published = _published;
+    this.written = _written;
+    this.pages = _pages;
   }
 }

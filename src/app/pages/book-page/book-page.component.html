@@ -1,12 +1,40 @@
 <ng-container *ngIf="bookModel$ | async as book; else fallback">
-  <div class="min-h-full lg:px-[10%] flex flex-row">
-    <div class="hidden lg:flex w-[25%] h-full bg-contrast">
-      <div class="w-full h-dvh fixed">
+  <div class="min-h-full lg:px-[10%] flex flex-col">
+    <!--header-->
+    <div
+      class="flex flex-row flex-wrap gap-1 md:gap-2 text-blacktext font-main text-xs md:text-sm pl-5 lg:pl-0"
+    >
+      <a
+        routerLink="/"
+        class="hidden md:block text-blacktext/80 hover:text-contrast transition-all duration-150"
+        >Книги</a
+      >
+      <span class="hidden md:block text-blacktext">/</span>
+      <a
+        [routerLink]="'/genre/' + book.genre.translitname"
+        class="hidden md:block text-blacktext/80 hover:text-contrast transition-all duration-150"
+        >{{ book.genre.name }}</a
+      >
+      <span class="hidden md:block text-blacktext">/</span>
+      <fa-icon [icon]="faBack" class="block md:hidden text-blacktext/80" />
+      <a
+        [routerLink]="'/author/' + book.authors[0].translitname"
+        class="text-blacktext/80 hover:text-contrast transition-all duration-150"
+        >{{ book.authors[0].name }}</a
+      >
+      <span class="hidden md:block text-blacktext">/</span>
+      <span class="text-blacktext/80 hidden md:block">{{ book.name }}</span>
+    </div>
+    <!-- main body -->
+    <div class="grid grid-cols-[15%_auto_15%] gap-2 mt-2">
+      <div class="sticky" [style.paddingTop]="verticalOffset + 'px'">
         <img [src]="fileService.getBookCoverPath(book)" />
       </div>
+      <div class="h-svh">{{ book.name }}</div>
+      <div class="sticky" [style.paddingTop]="verticalOffset + 'px'">
+        Купить за 200р
+      </div>
     </div>
-    <div class="w-full">dhfg</div>
-    <div class="hidden lg:flex w-[25%]">fhghfg</div>
   </div>
 </ng-container>
 <ng-template #fallback>asd</ng-template>

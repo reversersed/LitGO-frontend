@@ -59,7 +59,7 @@
 <!-- main block -->
 <header
   [ngClass]="bottomMenuVisible ? ' lg:shadow-none' : ''"
-  class="fixed top-0 z-[51] pl-2 flex flex-col lg:flex-row lg:items-center justify-center lg:px-[10%] h-12 lg:h-16 bg-mainbg font-semibold w-full shadow-md shadow-mainshadow"
+  class="fixed left-0 top-0 z-[51] flex flex-col lg:flex-row lg:items-center justify-center lg:px-[10%] h-12 lg:h-16 bg-mainbg font-semibold w-full shadow-md shadow-mainshadow"
 >
   <div class="z-50 flex flex-row w-full lg:w-auto justify-center h-full">
     <h1
@@ -67,7 +67,7 @@
     >
       <a class="no-underline text-maintext" routerLink="/">LitGO</a>
     </h1>
-    <div class="block">
+    <div class="block ml-2">
       <button
         (click)="switchCatalogue()"
         [ngClass]="catalogueOpen ? 'bg-mainshadow' : 'bg-accent'"
@@ -89,7 +89,7 @@
       </button>
     </div>
     <button
-      class="lg:hidden ml-auto mr-2 my-auto"
+      class="lg:hidden ml-auto mr-4 my-auto"
       (click)="sideMenuOpen = !sideMenuOpen"
     >
       <fa-icon

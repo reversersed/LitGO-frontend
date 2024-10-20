@@ -17,8 +17,8 @@ export class MainPageComponent {
     picture:
       'https://content.img-gorod.ru/pim/products/images/49/ea/018ed64b-6f97-7974-8afa-d2b5066649ea.jpg?width=0&height=1200&fit=bounds',
     filepath: 'file.epub',
-    genre: { name: 'игры', translitName: 'igry-211342', bookCount: 0 },
-    category: { name: 'игра', translitName: 'igra-12414', genres: [] },
+    genre: { name: 'игры', translitname: 'igry-211342', bookCount: 0 },
+    category: { name: 'игра', translitname: 'igra-12414', genres: [] },
     authors: [
       {
         name: 'Кристофер Паолини',
@@ -32,5 +32,8 @@ export class MainPageComponent {
     rating: 4.5,
     reviews: 6254,
     price: 559,
+    published: 0,
+    written: 2007,
+    pages: 381,
   };
 }

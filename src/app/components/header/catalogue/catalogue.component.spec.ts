@@ -15,7 +15,7 @@ describe('CatalogueComponent', () => {
   const mockCategory: Category[] = [
     {
       name: 'category',
-      translitName: 'category-123',
+      translitname: 'category-123',
       genres: [],
     },
   ];
