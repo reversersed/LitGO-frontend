@@ -26,13 +26,73 @@
       <span class="text-blacktext/80 hidden md:block">{{ book.name }}</span>
     </div>
     <!-- main body -->
-    <div class="grid grid-cols-[15%_auto_15%] gap-2 mt-2">
-      <div class="sticky" [style.paddingTop]="verticalOffset + 'px'">
-        <img [src]="fileService.getBookCoverPath(book)" />
+    <div class="grid grid-cols-[15%_auto_15%] gap-6 mt-6">
+      <div
+        class="sticky flex flex-col"
+        [style.paddingTop]="verticalOffset + 'px'"
+      >
+        <img
+          [src]="fileService.getBookCoverPath(book)"
+          class="object-contain rounded-xl"
+        />
+        <span *ngIf="book.pages">{{ book.pages }} страниц</span>
+        <a
+          [routerLink]=""
+          class="w-full text-center bg-mainbg rounded-xl text-maintext mt-4 py-2 hover:bg-mainshadow transition-all duration-150 select-none"
+          >Читать отрывок</a
+        >
       </div>
-      <div class="h-svh">{{ book.name }}</div>
+      <div class="h-svh flex flex-col">
+        <span class="font-semibold text-xl mb-2">{{ book.name }}</span>
+        <span
+          *ngIf="book.authors.length == 1"
+          class="font-semibold text-blacktext/60"
+          >Автор
+          <a
+            class="text-contrast hover:text-contrast/80 transition-colors duration-200 ease-in-out"
+            [routerLink]="'/author/' + book.authors[0].translitname"
+            >{{ book.authors[0].name }}</a
+          ></span
+        >
+        <span
+          *ngIf="book.authors.length > 1"
+          class="font-semibold text-blacktext/60"
+          >Авторы
+          <a
+            *ngFor="let author of book.authors"
+            class="text-contrast hover:text-contrast/80 transition-colors duration-200 ease-in-out ml-2"
+            [routerLink]="'/author/' + author.translitname"
+            >{{ author.name }}</a
+          ></span
+        >
+
+        <div class="flex items-center gap-4 mt-5">
+          <div class="flex flex-col justify-center items-center">
+            <span class="text-lg font-semibold text-blacktext/80"
+              ><fa-icon
+                [icon]="faStar"
+                size="xs"
+                class="text-contrast mr-1"
+              />{{ book.rating }}</span
+            >
+          </div>
+          <div class="w-[2px] h-[60%] bg-mainblack/20"></div>
+          <div class="flex flex-col justify-center items-center">
+            <span class="text-xl font-semibold text-blacktext/90 font-main">{{
+              book.reviews
+            }}</span>
+            <a
+              href="#reviewssection"
+              target="_self"
+              class="text-contrast text-sm -mt-2"
+              >{{ reviewsToString(book.reviews) }}</a
+            >
+          </div>
+          <div #reviewssection></div>
+        </div>
+      </div>
       <div class="sticky" [style.paddingTop]="verticalOffset + 'px'">
-        Купить за 200р
+        Купить за {{ book.price }}₽
       </div>
     </div>
   </div>

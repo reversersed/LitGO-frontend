@@ -17,7 +17,7 @@ export class MainPageComponent {
     picture:
       'https://content.img-gorod.ru/pim/products/images/49/ea/018ed64b-6f97-7974-8afa-d2b5066649ea.jpg?width=0&height=1200&fit=bounds',
     filepath: 'file.epub',
-    genre: { name: 'игры', translitname: 'igry-211342', bookCount: 0 },
+    genre: { name: 'игры', translitname: 'igry-211342', bookcount: 0 },
     category: { name: 'игра', translitname: 'igra-12414', genres: [] },
     authors: [
       {

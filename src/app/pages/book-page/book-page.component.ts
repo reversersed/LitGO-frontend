@@ -12,7 +12,7 @@ import { BookService } from '../../service/http/book.service';
 import { CommonModule } from '@angular/common';
 import { FileService } from '../../service/file.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faStar } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-book-page',
@@ -30,7 +30,16 @@ export class BookPageComponent implements OnInit, OnDestroy {
   bookModel$!: Observable<Book>;
   verticalOffset = 0;
   faBack = faArrowLeft;
+  faStar = faStar;
 
+  reviewsToString = (number: number) =>
+    Math.abs(number) % 100 >= 5 && Math.abs(number) % 100 <= 20
+      ? 'отзывов'
+      : (Math.abs(number) % 100) % 10 === 1
+      ? 'отзыв'
+      : (Math.abs(number) % 100) % 10 >= 2 && (Math.abs(number) % 100) % 10 <= 4
+      ? 'отзыва'
+      : 'отзывов';
   ngOnInit(): void {
     this.paramSubscription = this.route.params.subscribe((params) =>
       this.reloadBookModel(params['name'])

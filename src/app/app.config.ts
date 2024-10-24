@@ -7,6 +7,7 @@ import {
   provideRouter,
   withInMemoryScrolling,
   withRouterConfig,
+  withViewTransitions,
 } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -22,7 +23,11 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withRouterConfig({ onSameUrlNavigation: 'reload' }),
-      withInMemoryScrolling({ scrollPositionRestoration: 'top' })
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'top',
+        anchorScrolling: 'enabled',
+      }),
+      withViewTransitions({ skipInitialTransition: true })
     ),
     provideServiceWorker('ngsw-worker.js', {
       enabled: environment.production,
