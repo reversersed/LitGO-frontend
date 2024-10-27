@@ -80,6 +80,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   loginAttemptingState = false;
   logoutAttemptingState = false;
   catalogueOpen = false;
+  selfLocked = false;
   sideMenuOpen = false;
   bottomMenuVisible = true;
   dropdownOpen = false;
@@ -212,8 +213,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     let totalWidth = 0;
     for (let item of this.bottomLinksArray) {
       totalWidth +=
-        this.bottomMenuWrapper.nativeElement.children[
-          this.bottomMenuWrapper.nativeElement.children.length - 2
+        this.bottomMenuWrapper?.nativeElement?.children[
+          this.bottomMenuWrapper?.nativeElement?.children?.length - 2
         ]?.offsetWidth * (first ? 1.4 : 1) || 0;
 
       if (totalWidth <= this.bottomMenuWrapper.nativeElement.clientWidth - 60) {
@@ -234,9 +235,13 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   switchCatalogue() {
     this.catalogueOpen = !this.catalogueOpen;
     if (this.catalogueOpen) {
-      this.scrollService.Lock();
+      if (!this.scrollService.isLocked()) {
+        this.selfLocked = true;
+        this.scrollService.Lock();
+      } else this.selfLocked = false;
     } else {
-      this.scrollService.Unlock();
+      if (this.selfLocked) this.scrollService.Unlock();
+      this.selfLocked = false;
     }
   }
   loginUser() {

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import GenericService from './generic.service';
 import { catchError, first, of } from 'rxjs';
@@ -19,5 +19,13 @@ export class CategoryService extends GenericService {
         first(),
         catchError(() => of([]))
       );
+  }
+  public getTree(query: string) {
+    return this.http
+      .get<Category>(this.buildPath('tree'), {
+        headers: this.getHeaders(),
+        params: new HttpParams().set('query', query),
+      })
+      .pipe(first());
   }
 }

@@ -1,0 +1,11 @@
+<div
+  class="fixed z-[99999] px-3 py-2 bg-accent/30 rounded-full top-[calc(100%-10px)] left-[calc(100%-10px)] lg:top-[calc(100%-20px)] lg:left-[calc(100%-30px)] -translate-x-full -translate-y-full transition-all duration-500"
+  [ngClass]="
+    visibility
+      ? 'block opacity-100 cursor-pointer'
+      : 'select-none pointer-events-none opacity-0'
+  "
+  (click)="visibility && ScrollUp()"
+>
+  <fa-icon [icon]="faArrow" size="xl" />
+</div>

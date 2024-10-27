@@ -30,6 +30,13 @@ export const routes: Routes = [
             (c) => c.BookPageComponent
           ),
       },
+      {
+        path: 'genre/:name',
+        loadComponent: () =>
+          import('./pages/genre-search-page/genre-search-page.component').then(
+            (c) => c.GenreSearchPageComponent
+          ),
+      },
     ],
   },
   {

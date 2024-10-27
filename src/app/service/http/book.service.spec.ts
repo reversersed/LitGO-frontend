@@ -38,7 +38,7 @@ describe('BookService', () => {
           : '') +
           '/' +
           environment.serverEntryPoint +
-          '/books/suggest?query=query%20request&limit=2'
+          '/books/search?query=query%20request&limit=2'
       )
     ).toBeTruthy();
 

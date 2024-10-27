@@ -1,0 +1,38 @@
+<div class="flex flex-row w-full items-center">
+  <input
+    class="collapse"
+    type="checkbox"
+    [disabled]="disabled"
+    [value]="value"
+    (change)="changeValue($event)"
+    [id]="id"
+  />
+  <div class="flex flex-col">
+    <label
+      *ngIf="labelValue"
+      [for]="id"
+      class="select-none font-main sm:text-base text-sm"
+      [class]="disabled ? 'text-blacktext/30' : 'text-blacktext cursor-pointer'"
+      >{{ labelValue }}</label
+    >
+    <label
+      *ngIf="sublabelValue"
+      [for]="id"
+      class="select-none font-main sm:text-sm text-xs"
+      [class]="
+        disabled ? 'text-blacktext/30' : 'text-blacktext/60 cursor-pointer'
+      "
+      >{{ sublabelValue }}</label
+    >
+  </div>
+  <label [for]="id" class="ml-auto w-10 h-6 cursor-pointer"
+    ><div
+      class="border-2 w-full h-full rounded-xl transition-all duration-200 after:absolute after:rounded-full after:w-4 after:h-4 after:transition-all after:duration-200 after:translate-y-0.5"
+      [ngClass]="
+        value
+          ? 'border-contrast after:bg-contrast after:translate-x-[100%]'
+          : 'border-accent/60 after:bg-accent/60 after:translate-x-1'
+      "
+    ></div
+  ></label>
+</div>
