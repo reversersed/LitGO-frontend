@@ -14,6 +14,7 @@ import { BookCardComponent } from '../../components/book-card/book-card.componen
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faAngleLeft,
+  faArrowLeft,
   faClose,
   faFilter,
   faSpinner,
@@ -59,6 +60,7 @@ export class GenreSearchPageComponent implements OnInit, OnDestroy {
   faBack = faAngleLeft;
   faClose = faClose;
   faFilter = faFilter;
+  faArrowBack = faArrowLeft;
   highRatingFilter = false;
   selectedSort: 'Popular' | 'Newest' = 'Popular';
   currentCategory?: Category;
