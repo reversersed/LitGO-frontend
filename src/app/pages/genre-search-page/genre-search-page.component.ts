@@ -43,6 +43,7 @@ import { ToUpOverlayComponent } from '../../shared/to-up-overlay/to-up-overlay.c
 })
 export class GenreSearchPageComponent implements OnInit, OnDestroy {
   paramSubscription?: Subscription;
+  querySubscription?: Subscription;
   route = inject(ActivatedRoute);
   router = inject(Router);
   bookService = inject(BookService);
@@ -62,6 +63,7 @@ export class GenreSearchPageComponent implements OnInit, OnDestroy {
   faFilter = faFilter;
   faArrowBack = faArrowLeft;
   highRatingFilter = false;
+  oldURL: string | null = null;
   selectedSort: 'Popular' | 'Newest' = 'Popular';
   currentCategory?: Category;
   genreSearch: string = '';
@@ -70,6 +72,9 @@ export class GenreSearchPageComponent implements OnInit, OnDestroy {
   selfLocked = false;
 
   ngOnInit(): void {
+    this.querySubscription = this.route.queryParamMap.subscribe((params) => {
+      this.oldURL = params.get('o');
+    });
     this.paramSubscription = this.route.paramMap.subscribe((params) => {
       this.routeParam = params.get('name');
       this.updateBook();
@@ -77,6 +82,7 @@ export class GenreSearchPageComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.paramSubscription?.unsubscribe();
+    this.querySubscription?.unsubscribe();
   }
   fetchBooks() {
     if (!this.routeParam || this.fetchingPipeError) return;

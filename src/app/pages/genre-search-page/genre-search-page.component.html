@@ -1,14 +1,17 @@
 <app-to-up-overlay />
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-2 h-full">
   <div
     class="flex-row gap-2 sm:hidden flex text-sm text-accent/80 flex-wrap"
     *ngIf="currentCategory"
   >
     <a
       class="flex gap-2"
+      [queryParams]="
+        currentCategory.translitname === routeParam ? undefined : { o: oldURL }
+      "
       [routerLink]="
         currentCategory.translitname === routeParam
-          ? '/'
+          ? '/' + (oldURL ?? '')
           : '/genre/' + currentCategory.translitname
       "
       ><fa-icon [icon]="faBack" size="sm" />{{
@@ -23,7 +26,7 @@
     *ngIf="currentCategory"
   >
     <a
-      [routerLink]="'/'"
+      [routerLink]="'/' + (oldURL ?? '')"
       class="text-accent/80 hover:text-accent transition-all duration-200"
       >Все книги</a
     >/<a
@@ -32,6 +35,7 @@
           ? 'text-accent/70'
           : 'text-accent/80 hover:text-accent transition-all duration-200'
       "
+      [queryParams]="{ o: oldURL }"
       [routerLink]="
         currentCategory.translitname === routeParam
           ? undefined
@@ -53,10 +57,13 @@
     class="flex text-xl lg:text-3xl text-accent font-bold flex-row gap-3"
   >
     <a
+      [queryParams]="
+        currentCategory.translitname === routeParam ? undefined : { o: oldURL }
+      "
       [routerLink]="
         currentCategory.translitname !== routeParam
           ? '/genre/' + currentCategory.translitname
-          : '/'
+          : '/' + (oldURL ?? '')
       "
       class="hidden sm:flex font-normal"
     >
@@ -78,7 +85,7 @@
   </div>
   <div class="flex flex-row w-full h-full lg:mt-5">
     <div
-      class="transition-all duration-150 top-14 lg:top-auto absolute lg:relative flex flex-col lg:mr-5 gap-2 w-full lg:w-[325px] bg-body z-10 h-full px-2 lg:px-0 overflow-y-auto lg:overflow-hidden"
+      class="transition-all duration-150 pt-14 top-0 lg:pt-0 absolute lg:relative flex flex-col lg:mr-5 gap-2 w-full lg:w-[325px] bg-body z-10 h-full px-2 lg:px-0 overflow-y-auto lg:overflow-hidden"
       [ngClass]="filterMenuOpen ? 'left-0' : '-left-full lg:left-0'"
       *ngIf="currentCategory; else categoryLoader"
     >
@@ -94,12 +101,15 @@
         *ngIf="currentCategory.translitname != routeParam"
         class="text-accent/90 flex flex-col gap-2 font-semibold border-b-2 pb-2 border-accent/20"
       >
-        <a [routerLink]="'/genre/' + currentCategory.translitname"
+        <a
+          [queryParams]="{ o: oldURL }"
+          [routerLink]="'/genre/' + currentCategory.translitname"
           ><fa-icon [icon]="faBack" class="text-accent/60 text-nowrap" />
           {{ currentCategory.name }}</a
         >
         <a
           *ngFor="let genre of currentCategory.genres"
+          [queryParams]="{ o: oldURL }"
           [routerLink]="'/genre/' + genre.translitname"
           [ngClass]="
             genre.translitname == routeParam ? 'bg-accent/10' : 'hidden'
@@ -112,11 +122,12 @@
         *ngIf="currentCategory.translitname === routeParam"
         class="text-accent/90 flex flex-col gap-1 font-semibold border-b-2 pb-2 border-accent/20"
       >
-        <a [routerLink]="'/'"
+        <a [routerLink]="'/' + (oldURL ?? '')"
           ><fa-icon [icon]="faBack" class="text-accent/60 text-nowrap" /> Все
           книги</a
         >
         <a
+          [queryParams]="{ o: oldURL }"
           [routerLink]="'/genre/' + currentCategory.translitname"
           class="w-full rounded-md px-3 py-0.5 bg-accent/10"
           >{{ currentCategory.name }}</a
@@ -138,6 +149,7 @@
         >
           <a
             *ngFor="let genre of categorySlice()"
+            [queryParams]="{ o: oldURL }"
             [routerLink]="'/genre/' + genre.translitname"
             class="w-full rounded-md px-3 py-0.5 hover:bg-accent/10"
             >{{ genre.name }}</a
@@ -215,7 +227,7 @@
             >Скоро здесь появится много интересного, пока что Вы можете
             посмотреть
             <a
-              [routerLink]="'/'"
+              [routerLink]="'/' + (oldURL ?? '')"
               class="text-contrast hover:text-contrast/80 transition-all duration-200"
               >другие жанры</a
             ></span
@@ -224,40 +236,36 @@
       </ng-container>
     </div>
   </div>
-  <ng-template #loader>
-    <div class="flex flex-row w-full h-full">
-      <div
-        class="w-full flex flex-wrap content-between gap-4 justify-between px-5 sm:px-10 lg:px-0"
-      >
-        <app-skeleton
-          class="block md:hidden"
-          borderRadius="5%"
-          width="250px"
-          height="80px"
-          *ngFor="
-            let i of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-          "
-        />
-        <app-skeleton
-          class="hidden md:block"
-          borderRadius="5%"
-          width="200px"
-          height="300px"
-          *ngFor="
-            let i of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-          "
-        />
-      </div>
-    </div>
-  </ng-template>
-  <ng-template #categoryLoader>
-    <div class="absolute w-fit lg:relative flex flex-col lg:mr-5 gap-2">
+</div>
+<ng-template #loader>
+  <div class="flex flex-row w-full h-full">
+    <div
+      class="w-full flex flex-wrap content-between gap-4 justify-between px-5 sm:px-10 lg:px-0"
+    >
       <app-skeleton
+        class="block md:hidden"
         borderRadius="5%"
-        width="150px"
-        height="20px"
-        *ngFor="let i of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
+        width="250px"
+        height="80px"
+        *ngFor="let i of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
+      />
+      <app-skeleton
+        class="hidden md:block"
+        borderRadius="5%"
+        width="200px"
+        height="300px"
+        *ngFor="let i of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
       />
     </div>
-  </ng-template>
-</div>
+  </div>
+</ng-template>
+<ng-template #categoryLoader>
+  <div class="absolute w-fit lg:relative flex flex-col lg:mr-5 gap-2">
+    <app-skeleton
+      borderRadius="5%"
+      width="150px"
+      height="20px"
+      *ngFor="let i of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
+    />
+  </div>
+</ng-template>
