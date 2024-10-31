@@ -1,0 +1,161 @@
+<app-to-up-overlay />
+<div class="flex flex-col gap-2 h-full">
+  <div
+    class="flex-row gap-2 sm:hidden flex text-sm text-accent/80 flex-wrap"
+    *ngIf="currentCategory"
+  >
+    <a class="flex gap-2" [routerLink]="'/'"
+      ><fa-icon [icon]="faBack" size="sm" />
+      Все книги
+    </a>
+  </div>
+  <div
+    class="flex-row gap-2 hidden sm:flex text-sm text-accent/60 flex-wrap"
+    *ngIf="currentCategory"
+  >
+    <a
+      [routerLink]="'/'"
+      class="text-accent/80 hover:text-accent transition-all duration-200"
+      >Все книги</a
+    >/<a [ngClass]="'text-accent/70'">Популярное</a>
+  </div>
+  <span class="font-bold text-2xl sm:text-3xl flex flex-row gap-3 text-accent"
+    ><a routerLink="/" class="font-normal"> <fa-icon [icon]="faArrowBack" /> </a
+    >Популярное</span
+  >
+  <div class="flex flex-row w-full h-full lg:mt-5">
+    <div
+      class="transition-all duration-150 pt-14 top-0 lg:pt-0 absolute lg:relative flex flex-col lg:mr-5 gap-2 w-full lg:w-[325px] bg-body z-10 h-full px-2 lg:px-0 overflow-y-auto lg:overflow-hidden"
+      [ngClass]="filterMenuOpen ? 'left-0' : '-left-full lg:left-0'"
+      *ngIf="currentCategory; else categoryLoader"
+    >
+      <div class="flex flex-row w-full items-center">
+        <span class="font-semibold">Жанры</span>
+        <a
+          class="ml-auto mr-2 lg:hidden cursor-pointer"
+          (click)="changeFilterState()"
+          ><fa-icon [icon]="faClose" size="lg"
+        /></a>
+      </div>
+      <div
+        class="text-accent/90 flex flex-col gap-1 font-semibold border-b-2 pb-2 border-accent/20"
+      >
+        <a [routerLink]="'/'"
+          ><fa-icon [icon]="faBack" class="text-accent/60 text-nowrap" /> Все
+          книги</a
+        >
+        <div
+          class="w-full h-auto flex flex-col"
+          [ngClass]="
+            genreExtended
+              ? 'overflow-y-auto max-h-[300px] border-y-accent/40 border-y-[1px] mt-2 py-2'
+              : 'overflow-y-hidden'
+          "
+        >
+          <a
+            *ngFor="let genre of currentCategory"
+            [queryParams]="{ o: 'popular' }"
+            [routerLink]="'/genre/' + genre.translitname"
+            class="w-full rounded-md px-3 py-0.5 hover:bg-accent/10"
+            >{{ genre.name }}</a
+          >
+        </div>
+      </div>
+      <app-switchbox
+        class="max-w-[300px]"
+        label="Только высокий рейтинг"
+        sublabel="Книги с рейтингом 4 или 5"
+        [checked]="highRatingFilter"
+        (checkedChange)="changeRatingFilter()"
+        componentId="ratingBox"
+      />
+    </div>
+    <div
+      class="flex flex-col w-full h-full gap-5 items-center justify-center mb-5 mt-1"
+    >
+      <div class="flex flex-wrap flex-row gap-4 self-baseline">
+        <button
+          (click)="changeFilterState()"
+          class="px-3 rounded-xl transition-all duration-200 w-fit block lg:hidden py-2"
+          *ngIf="Books !== undefined || fetchingState"
+          [ngClass]="
+            filterMenuOpen ? 'bg-contrast text-maintext' : 'bg-accent/40'
+          "
+        >
+          <fa-icon [icon]="faFilter" size="sm" />
+        </button>
+      </div>
+      <ng-container *ngIf="Books || fetchingPipeError; else loader">
+        <div
+          class="w-fit flex flex-wrap content-between justify-between gap-4 after:flex-[auto]"
+        >
+          <app-book-card
+            *ngFor="let book of Books"
+            [model]="book"
+            class="min-w-[200px] w-auto"
+          />
+        </div>
+        <fa-icon
+          *ngIf="fetchingState"
+          [icon]="faLoader"
+          size="2xl"
+          animation="spin-pulse"
+        />
+        <span
+          *ngIf="fetchingPipeError && Books === undefined && highRatingFilter"
+          class="text-xl font-semibold text-center px-5"
+          >К сожалению, книги с высоким рейтингом не найдены</span
+        >
+        <div
+          *ngIf="fetchingPipeError && Books === undefined && !highRatingFilter"
+          class="flex flex-col gap-6 items-center justify-center text-center px-5"
+        >
+          <span class="text-xl font-semibold"
+            >К сожалению, ничего не найдено</span
+          >
+          <span
+            >Скоро здесь появится много интересного, пока что Вы можете
+            посмотреть
+            <a
+              [routerLink]="'/'"
+              class="text-contrast hover:text-contrast/80 transition-all duration-200"
+              >другие жанры</a
+            ></span
+          >
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<ng-template #loader>
+  <div class="flex flex-row w-full h-full">
+    <div
+      class="w-full flex flex-wrap content-between gap-4 justify-between px-5 sm:px-10 lg:px-0"
+    >
+      <app-skeleton
+        class="block md:hidden"
+        borderRadius="5%"
+        width="250px"
+        height="80px"
+        *ngFor="let i of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
+      />
+      <app-skeleton
+        class="hidden md:block"
+        borderRadius="5%"
+        width="200px"
+        height="300px"
+        *ngFor="let i of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
+      />
+    </div>
+  </div>
+</ng-template>
+<ng-template #categoryLoader>
+  <div class="absolute w-fit lg:relative flex flex-col lg:mr-5 gap-2">
+    <app-skeleton
+      borderRadius="5%"
+      width="150px"
+      height="20px"
+      *ngFor="let i of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
+    />
+  </div>
+</ng-template>

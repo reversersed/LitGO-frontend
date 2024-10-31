@@ -31,6 +31,29 @@ export class BookService extends GenericService {
         catchError(() => of([]))
       );
   }
+  find(
+    query: string | null,
+    limit: number,
+    page: number,
+    sort: 'Popular' | 'Newest',
+    rating: number
+  ) {
+    let params = new HttpParams()
+      .set('limit', limit)
+      .set('page', page)
+      .set('sorttype', sort)
+      .set('rating', rating);
+    if (query) {
+      params.append('query', query);
+    }
+
+    return this.http
+      .get<Book[]>(this.buildPath('search'), {
+        headers: this.getHeaders(),
+        params: params,
+      })
+      .pipe(first());
+  }
   getByGenre(
     query: string,
     sorttype: 'Newest' | 'Popular',

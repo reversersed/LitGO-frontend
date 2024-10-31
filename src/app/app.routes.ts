@@ -37,6 +37,20 @@ export const routes: Routes = [
             (c) => c.GenreSearchPageComponent
           ),
       },
+      {
+        path: 'new',
+        loadComponent: () =>
+          import('./pages/newest-books-page/newest-books-page.component').then(
+            (c) => c.NewestBooksPageComponent
+          ),
+      },
+      {
+        path: 'popular',
+        loadComponent: () =>
+          import(
+            './pages/popular-books-page/popular-books-page.component'
+          ).then((c) => c.PopularBooksPageComponent),
+      },
     ],
   },
   {
