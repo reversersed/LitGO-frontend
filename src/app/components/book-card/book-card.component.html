@@ -1,15 +1,15 @@
 <div
   *ngIf="bookModel"
-  class="flex relative max-h-full w-auto"
+  class="flex relative max-h-full w-fit"
   [ngClass]="
     alignMode === 'auto'
-      ? 'flex-row md:flex-col min-w-[150px] max-w-[300px] md:max-w-[160px] lg:max-w-[200px]'
+      ? 'flex-row md:flex-col min-w-[100px] max-w-[300px] md:max-w-[160px] lg:max-w-[200px]'
       : alignMode === 'row'
-      ? 'flex-row min-w-[150px] max-w-[300px]'
+      ? 'flex-row min-w-[100px] max-w-[300px]'
       : 'flex-col max-w-[160px] sm:max-w-[200px]'
   "
 >
-  <div>
+  <div class="h-fit w-fit">
     <img
       #image
       *ngIf="animationStyle === 'observe'"
@@ -19,12 +19,12 @@
       (mouseleave)="hover = false"
       [ngClass]="
         alignMode === 'auto'
-          ? 'w-fit max-h-[150px] md:max-h-max md:h-auto'
+          ? 'w-fit max-h-[150px] md:max-h-[200px] md:h-auto'
           : alignMode === 'row'
           ? 'w-fit max-h-[150px]'
-          : 'max-h-max h-auto w-fit'
+          : 'max-h-[200px] h-auto w-fit'
       "
-      class="absolute opacity-0 z-[1] object-contain rounded cursor-pointer shadow-mainblack shadow-md transition-all origin-center"
+      class="absolute opacity-0 z-[1] object-contain rounded cursor-pointer shadow-mainblack shadow-md transition-all origin-center min-w-[60px]"
     />
     <img
       [routerLink]="
@@ -41,16 +41,16 @@
           ? 'duration-0'
           : '') +
         (alignMode === 'auto'
-          ? 'w-fit max-h-[150px] md:max-h-max md:h-auto'
+          ? 'w-fit max-h-[150px] md:max-h-[200px] md:h-auto'
           : alignMode === 'row'
           ? 'w-fit max-h-[150px]'
-          : 'max-h-max h-auto w-fit')
+          : 'max-h-[200px] h-auto w-fit')
       "
-      class="object-contain rounded cursor-pointer shadow-mainblack shadow-md transition-all origin-center"
+      class="object-contain rounded cursor-pointer shadow-mainblack shadow-md transition-all origin-center min-w-[60px]"
     />
   </div>
   <div
-    class="text-xs md:text-sm w-full flex flex-col"
+    class="text-xs md:text-sm inline-flex flex-col min-h-fit"
     [ngClass]="
       alignMode === 'auto'
         ? 'ml-1 md:ml-0 mt-0 md:mt-2'
@@ -65,7 +65,7 @@
       >{{ bookModel.name }}</a
     >
     <a
-      class="w-full h-auto font-main text-accent/80 break-words"
+      class="w-full h-auto font-main text-accent/80 break-all hyphens-auto"
       [routerLink]="'/author/' + bookModel.authors[0].translitname"
       >{{ bookModel.authors[0].name }}
       {{ bookModel.authors.length > 1 ? "и др." : "" }}</a
@@ -77,9 +77,40 @@
       <span class="font-semibold text-accent/80">{{ bookModel.reviews }}</span>
     </p>
     <p
+      *ngIf="showPrice"
       class="font-main text-blacktext font-bold mt-2 md:mt-1 text-xs md:text-sm"
     >
       {{ bookModel.price }} ₽
     </p>
+  </div>
+  <div
+    *ngIf="user()"
+    (click)="changeFavouriteStatus()"
+    class="w-fit h-fit bg-transparent select-none cursor-pointer"
+    [ngClass]="
+      alignMode == 'auto'
+        ? 'ml-6 md:ml-0 relative md:absolute md:top-1 md:self-end md:right-2'
+        : alignMode == 'row'
+        ? 'ml-6 relative'
+        : 'absolute top-1 self-end right-2'
+    "
+  >
+    <fa-icon
+      [icon]="faSolidHeart"
+      size="xl"
+      class="scale-[1.2] text-mainwhite origin-center"
+    />
+    <fa-icon
+      *ngIf="bookModel.favourite"
+      [icon]="faSolidHeart"
+      size="xl"
+      class="text-contrast absolute left-0 scale-[0.85]"
+    />
+    <fa-icon
+      *ngIf="!bookModel.favourite"
+      [icon]="faEmptyHeart"
+      size="xl"
+      class="text-accent/80 absolute left-0 scale-[0.85]"
+    />
   </div>
 </div>

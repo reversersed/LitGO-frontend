@@ -126,12 +126,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     },
     {
       link: '/',
-      label: 'Корзина',
-      icon: faCartShopping,
-      visible: 'Auth',
-    },
-    {
-      link: '/',
       label: 'Мои книги',
       icon: faBookReader,
       visible: 'Auth',

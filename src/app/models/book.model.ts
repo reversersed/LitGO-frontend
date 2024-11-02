@@ -18,6 +18,7 @@ export default class Book {
   public published: number;
   public written: number;
   public pages: number;
+  public favourite: boolean;
 
   constructor(
     _id: string,
@@ -34,7 +35,8 @@ export default class Book {
     _price: number,
     _published: number,
     _written: number,
-    _pages: number
+    _pages: number,
+    _favourite: boolean
   ) {
     this.id = _id;
     this.name = _name;
@@ -51,5 +53,6 @@ export default class Book {
     this.published = _published;
     this.written = _written;
     this.pages = _pages;
+    this.favourite = _favourite;
   }
 }

@@ -20,7 +20,7 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar-hide")],
   darkMode: "media", // 'media' or 'class'
   variants: {
     extend: {},

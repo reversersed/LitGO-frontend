@@ -197,7 +197,7 @@
       </div>
       <ng-container *ngIf="Books || fetchingPipeError; else loader">
         <div
-          class="w-fit flex flex-wrap content-between justify-between gap-4 after:flex-[auto]"
+          class="w-fit flex flex-wrap content-between justify-between gap-y-6 after:flex-[auto]"
         >
           <app-book-card
             *ngFor="let book of Books"

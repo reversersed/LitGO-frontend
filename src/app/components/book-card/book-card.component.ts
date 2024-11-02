@@ -11,7 +11,13 @@ import { CommonModule } from '@angular/common';
 import { FileService } from '../../service/file.service';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import {
+  faStar,
+  faHeart as faHeartSolid,
+} from '@fortawesome/free-solid-svg-icons';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import { Observable } from 'rxjs';
+import { UserService } from '../../service/http/user.service';
 
 @Component({
   selector: 'app-book-card',
@@ -23,9 +29,14 @@ export class BookCardComponent {
   @Input('model') bookModel!: Book;
   @Input('animation') animationStyle: 'none' | 'scale' | 'observe' = 'none';
   @Input('align') alignMode: 'auto' | 'row' | 'col' = 'auto';
+  @Input('price') showPrice: boolean = true;
 
   fileService = inject(FileService);
   faStar = faStar;
+  faEmptyHeart = faHeart;
+  faSolidHeart = faHeartSolid;
+
+  user = inject(UserService).CurrentUser();
 
   hover: boolean = false;
 
@@ -57,5 +68,8 @@ export class BookCardComponent {
       this.rotationY +
       'deg) scale(1.1)'
     );
+  }
+  changeFavouriteStatus() {
+    this.bookModel.favourite = !this.bookModel.favourite;
   }
 }

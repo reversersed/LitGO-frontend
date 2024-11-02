@@ -74,6 +74,7 @@ export class GenreSearchPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.querySubscription = this.route.queryParamMap.subscribe((params) => {
       this.oldURL = params.get('o');
+      if (this.oldURL == 'new') this.selectedSort = 'Newest';
     });
     this.paramSubscription = this.route.paramMap.subscribe((params) => {
       this.routeParam = params.get('name');

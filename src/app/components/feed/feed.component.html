@@ -1,0 +1,32 @@
+<div class="w-full gap-4 relative">
+  <button
+    [ngClass]="
+      corner != 'left' && corner != 'both'
+        ? 'opacity-100 pointer-events-auto cursor-pointer'
+        : 'opacity-0 pointer-events-none cursor-default'
+    "
+    (click)="scroll('left')"
+    class="absolute z-30 bg-mainwhite outline-none w-[44px] h-[44px] hidden lg:block border-[1px] border-contrast/60 shadow-sm shadow-contrast rounded-full top-[50%] -tranlate-y-[50%] -translate-x-[50%] text-contrast/80 hover:bg-contrast hover:text-maintext hover:border-accent-light transition-all duration-200"
+  >
+    <fa-icon [icon]="faAngleLeft" size="xl" />
+  </button>
+
+  <button
+    class="absolute z-30 bg-mainwhite outline-none w-[44px] h-[44px] hidden lg:block border-[1px] border-contrast/60 shadow-sm shadow-contrast rounded-full top-[50%] -tranlate-y-[50%] -translate-x-[50%] left-full text-contrast/80 hover:bg-contrast hover:text-maintext hover:border-accent-light transition-all duration-200"
+    [ngClass]="
+      wrapper.scrollLeft + wrapper.clientWidth < wrapper.scrollWidth - 2
+        ? 'opacity-100 pointer-events-auto cursor-pointer'
+        : 'opacity-0 pointer-events-none cursor-default'
+    "
+    (click)="scroll('right')"
+  >
+    <fa-icon [icon]="faAngleRight" size="xl" />
+  </button>
+  <div
+    (scroll)="onScroll()"
+    #wrapper
+    class="flex flex-row flex-1 gap-4 scrollbar-hide overflow-x-auto w-full"
+  >
+    <ng-content />
+  </div>
+</div>

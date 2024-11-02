@@ -1,3 +1,82 @@
-<div class="flex flex-wrap gap-5">
-  <app-book-card [model]="book" />
+<div class="w-full h-full flex flex-col gap-4">
+  <!-- Reading now -->
+  <div
+    class="flex flex-col gap-2"
+    [ngClass]="books.length > 0 ? '' : 'hidden'"
+    *ngIf="popularBooks$ | async as books; else popularBooksLoader"
+  >
+    <span class="text-xl font-semibold text-blacktext"
+      >Читают сейчас
+      <a [routerLink]="'/popular'"
+        ><fa-icon [icon]="faAngleRight" class="ml-2" /></a
+    ></span>
+    <app-feed class="w-full"
+      ><app-book-card
+        [price]="false"
+        class="min-w-fit"
+        *ngFor="let book of books"
+        [model]="book"
+        align="col" />
+      <div
+        class="flex justify-center items-center flex-row gap-2 min-w-[150px] md:min-w-[180px] text-contrast bg-contrast/20 font-semibold text-lg rounded-md"
+      >
+        <a routerLink="/popular">Ещё <fa-icon [icon]="faAngleRight" /></a></div
+    ></app-feed>
+  </div>
+  <!-- Newest books -->
+  <div
+    class="flex flex-col gap-2"
+    [ngClass]="books.length > 0 ? '' : 'hidden'"
+    *ngIf="newestBooks$ | async as books; else newestBooksLoader"
+  >
+    <span class="text-xl font-semibold text-blacktext"
+      >Новинки литературы
+      <a [routerLink]="'/new'"><fa-icon [icon]="faAngleRight" class="ml-2" /></a
+    ></span>
+    <app-feed
+      ><app-book-card
+        [price]="false"
+        class="min-w-fit"
+        *ngFor="let book of books"
+        [model]="book"
+        align="col" />
+      <div
+        class="flex justify-center items-center flex-row gap-2 min-w-[150px] md:min-w-[180px] text-contrast bg-contrast/20 font-semibold text-lg rounded-md"
+      >
+        <a routerLink="/new">Ещё <fa-icon [icon]="faAngleRight" /></a></div
+    ></app-feed>
+  </div>
+  <!---->
 </div>
+
+<!-- Loading templates -->
+<ng-template #popularBooksLoader>
+  <span class="text-xl font-semibold text-blacktext"
+    >Читают сейчас
+    <a [routerLink]="'/popular'"
+      ><fa-icon [icon]="faAngleRight" class="ml-2" /></a
+  ></span>
+  <div class="flex flex-row overflow-hidden h-auto w-full gap-4">
+    <app-skeleton
+      *ngFor="let i of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
+      width="200px"
+      height="250px"
+      borderRadius="5%"
+    />
+  </div>
+</ng-template>
+
+<ng-template #newestBooksLoader>
+  <span class="text-xl font-semibold text-blacktext"
+    >Новинки литературы
+    <a [routerLink]="'/new'"><fa-icon [icon]="faAngleRight" class="ml-2" /></a
+  ></span>
+  <div class="flex flex-row overflow-hidden h-auto w-full gap-4">
+    <app-skeleton
+      *ngFor="let i of [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
+      width="200px"
+      height="250px"
+      borderRadius="5%"
+    />
+  </div>
+</ng-template>
