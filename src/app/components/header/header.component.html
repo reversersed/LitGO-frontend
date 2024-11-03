@@ -130,23 +130,7 @@
     </div>
     <div class="w-full h-1 bg-maintext rounded-[150%] translate-x-[8px]"></div>
     <div
-      *ngFor="let link of bottomLinks.links"
-      class="text-maintext block lg:hidden"
-    >
-      <a
-        class="font-normal px-2 hover:text-accent hover:font-semibold lg:hover:text-maintext rounded-md transition-all m-2.5 text-base items-center font-main no-underline cursor-pointer flex"
-        [routerLink]="link.link"
-      >
-        <fa-icon
-          class="w-8 mr-2 -ml-2 h-7 lg:h-5 xl:h-5 lg:w-auto lg:m-0"
-          [icon]="link.icon"
-          size="xl"
-        />
-        <span class="text-base">{{ link.label }}</span>
-      </a>
-    </div>
-    <div
-      *ngFor="let link of bottomLinks.more"
+      *ngFor="let link of bottomLinksArray"
       class="text-maintext block lg:hidden"
     >
       <a

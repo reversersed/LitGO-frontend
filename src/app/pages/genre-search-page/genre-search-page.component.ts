@@ -141,6 +141,7 @@ export class GenreSearchPageComponent implements OnInit, OnDestroy {
     this.currentPage = 0;
     this.Books = undefined;
     this.fetchingPipeError = false;
+    this.extendGenre(false);
     this.fetchBooks();
   }
   categorySlice() {
@@ -153,9 +154,9 @@ export class GenreSearchPageComponent implements OnInit, OnDestroy {
   genreSearchUpdate($event: Event) {
     this.genreSearch = ($event.target as HTMLInputElement).value;
   }
-  extendGenre() {
+  extendGenre(status: boolean | undefined) {
     this.genreSearch = '';
-    this.genreExtended = !this.genreExtended;
+    this.genreExtended = status ?? !this.genreExtended;
   }
   changeFilterState() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
