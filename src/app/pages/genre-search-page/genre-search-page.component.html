@@ -158,7 +158,7 @@
         <a
           *ngIf="currentCategory.genres.length > 10"
           class="px-3 text-contrast hover:text-contrast/80 transition-all duration-200 cursor-pointer"
-          (click)="extendGenre()"
+          (click)="extendGenre(undefined)"
           >{{ genreExtended ? "Скрыть" : "Показать все" }}</a
         >
       </div>
