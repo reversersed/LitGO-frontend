@@ -25,6 +25,7 @@
   </div>
   <!-- Newest books -->
   <div
+    id="newest-book-panel"
     class="flex flex-col gap-2"
     [ngClass]="books.length > 0 ? '' : 'hidden'"
     *ngIf="newestBooks$ | async as books; else newestBooksLoader"

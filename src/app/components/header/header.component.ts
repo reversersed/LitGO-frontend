@@ -59,7 +59,6 @@ import { ScrollMutexService } from '../../service/scroll-mutex.service';
     InputComponent,
     CheckboxComponent,
     CatalogueComponent,
-    NotFoundPageComponent,
   ],
   templateUrl: './header.component.html',
 })

@@ -65,10 +65,13 @@
     <h1
       class="text-maintext m-0 font-main pt-2 pl-2 text-xl lg:p-0 tracking-[2px] lg:my-auto h-fit sm:block hidden"
     >
-      <a class="no-underline text-maintext" routerLink="/">LitGO</a>
+      <a id="main-logo" class="no-underline text-maintext" routerLink="/"
+        >LitGO</a
+      >
     </h1>
     <div class="block ml-2">
       <button
+        id="catalogue-button"
         (click)="switchCatalogue()"
         [ngClass]="catalogueOpen ? 'bg-mainshadow' : 'bg-accent'"
         class="transition-colors duration-200 z-[100] lg:min-w-[110px] p-2 text-sm lg:px-5 lg:py-3 m-1.5 border-0 rounded-xl cursor-pointer lg:m-2.5 text-maintext lg:text-sm font-semibold font-main hover:bg-neutral-700"
@@ -200,6 +203,7 @@
   </div>
 </div>
 <div
+  id="catalogue-wrapper"
   *ngIf="catalogueOpen"
   class="fixed w-full left-0 z-40 overflow-y-auto"
   (click)="$event.stopPropagation()"

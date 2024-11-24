@@ -26,4 +26,19 @@ describe('RegistrationPageComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  it('should render all inputs', () => {
+    let inputIds: {
+      Id: string;
+    }[] = [
+      { Id: 'login' },
+      { Id: 'password' },
+      { Id: 'email' },
+      { Id: 'passwordRepeat' },
+    ];
+
+    inputIds.forEach((testCase) => {
+      let input = document.getElementById(testCase.Id) as HTMLInputElement;
+      expect(input).toBeTruthy();
+    });
+  });
 });

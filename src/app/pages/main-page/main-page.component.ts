@@ -3,7 +3,7 @@ import { BookCardComponent } from '../../components/book-card/book-card.componen
 import Book from '../../models/book.model';
 import { CommonModule } from '@angular/common';
 import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { catchError, first, Observable, of, Subscription } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { BookService } from '../../service/http/book.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons';

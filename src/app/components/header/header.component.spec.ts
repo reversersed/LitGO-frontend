@@ -7,6 +7,9 @@ import { signal } from '@angular/core';
 import { AuthorService } from '../../service/http/author.service';
 import { BookService } from '../../service/http/book.service';
 import { CategoryService } from '../../service/http/category.service';
+import GenericService from '../../service/http/generic.service';
+import { of } from 'rxjs';
+import Category from '../../models/category.model';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -15,6 +18,7 @@ describe('HeaderComponent', () => {
   let authorService: jasmine.SpyObj<AuthorService>;
   let categoryService: jasmine.SpyObj<CategoryService>;
   let bookService: jasmine.SpyObj<BookService>;
+  let genreService: jasmine.SpyObj<GenericService>;
 
   beforeEach(async () => {
     userServiceSpy = jasmine.createSpyObj('UserService', [
@@ -59,5 +63,39 @@ describe('HeaderComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(userServiceSpy.CurrentUser).toHaveBeenCalled();
+  });
+
+  it('should render main logo button', () => {
+    let button = document.getElementById('main-logo') as HTMLAnchorElement;
+    expect(button).toBeTruthy();
+    expect(button.innerText).toEqual('LitGO');
+  });
+  it('should render catalogue after button click and close after another click', () => {
+    userServiceSpy.CurrentUser.and.returnValue(signal(null));
+    categoryService.getAll.and.returnValue(
+      of([
+        { name: 'Категория', translitname: 'category', genres: [] },
+      ] as Category[])
+    );
+    fixture.detectChanges();
+
+    const button = document.getElementById(
+      'catalogue-button'
+    ) as HTMLButtonElement;
+    expect(button).toBeTruthy();
+
+    const event = new Event('click');
+    button.dispatchEvent(event);
+    fixture.detectChanges();
+
+    let catalogue = document.getElementById('catalogue-wrapper');
+    expect(catalogue).toBeTruthy();
+    expect(categoryService.getAll).toHaveBeenCalled();
+
+    button.dispatchEvent(event);
+    fixture.detectChanges();
+
+    catalogue = document.getElementById('catalogue-wrapper');
+    expect(catalogue).toBeFalsy();
   });
 });
