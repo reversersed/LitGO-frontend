@@ -146,10 +146,12 @@ export class GenreSearchPageComponent implements OnInit, OnDestroy {
   }
   categorySlice() {
     return this.genreExtended
-      ? this.currentCategory?.genres.filter((v) =>
-          v.name.includes(this.genreSearch) ? v : null
+      ? this.currentCategory?.genres?.filter((v) =>
+          v.name.toLowerCase().includes(this.genreSearch.toLowerCase())
+            ? v
+            : null
         )
-      : this.currentCategory?.genres.slice(0, 10);
+      : this.currentCategory?.genres?.slice(0, 10);
   }
   genreSearchUpdate($event: Event) {
     this.genreSearch = ($event.target as HTMLInputElement).value;

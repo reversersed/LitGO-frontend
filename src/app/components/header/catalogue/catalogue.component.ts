@@ -26,7 +26,7 @@ export class CatalogueComponent implements OnInit {
   ngOnInit(): void {
     this.CategoryList$ = this.CategoryService.getAll();
     this.CategoryList$.pipe(first()).subscribe((c) =>
-      c.forEach((g) => (this.totalGenres += g.genres.length))
+      c.forEach((g) => (this.totalGenres += g.genres?.length ?? 0))
     );
   }
   getBookNoun = (number: number) =>

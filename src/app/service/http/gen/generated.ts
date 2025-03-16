@@ -18,7 +18,842 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 @Injectable({
     providedIn: 'root'
 })
-export class ApiClient {
+export class AuthorClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Find authors
+     * @param id (optional) array of authors id to find
+
+    @gotags: form:"id" validate:"primitiveid,required_without_all=Translit"
+     * @param translit (optional) array of translit names to find
+
+    @gotags: form:"translit" validate:"required_without_all=Id"
+     * @return A successful response.
+     */
+    getAuthors(id: string[] | null | undefined, translit: string[] | null | undefined): Observable<AuthorsGetAuthorsResponse> {
+        let url_ = this.baseUrl + "/api/v1/authors?";
+        if (id !== undefined && id !== null)
+            id && id.forEach(item => { url_ += "id=" + encodeURIComponent("" + item) + "&"; });
+        if (translit !== undefined && translit !== null)
+            translit && translit.forEach(item => { url_ += "translit=" + encodeURIComponent("" + item) + "&"; });
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAuthors(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAuthors(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AuthorsGetAuthorsResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AuthorsGetAuthorsResponse>;
+        }));
+    }
+
+    protected processGetAuthors(response: HttpResponseBase): Observable<AuthorsGetAuthorsResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AuthorsGetAuthorsResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Find authors list
+     * @param query (optional) query to find
+
+    @gotags: form:"query" validate:"required"
+     * @param limit (optional) max objects to find
+
+    @gotags: form:"limit" validate:"required,gte=1,lte=50"
+     * @param page (optional) page to find
+
+    @gotags: form:"page" validate:"gte=0"
+     * @param rating (optional) rating to find
+
+    @gotags: form:"rating" validate:"gte=0,lte=5"
+     * @return A successful response.
+     */
+    findAuthors(query: string | null | undefined, limit: number | null | undefined, page: number | null | undefined, rating: number | null | undefined): Observable<AuthorsGetAuthorsResponse> {
+        let url_ = this.baseUrl + "/api/v1/authors/list?";
+        if (query !== undefined && query !== null)
+            url_ += "query=" + encodeURIComponent("" + query) + "&";
+        if (limit !== undefined && limit !== null)
+            url_ += "limit=" + encodeURIComponent("" + limit) + "&";
+        if (page !== undefined && page !== null)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (rating !== undefined && rating !== null)
+            url_ += "rating=" + encodeURIComponent("" + rating) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFindAuthors(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFindAuthors(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AuthorsGetAuthorsResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AuthorsGetAuthorsResponse>;
+        }));
+    }
+
+    protected processFindAuthors(response: HttpResponseBase): Observable<AuthorsGetAuthorsResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AuthorsGetAuthorsResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class BookClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Get book by id
+     * @param query (optional) book's translit name or id to find
+
+    @gotags: form:"query" validate:"required"
+     * @return A successful response.
+     */
+    getBook(query: string | null | undefined): Observable<BooksGetBookResponse> {
+        let url_ = this.baseUrl + "/api/v1/book?";
+        if (query !== undefined && query !== null)
+            url_ += "query=" + encodeURIComponent("" + query) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBook(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBook(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BooksGetBookResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BooksGetBookResponse>;
+        }));
+    }
+
+    protected processGetBook(response: HttpResponseBase): Observable<BooksGetBookResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BooksGetBookResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Create book
+     * @return A successful response.
+     */
+    createBook(body: BooksCreateBookRequest): Observable<BooksCreateBookResponse> {
+        let url_ = this.baseUrl + "/api/v1/book";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateBook(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateBook(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BooksCreateBookResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BooksCreateBookResponse>;
+        }));
+    }
+
+    protected processCreateBook(response: HttpResponseBase): Observable<BooksCreateBookResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BooksCreateBookResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Find book by query
+     * @param query (optional) query to find
+
+    @gotags: form:"query" validate:"max=128"
+     * @param limit (optional) max objects to find
+
+    @gotags: form:"limit" validate:"required,gte=1,lte=50"
+     * @param page (optional) page to find
+
+    @gotags: form:"page" validate:"gte=0"
+     * @param rating (optional) minimum rating to find
+
+    @gotags: form:"rating" validate:"gte=0,lte=5"
+     * @param sorttype (optional) @gotags: form:"sorttype" validate:"oneof=Popular Newest"
+     * @return A successful response.
+     */
+    findBook(query: string | null | undefined, limit: number | null | undefined, page: number | null | undefined, rating: number | null | undefined, sorttype: string | null | undefined): Observable<BooksFindBookResponse> {
+        let url_ = this.baseUrl + "/api/v1/book/find?";
+        if (query !== undefined && query !== null)
+            url_ += "query=" + encodeURIComponent("" + query) + "&";
+        if (limit !== undefined && limit !== null)
+            url_ += "limit=" + encodeURIComponent("" + limit) + "&";
+        if (page !== undefined && page !== null)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (rating !== undefined && rating !== null)
+            url_ += "rating=" + encodeURIComponent("" + rating) + "&";
+        if (sorttype !== undefined && sorttype !== null)
+            url_ += "sorttype=" + encodeURIComponent("" + sorttype) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFindBook(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFindBook(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BooksFindBookResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BooksFindBookResponse>;
+        }));
+    }
+
+    protected processFindBook(response: HttpResponseBase): Observable<BooksFindBookResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BooksFindBookResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Get book by genre
+     * @param query (optional) Query can be translit name or genre id
+
+    @gotags: form:"query" validate:"required"
+     * @param sorttype (optional) @gotags: form:"sorttype" validate:"oneof=Popular Newest"
+     * @param onlyhighrating (optional) @gotags: form:"onlyhighrating"
+     * @param limit (optional) @gotags: form:"limit" validate:"gte=1,lte=50"
+     * @param page (optional) @gotags: form:"page" validate:"gte=0"
+     * @return A successful response.
+     */
+    getBookByGenre(query: string | null | undefined, sorttype: string | null | undefined, onlyhighrating: boolean | null | undefined, limit: number | null | undefined, page: number | null | undefined): Observable<BooksGetBookByGenreResponse> {
+        let url_ = this.baseUrl + "/api/v1/book/genre?";
+        if (query !== undefined && query !== null)
+            url_ += "query=" + encodeURIComponent("" + query) + "&";
+        if (sorttype !== undefined && sorttype !== null)
+            url_ += "sorttype=" + encodeURIComponent("" + sorttype) + "&";
+        if (onlyhighrating !== undefined && onlyhighrating !== null)
+            url_ += "onlyhighrating=" + encodeURIComponent("" + onlyhighrating) + "&";
+        if (limit !== undefined && limit !== null)
+            url_ += "limit=" + encodeURIComponent("" + limit) + "&";
+        if (page !== undefined && page !== null)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBookByGenre(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBookByGenre(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BooksGetBookByGenreResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BooksGetBookByGenreResponse>;
+        }));
+    }
+
+    protected processGetBookByGenre(response: HttpResponseBase): Observable<BooksGetBookByGenreResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BooksGetBookByGenreResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Find authors list
+     * @param id (optional) array of authors id to find
+
+    @gotags: form:"id" validate:"primitiveid,required_without_all=Translit"
+     * @param translit (optional) array of translit names to find
+
+    @gotags: form:"translit" validate:"required_without_all=Id"
+     * @return A successful response.
+     */
+    getBookList(id: string[] | null | undefined, translit: string[] | null | undefined): Observable<BooksGetBookListResponse> {
+        let url_ = this.baseUrl + "/api/v1/book/list?";
+        if (id !== undefined && id !== null)
+            id && id.forEach(item => { url_ += "id=" + encodeURIComponent("" + item) + "&"; });
+        if (translit !== undefined && translit !== null)
+            translit && translit.forEach(item => { url_ += "translit=" + encodeURIComponent("" + item) + "&"; });
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBookList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBookList(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BooksGetBookListResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BooksGetBookListResponse>;
+        }));
+    }
+
+    protected processGetBookList(response: HttpResponseBase): Observable<BooksGetBookListResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BooksGetBookListResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class GenreClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Get category or genre by query
+     * @param query (optional) query to find. can be hex id or translit name
+
+    @gotags: form:"query" validate:"required"
+     * @return A successful response.
+     */
+    getOneOf(query: string | null | undefined): Observable<GenresGetCategoryOrGenreResponse> {
+        let url_ = this.baseUrl + "/api/v1/genre?";
+        if (query !== undefined && query !== null)
+            url_ += "query=" + encodeURIComponent("" + query) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetOneOf(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetOneOf(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GenresGetCategoryOrGenreResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GenresGetCategoryOrGenreResponse>;
+        }));
+    }
+
+    protected processGetOneOf(response: HttpResponseBase): Observable<GenresGetCategoryOrGenreResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GenresGetCategoryOrGenreResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Get all categories and genres list
+     * @return A successful response.
+     */
+    getAll(): Observable<GenresGetAllResponse> {
+        let url_ = this.baseUrl + "/api/v1/genre/all";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GenresGetAllResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GenresGetAllResponse>;
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<GenresGetAllResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GenresGetAllResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Get whole tree
+     * @param query (optional) query to find. can be hex id or translit name
+
+    @gotags: form:"query" validate:"required"
+     * @return A successful response.
+     */
+    getTree(query: string | null | undefined): Observable<GenresCategoryResponse> {
+        let url_ = this.baseUrl + "/api/v1/genre/tree?";
+        if (query !== undefined && query !== null)
+            url_ += "query=" + encodeURIComponent("" + query) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTree(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTree(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GenresCategoryResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GenresCategoryResponse>;
+        }));
+    }
+
+    protected processGetTree(response: HttpResponseBase): Observable<GenresCategoryResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GenresCategoryResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class ReviewClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Adds new review to book
+     * @return A successful response.
+     */
+    createBookReview(body: ReviewsCreateBookReviewRequest): Observable<ReviewsCreateBookReviewResponse> {
+        let url_ = this.baseUrl + "/api/v1/review/book";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateBookReview(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateBookReview(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ReviewsCreateBookReviewResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ReviewsCreateBookReviewResponse>;
+        }));
+    }
+
+    protected processCreateBookReview(response: HttpResponseBase): Observable<ReviewsCreateBookReviewResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ReviewsCreateBookReviewResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Get reviews of book with provided {id}
+     * @param id Book ID to search reviews of
+
+    @gotags: form:"id" validate:"required,primitiveid"
+     * @param page (optional) Page number to search
+
+    @gotags: form:"page" validate:"gte=0"
+     * @param pageSize (optional) Reviews count per page
+
+    @gotags: form:"pagesize" validate:"gte=1"
+     * @return A successful response.
+     */
+    getBookReviews(id: string, page: number | null | undefined, pageSize: number | null | undefined): Observable<ReviewsGetBookReviewsResponse> {
+        let url_ = this.baseUrl + "/api/v1/review/{id}?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (page !== undefined && page !== null)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (pageSize !== undefined && pageSize !== null)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBookReviews(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBookReviews(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ReviewsGetBookReviewsResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ReviewsGetBookReviewsResponse>;
+        }));
+    }
+
+    protected processGetBookReviews(response: HttpResponseBase): Observable<ReviewsGetBookReviewsResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ReviewsGetBookReviewsResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class UserClient {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -93,6 +928,65 @@ export class ApiClient {
     }
 
     /**
+     * Authenticate user
+     * @return A successful response.
+     */
+    auth(body: SharedEmpty): Observable<SharedUserCredentials> {
+        let url_ = this.baseUrl + "/api/v1/users/auth";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAuth(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAuth(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SharedUserCredentials>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SharedUserCredentials>;
+        }));
+    }
+
+    protected processAuth(response: HttpResponseBase): Observable<SharedUserCredentials> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SharedUserCredentials.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
      * Login user
      * @return A successful response.
      */
@@ -139,6 +1033,65 @@ export class ApiClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = UsersLoginResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Logout user
+     * @return A successful response.
+     */
+    logout(body: SharedEmpty): Observable<SharedEmpty> {
+        let url_ = this.baseUrl + "/api/v1/users/logout";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processLogout(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processLogout(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SharedEmpty>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SharedEmpty>;
+        }));
+    }
+
+    protected processLogout(response: HttpResponseBase): Observable<SharedEmpty> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SharedEmpty.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else {
@@ -311,60 +1264,12 @@ export interface IAuthorsGetAuthorsResponse {
     authors?: AuthorsAuthorModel[] | undefined;
 }
 
-export class BooksAuthorModel implements IBooksAuthorModel {
-    id?: string | undefined;
-    name?: string | undefined;
-    profilepicture?: string | undefined;
-    translitname?: string | undefined;
-
-    constructor(data?: IBooksAuthorModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.profilepicture = _data["profilepicture"];
-            this.translitname = _data["translitname"];
-        }
-    }
-
-    static fromJS(data: any): BooksAuthorModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new BooksAuthorModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["profilepicture"] = this.profilepicture;
-        data["translitname"] = this.translitname;
-        return data;
-    }
-}
-
-export interface IBooksAuthorModel {
-    id?: string | undefined;
-    name?: string | undefined;
-    profilepicture?: string | undefined;
-    translitname?: string | undefined;
-}
-
 export class BooksBookModel implements IBooksBookModel {
-    authors?: BooksAuthorModel[] | undefined;
-    category?: BooksCategoryModel | undefined;
+    authors?: AuthorsAuthorModel[] | undefined;
+    category?: GenresCategoryModel | undefined;
     description?: string | undefined;
     filepath?: string | undefined;
-    genre?: BooksGenreModel | undefined;
+    genre?: GenresGenreModel | undefined;
     id?: string | undefined;
     name?: string | undefined;
     pages?: number | undefined;
@@ -390,12 +1295,12 @@ export class BooksBookModel implements IBooksBookModel {
             if (Array.isArray(_data["authors"])) {
                 this.authors = [] as any;
                 for (let item of _data["authors"])
-                    this.authors!.push(BooksAuthorModel.fromJS(item));
+                    this.authors!.push(AuthorsAuthorModel.fromJS(item));
             }
-            this.category = _data["category"] ? BooksCategoryModel.fromJS(_data["category"]) : <any>undefined;
+            this.category = _data["category"] ? GenresCategoryModel.fromJS(_data["category"]) : <any>undefined;
             this.description = _data["description"];
             this.filepath = _data["filepath"];
-            this.genre = _data["genre"] ? BooksGenreModel.fromJS(_data["genre"]) : <any>undefined;
+            this.genre = _data["genre"] ? GenresGenreModel.fromJS(_data["genre"]) : <any>undefined;
             this.id = _data["id"];
             this.name = _data["name"];
             this.pages = _data["pages"];
@@ -442,11 +1347,11 @@ export class BooksBookModel implements IBooksBookModel {
 }
 
 export interface IBooksBookModel {
-    authors?: BooksAuthorModel[] | undefined;
-    category?: BooksCategoryModel | undefined;
+    authors?: AuthorsAuthorModel[] | undefined;
+    category?: GenresCategoryModel | undefined;
     description?: string | undefined;
     filepath?: string | undefined;
-    genre?: BooksGenreModel | undefined;
+    genre?: GenresGenreModel | undefined;
     id?: string | undefined;
     name?: string | undefined;
     pages?: number | undefined;
@@ -459,12 +1364,22 @@ export interface IBooksBookModel {
     written?: number | undefined;
 }
 
-export class BooksCategoryModel implements IBooksCategoryModel {
-    id?: string | undefined;
+export class BooksCreateBookRequest implements IBooksCreateBookRequest {
+    /** @gotags: validate:"required,primitiveid" form:"Authors" */
+    authors?: string[] | undefined;
+    /** @gotags: validate:"required,min=16,max=1024" form:"Description" */
+    description?: string | undefined;
+    /** @gotags: validate:"required" form:"Book" */
+    filepath?: string | undefined;
+    /** @gotags: validate:"required,primitiveid" form:"Genre" */
+    genre?: string | undefined;
+    /** @gotags: validate:"required,min=4,max=64" form:"Name" */
     name?: string | undefined;
-    translitname?: string | undefined;
+    /** @gotags: validate:"required" form:"Picture" */
+    picture?: string | undefined;
+    price?: number | undefined;
 
-    constructor(data?: IBooksCategoryModel) {
+    constructor(data?: IBooksCreateBookRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -475,32 +1390,58 @@ export class BooksCategoryModel implements IBooksCategoryModel {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            if (Array.isArray(_data["authors"])) {
+                this.authors = [] as any;
+                for (let item of _data["authors"])
+                    this.authors!.push(item);
+            }
+            this.description = _data["description"];
+            this.filepath = _data["filepath"];
+            this.genre = _data["genre"];
             this.name = _data["name"];
-            this.translitname = _data["translitname"];
+            this.picture = _data["picture"];
+            this.price = _data["price"];
         }
     }
 
-    static fromJS(data: any): BooksCategoryModel {
+    static fromJS(data: any): BooksCreateBookRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new BooksCategoryModel();
+        let result = new BooksCreateBookRequest();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
+        if (Array.isArray(this.authors)) {
+            data["authors"] = [];
+            for (let item of this.authors)
+                data["authors"].push(item);
+        }
+        data["description"] = this.description;
+        data["filepath"] = this.filepath;
+        data["genre"] = this.genre;
         data["name"] = this.name;
-        data["translitname"] = this.translitname;
+        data["picture"] = this.picture;
+        data["price"] = this.price;
         return data;
     }
 }
 
-export interface IBooksCategoryModel {
-    id?: string | undefined;
+export interface IBooksCreateBookRequest {
+    /** @gotags: validate:"required,primitiveid" form:"Authors" */
+    authors?: string[] | undefined;
+    /** @gotags: validate:"required,min=16,max=1024" form:"Description" */
+    description?: string | undefined;
+    /** @gotags: validate:"required" form:"Book" */
+    filepath?: string | undefined;
+    /** @gotags: validate:"required,primitiveid" form:"Genre" */
+    genre?: string | undefined;
+    /** @gotags: validate:"required,min=4,max=64" form:"Name" */
     name?: string | undefined;
-    translitname?: string | undefined;
+    /** @gotags: validate:"required" form:"Picture" */
+    picture?: string | undefined;
+    price?: number | undefined;
 }
 
 export class BooksCreateBookResponse implements IBooksCreateBookResponse {
@@ -581,50 +1522,6 @@ export class BooksFindBookResponse implements IBooksFindBookResponse {
 
 export interface IBooksFindBookResponse {
     books?: BooksBookModel[] | undefined;
-}
-
-export class BooksGenreModel implements IBooksGenreModel {
-    id?: string | undefined;
-    name?: string | undefined;
-    translitname?: string | undefined;
-
-    constructor(data?: IBooksGenreModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.translitname = _data["translitname"];
-        }
-    }
-
-    static fromJS(data: any): BooksGenreModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new BooksGenreModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["translitname"] = this.translitname;
-        return data;
-    }
-}
-
-export interface IBooksGenreModel {
-    id?: string | undefined;
-    name?: string | undefined;
-    translitname?: string | undefined;
 }
 
 export class BooksGetBookByGenreResponse implements IBooksGetBookByGenreResponse {
@@ -1023,6 +1920,54 @@ export interface IProtobufAny {
     [key: string]: any;
 }
 
+export class ReviewsCreateBookReviewRequest implements IReviewsCreateBookReviewRequest {
+    creatorId?: string | undefined;
+    modelId?: string | undefined;
+    rating?: number | undefined;
+    text?: string | undefined;
+
+    constructor(data?: IReviewsCreateBookReviewRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.creatorId = _data["creatorId"];
+            this.modelId = _data["modelId"];
+            this.rating = _data["rating"];
+            this.text = _data["text"];
+        }
+    }
+
+    static fromJS(data: any): ReviewsCreateBookReviewRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReviewsCreateBookReviewRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["creatorId"] = this.creatorId;
+        data["modelId"] = this.modelId;
+        data["rating"] = this.rating;
+        data["text"] = this.text;
+        return data;
+    }
+}
+
+export interface IReviewsCreateBookReviewRequest {
+    creatorId?: string | undefined;
+    modelId?: string | undefined;
+    rating?: number | undefined;
+    text?: string | undefined;
+}
+
 export class ReviewsCreateBookReviewResponse implements IReviewsCreateBookReviewResponse {
     review?: ReviewsReviewModel | undefined;
 
@@ -1263,6 +2208,88 @@ export interface IRpcStatus {
     code?: number | undefined;
     details?: ProtobufAny[] | undefined;
     message?: string | undefined;
+}
+
+export class SharedEmpty implements ISharedEmpty {
+
+    constructor(data?: ISharedEmpty) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): SharedEmpty {
+        data = typeof data === 'object' ? data : {};
+        let result = new SharedEmpty();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface ISharedEmpty {
+}
+
+export class SharedUserCredentials implements ISharedUserCredentials {
+    id?: string | undefined;
+    login?: string | undefined;
+    roles?: string[] | undefined;
+
+    constructor(data?: ISharedUserCredentials) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.login = _data["login"];
+            if (Array.isArray(_data["roles"])) {
+                this.roles = [] as any;
+                for (let item of _data["roles"])
+                    this.roles!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): SharedUserCredentials {
+        data = typeof data === 'object' ? data : {};
+        let result = new SharedUserCredentials();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["login"] = this.login;
+        if (Array.isArray(this.roles)) {
+            data["roles"] = [];
+            for (let item of this.roles)
+                data["roles"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface ISharedUserCredentials {
+    id?: string | undefined;
+    login?: string | undefined;
+    roles?: string[] | undefined;
 }
 
 export class UsersLoginRequest implements IUsersLoginRequest {

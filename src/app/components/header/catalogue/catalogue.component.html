@@ -26,11 +26,11 @@
         <div
           class="mt-2 mb-8 font-main min-h-full"
           [ngClass]="[
-            currentCategory.genres.length > 18 * 3
+            currentCategory.genres && currentCategory.genres.length > 18 * 3
               ? 'md:columns-2 lg:columns-3 xl:columns-4'
-              : currentCategory.genres.length > 18 * 2
+              : currentCategory.genres && currentCategory.genres.length > 18 * 2
               ? 'md:columns-2 lg:columns-3'
-              : currentCategory.genres.length > 18
+              : currentCategory.genres && currentCategory.genres.length > 18
               ? 'md:columns-2'
               : ''
           ]"
@@ -73,7 +73,7 @@
         >
         <ul class="mt-2">
           <li
-            *ngFor="let genre of category.genres.slice(0, 5)"
+            *ngFor="let genre of category.genres?.slice(0, 5)"
             [id]="genre.translitname"
             class="mb-1.5 lg:mb-0"
           >
@@ -92,7 +92,7 @@
 
         <a (click)="currentCategory = category" class="cursor-pointer">
           <p
-            *ngIf="category.genres.length > 5"
+            *ngIf="category.genres && category.genres.length > 5"
             class="underline decoration-dotted hover:text-contrast text-blacktext/50 font-normal transition-colors duration-300 text-xs sm:text-base"
           >
             Все {{ category.genres.length }}

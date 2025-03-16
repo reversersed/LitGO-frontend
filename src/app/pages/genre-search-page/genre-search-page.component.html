@@ -154,9 +154,15 @@
             class="w-full rounded-md px-3 py-0.5 hover:bg-accent/10"
             >{{ genre.name }}</a
           >
+          <span
+            *ngIf="categorySlice()?.length === 0"
+            class="pointer-events-none w-full rounded-md px-3 py-0.5"
+          >
+            Не найдено
+          </span>
         </div>
         <a
-          *ngIf="currentCategory.genres.length > 10"
+          *ngIf="currentCategory.genres && currentCategory.genres.length > 10"
           class="px-3 text-contrast hover:text-contrast/80 transition-all duration-200 cursor-pointer"
           (click)="extendGenre(undefined)"
           >{{ genreExtended ? "Скрыть" : "Показать все" }}</a

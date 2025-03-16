@@ -27,21 +27,4 @@ describe('BookService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
-
-  it('should call request to api', () => {
-    let sub = service.getSuggestion('query request').subscribe();
-
-    expect(
-      controller.expectOne(
-        (environment.serverString.length > 0
-          ? environment.serverString + ':' + environment.serverPort
-          : '') +
-          '/' +
-          environment.serverEntryPoint +
-          '/books/search?query=query%20request&limit=2'
-      )
-    ).toBeTruthy();
-
-    sub.unsubscribe();
-  });
 });

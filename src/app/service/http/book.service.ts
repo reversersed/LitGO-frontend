@@ -1,33 +1,33 @@
-import { Injectable } from '@angular/core';
-import GenericService from './generic.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import Book from '../../models/book.model';
-import { catchError, first, of } from 'rxjs';
-import { only } from 'node:test';
+import { catchError, first, map, Observable, of } from 'rxjs';
+import {
+  BookClient,
+  BooksFindBookResponse,
+  BooksGetBookByGenreResponse,
+} from './gen/generated';
 
 @Injectable({
   providedIn: 'root',
 })
-export class BookService extends GenericService {
-  constructor(private http: HttpClient) {
-    super('books');
+export class BookService {
+  private apiClient = inject(BookClient);
+
+  getBook(query: string): Observable<Book> {
+    return this.apiClient.getBook(query).pipe(
+      first(),
+      map((value) => value.book as unknown as Book)
+    );
   }
-  getBook(query: string) {
-    return this.http
-      .get<Book>(this.buildPath(), {
-        params: new HttpParams().set('query', query),
+  getSuggestion(query: string): Observable<Book[]> {
+    return this.apiClient.findBook(query, 2, 0, 0, undefined).pipe(
+      first(),
+      map((value) => {
+        if (value instanceof BooksFindBookResponse)
+          return value.books as unknown as Book[];
+        return value;
       })
-      .pipe(first());
-  }
-  getSuggestion(query: string) {
-    return this.http
-      .get<Book[]>(this.buildPath('search'), {
-        params: new HttpParams().set('query', query).set('limit', 2),
-      })
-      .pipe(
-        first(),
-        catchError(() => of([]))
-      );
+    );
   }
   find(
     query: string | null,
@@ -35,21 +35,16 @@ export class BookService extends GenericService {
     page: number,
     sort: 'Popular' | 'Newest',
     rating: number
-  ) {
-    let params = new HttpParams()
-      .set('limit', limit)
-      .set('page', page)
-      .set('sorttype', sort)
-      .set('rating', rating);
-    if (query) {
-      params.append('query', query);
-    }
-
-    return this.http
-      .get<Book[]>(this.buildPath('search'), {
-        params: params,
+  ): Observable<Book[]> {
+    return this.apiClient.findBook(query, limit, page, rating, sort).pipe(
+      first(),
+      catchError(() => of([] as Book[])),
+      map((value) => {
+        if (value instanceof BooksFindBookResponse)
+          return value.books as unknown as Book[];
+        return value;
       })
-      .pipe(first());
+    );
   }
   getByGenre(
     query: string,
@@ -58,14 +53,15 @@ export class BookService extends GenericService {
     limit: number,
     page: number
   ) {
-    return this.http
-      .get<Book[]>(this.buildPath('genre/' + query), {
-        params: new HttpParams()
-          .set('sorttype', sorttype)
-          .set('onlyhighrating', onlyhighrating)
-          .set('limit', limit)
-          .set('page', page),
-      })
-      .pipe(first());
+    return this.apiClient
+      .getBookByGenre(query, sorttype, onlyhighrating, limit, page)
+      .pipe(
+        first(),
+        map((value) => {
+          if (value instanceof BooksGetBookByGenreResponse)
+            return value.books as unknown as Book[];
+          return value;
+        })
+      );
   }
 }

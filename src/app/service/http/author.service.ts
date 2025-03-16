@@ -1,25 +1,23 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import GenericService from './generic.service';
-import { catchError, first, of } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { catchError, first, map, Observable, of } from 'rxjs';
+import { AuthorClient, AuthorsGetAuthorsResponse } from './gen/generated';
 import Author from '../../models/author.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthorService extends GenericService {
-  constructor(private http: HttpClient) {
-    super('authors');
-  }
+export class AuthorService {
+  private apiClient = inject(AuthorClient);
 
-  getSuggestion(query: string) {
-    return this.http
-      .get<Author[]>(this.buildPath('search'), {
-        params: new HttpParams().set('query', query).set('limit', 2),
+  getSuggestion(query: string): Observable<Author[]> {
+    return this.apiClient.findAuthors(query, 2, 0, 0).pipe(
+      first(),
+      catchError(() => of([] as Author[])),
+      map((value) => {
+        if (value instanceof AuthorsGetAuthorsResponse)
+          return value.authors as Author[];
+        return value;
       })
-      .pipe(
-        first(),
-        catchError(() => of([]))
-      );
+    );
   }
 }

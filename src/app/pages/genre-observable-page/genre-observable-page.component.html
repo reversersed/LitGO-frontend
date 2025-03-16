@@ -17,11 +17,20 @@
         <a
           *ngFor="let genre of category.genres"
           [routerLink]="'/genre/' + genre.translitname"
-          class="cursor-pointer mr-4 md:mr-8 mb-1 md:mb-2 text-sm md:text-base sm:font-semibold text-contrast hover:text-contrast/60"
-          ><span class="transition-all duration-200">{{ genre.name }}</span
-          ><span class="font-main !text-blacktext/60 ml-1">{{
-            genre.bookcount
-          }}</span></a
+          class="cursor-pointer mr-4 md:mr-8 mb-1 md:mb-2 text-sm md:text-base sm:font-semibold"
+          ><span
+            class="transition-all duration-200"
+            [ngClass]="
+              genre.bookcount == 0
+                ? 'text-blacktext/60 hover:text-contrast/80'
+                : 'text-contrast hover:text-contrast/80'
+            "
+            >{{ genre.name }}</span
+          ><span
+            class="font-main !text-blacktext/60 ml-1"
+            [ngClass]="(genre.bookcount == 0 && 'hidden') || undefined"
+            >{{ genre.bookcount }}</span
+          ></a
         >
       </div>
     </div></ng-container

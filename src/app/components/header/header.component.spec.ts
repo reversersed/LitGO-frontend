@@ -7,7 +7,6 @@ import { signal } from '@angular/core';
 import { AuthorService } from '../../service/http/author.service';
 import { BookService } from '../../service/http/book.service';
 import { CategoryService } from '../../service/http/category.service';
-import GenericService from '../../service/http/generic.service';
 import { of } from 'rxjs';
 import Category from '../../models/category.model';
 
@@ -18,7 +17,6 @@ describe('HeaderComponent', () => {
   let authorService: jasmine.SpyObj<AuthorService>;
   let categoryService: jasmine.SpyObj<CategoryService>;
   let bookService: jasmine.SpyObj<BookService>;
-  let genreService: jasmine.SpyObj<GenericService>;
 
   beforeEach(async () => {
     userServiceSpy = jasmine.createSpyObj('UserService', [

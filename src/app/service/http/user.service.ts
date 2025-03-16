@@ -1,22 +1,22 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import GenericService from './generic.service';
 import { UserLoginModel } from '../../models/user.model';
-import { catchError, EMPTY, first, map, of } from 'rxjs';
-import { ApiClient, UsersLoginRequest } from './gen/generated';
+import { catchError, EMPTY, first, map, Observable, of } from 'rxjs';
+import {
+  SharedEmpty,
+  UserClient,
+  UsersLoginRequest,
+  UsersRegistrationRequest,
+} from './gen/generated';
 
 @Injectable({
   providedIn: 'root',
 })
-export class UserService extends GenericService {
+export class UserService {
   private user = signal<UserLoginModel | null>(null);
-  private apiClient = inject(ApiClient);
+  private apiClient = inject(UserClient);
 
-  constructor(private http: HttpClient) {
-    super('users');
-  }
-  public Auth() {
-    return this.http.get(this.buildPath('auth'), {}).pipe(
+  public Auth(): Observable<UserLoginModel | null> {
+    return this.apiClient.auth({} as SharedEmpty).pipe(
       first(),
       catchError(() => {
         this.user.set(null);
@@ -33,13 +33,17 @@ export class UserService extends GenericService {
   }
 
   public LogoutUser() {
-    return this.http.post(this.buildPath('logout'), {}).pipe(
+    return this.apiClient.logout({} as SharedEmpty).pipe(
       first(),
       catchError(() => EMPTY),
       map(() => this.user.set(null))
     );
   }
-  public Login(login: string, password: string, rememberMe: boolean) {
+  public Login(
+    login: string,
+    password: string,
+    rememberMe: boolean
+  ): Observable<UserLoginModel> {
     return this.apiClient
       .login({
         login: login,
@@ -50,7 +54,7 @@ export class UserService extends GenericService {
         first(),
         map((user) => {
           this.user.set(user as UserLoginModel);
-          return user;
+          return user as UserLoginModel;
         })
       );
   }
@@ -60,20 +64,20 @@ export class UserService extends GenericService {
     repeat: string,
     email: string,
     rememberMe: boolean
-  ) {
-    return this.http
-      .post<UserLoginModel>(this.buildPath('signin'), {
+  ): Observable<UserLoginModel> {
+    return this.apiClient
+      .registerUser({
         login: login,
         password: password,
-        password_repeat: repeat,
+        passwordRepeat: repeat,
         email: email,
         rememberMe: rememberMe,
-      })
+      } as UsersRegistrationRequest)
       .pipe(
         first(),
         map((user) => {
-          this.user.set(user);
-          return user;
+          this.user.set(user as UserLoginModel);
+          return user as UserLoginModel;
         })
       );
   }
