@@ -13,9 +13,7 @@ export default abstract class GenericService {
 
   protected buildPath(route?: string): string {
     let server =
-      (environment.serverString.length > 0
-        ? environment.serverString + ':' + environment.serverPort
-        : '') +
+      (environment.serverString.length > 0 ? environment.serverString : '') +
       '/' +
       environment.serverEntryPoint +
       '/' +
@@ -23,11 +21,5 @@ export default abstract class GenericService {
       (route !== undefined ? '/' + route : '');
 
     return server;
-  }
-  protected getHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': environment.serverContentType,
-      'Access-Control-Expose-Headers': ['Cookie', 'Set-Cookie'],
-    });
   }
 }

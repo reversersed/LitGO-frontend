@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { catchError, throwError, timeout, TimeoutError } from 'rxjs';
+import { catchError, throwError, timeout } from 'rxjs';
 import HttpError, { createNullError } from '../../../models/httperror.model';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {

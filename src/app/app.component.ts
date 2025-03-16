@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, InjectionToken } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { UserService } from './service/http/user.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',

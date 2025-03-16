@@ -13,17 +13,14 @@ export class CategoryService extends GenericService {
   }
 
   public getAll() {
-    return this.http
-      .get<Category[]>(this.buildPath('all'), { headers: this.getHeaders() })
-      .pipe(
-        first(),
-        catchError(() => of([]))
-      );
+    return this.http.get<Category[]>(this.buildPath('all'), {}).pipe(
+      first(),
+      catchError(() => of([]))
+    );
   }
   public getTree(query: string) {
     return this.http
       .get<Category>(this.buildPath('tree'), {
-        headers: this.getHeaders(),
         params: new HttpParams().set('query', query),
       })
       .pipe(first());

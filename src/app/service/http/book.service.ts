@@ -15,7 +15,6 @@ export class BookService extends GenericService {
   getBook(query: string) {
     return this.http
       .get<Book>(this.buildPath(), {
-        headers: this.getHeaders(),
         params: new HttpParams().set('query', query),
       })
       .pipe(first());
@@ -23,7 +22,6 @@ export class BookService extends GenericService {
   getSuggestion(query: string) {
     return this.http
       .get<Book[]>(this.buildPath('search'), {
-        headers: this.getHeaders(),
         params: new HttpParams().set('query', query).set('limit', 2),
       })
       .pipe(
@@ -49,7 +47,6 @@ export class BookService extends GenericService {
 
     return this.http
       .get<Book[]>(this.buildPath('search'), {
-        headers: this.getHeaders(),
         params: params,
       })
       .pipe(first());
@@ -63,7 +60,6 @@ export class BookService extends GenericService {
   ) {
     return this.http
       .get<Book[]>(this.buildPath('genre/' + query), {
-        headers: this.getHeaders(),
         params: new HttpParams()
           .set('sorttype', sorttype)
           .set('onlyhighrating', onlyhighrating)

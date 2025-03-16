@@ -16,6 +16,8 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { errorInterceptor } from './service/http/interceptors/error.interceptor';
 import { credentialsInterceptor } from './service/http/interceptors/credentials.interceptor';
 import { environment } from '../environments/environment';
+import { headersInterceptor } from './service/http/interceptors/headers.interceptor';
+import { API_BASE_URL } from './service/http/gen/generated';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -34,7 +36,15 @@ export const appConfig: ApplicationConfig = {
       registrationStrategy: 'registerWhenStable:30000',
     }),
     provideHttpClient(
-      withInterceptors([credentialsInterceptor, errorInterceptor])
+      withInterceptors([
+        credentialsInterceptor,
+        headersInterceptor,
+        errorInterceptor,
+      ])
     ),
+    {
+      provide: API_BASE_URL,
+      useValue: environment.serverString,
+    },
   ],
 };

@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "dev": "ng serve",
+    "dev": "nswag run && ng serve",
     "build": "ng build",
-    "test": "ng test"
+    "test": "nswag run && ng test",
+    "gen": "nswag run"
   },
   "private": true,
   "dependencies": {
