@@ -60,12 +60,12 @@
     "
   >
     <a
-      class="text-blacktext font-semibold font-main mb-1 hyphens-auto"
+      class="text-blacktext font-semibold font-main mb-1 hyphens-auto hover:text-blacktext/80 duration-200 transition-colors"
       [routerLink]="'/book/' + bookModel.translitname"
       >{{ bookModel.name }}</a
     >
     <a
-      class="w-full h-auto font-main text-accent/80 break-all hyphens-auto"
+      class="w-full h-auto font-main text-accent/80 break-all hyphens-auto hover:text-accent/60 duration-200 transition-colors"
       [routerLink]="'/author/' + bookModel.authors[0].translitname"
       >{{ bookModel.authors[0].name }}
       {{ bookModel.authors.length > 1 ? "и др." : "" }}</a

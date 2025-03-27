@@ -26,24 +26,53 @@
       <span class="text-blacktext/80 hidden md:block">{{ book.name }}</span>
     </div>
     <!-- main body -->
-    <div class="grid grid-cols-[15%_auto_15%] gap-6 mt-6">
+    <div
+      class="flex flex-col lg:grid lg:grid-cols-[200px_auto_200px] gap-6 mt-6"
+    >
       <div
-        class="sticky flex flex-col"
-        [style.paddingTop]="verticalOffset + 'px'"
+        class="flex lg:min-w-[200px] lg:max-w-[200px] relative min-h-20 flex-col"
       >
-        <img
-          [src]="fileService.getBookCoverPath(book)"
-          class="object-contain rounded-xl"
-        />
-        <span *ngIf="book.pages">{{ book.pages }} страниц</span>
-        <a
-          [routerLink]=""
-          class="w-full text-center bg-mainbg rounded-xl text-maintext mt-4 py-2 hover:bg-mainshadow transition-all duration-150 select-none"
-          >Читать отрывок</a
+        <div class="lg:fixed lg:w-[200px] flex flex-col">
+          <img
+            [src]="fileService.getBookCoverPath(book)"
+            class="object-contain rounded-xl"
+          />
+          <span *ngIf="book.pages">{{ book.pages }} страниц</span>
+          <a
+            [routerLink]=""
+            class="w-full text-center bg-mainbg rounded-xl text-maintext mt-4 py-2 hover:bg-mainshadow transition-all duration-150 select-none"
+            >Читать отрывок</a
+          >
+        </div>
+        <div
+          class="lg:hidden flex flex-col gap-1 mt-2"
+          *ngIf="currentUser() !== null"
         >
+          <span class="text-accent font-semibold text-lg"
+            >Понравилась книга?</span
+          >
+          <div
+            class="flex flex-row w-full justify-center items-center h-fit gap-4"
+          >
+            <button
+              class="text-base font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl select-none"
+            >
+              <fa-icon [icon]="faHeart" *ngIf="book.favourite" />
+              <fa-icon [icon]="faRegularHeart" *ngIf="!book.favourite" />
+              {{ book.favourite ? "Избранное" : "В избранное" }}
+            </button>
+            <button
+              *ngIf="currentUser() !== null"
+              class="text-base font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl select-none"
+              onclick="onFavouriteSwitch"
+            >
+              Купить за {{ book.price }}₽
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="h-svh flex flex-col">
-        <span class="font-semibold text-xl mb-2">{{ book.name }}</span>
+      <div class="flex flex-col w-full">
+        <span class="font-semibold text-xl mb-2">{{ book.name }} </span>
         <span
           *ngIf="book.authors.length == 1"
           class="font-semibold text-blacktext/60"
@@ -66,7 +95,7 @@
           ></span
         >
 
-        <div class="flex items-center gap-4 mt-5">
+        <div class="flex items-center gap-4 mt-2">
           <div class="flex flex-col justify-center items-center">
             <span class="text-lg font-semibold text-blacktext/80"
               ><fa-icon
@@ -82,17 +111,71 @@
               book.reviews
             }}</span>
             <a
-              href="#reviewssection"
-              target="_self"
-              class="text-contrast text-sm -mt-2"
+              routerLink="."
+              fragment="reviews"
+              class="text-contrast text-sm -mt-2 hover:text-contrast/80 duration-200 transition-colors"
               >{{ reviewsToString(book.reviews) }}</a
             >
           </div>
-          <div #reviewssection></div>
+        </div>
+        <div class="flex flex-col mt-2">
+          <span class="text-base lg:text-lg font-semibold">Описание</span>
+          <span
+            class="hidden lg:block items-start text-justify text-accent pl-2 border-l-contrast/40 border-l-[2px]"
+            ><span
+              [ngClass]="descriptionExpanded ? '' : 'line-clamp-3'"
+              class="relative max-w-full"
+              >{{ book.description }}</span
+            >
+            <button
+              class="text-contrast font-semibold"
+              [ngClass]="descriptionExpanded ? 'ml-1' : ''"
+              (click)="descriptionExpanded = !descriptionExpanded"
+            >
+              {{ descriptionExpanded ? "Свернуть" : "Далее" }}
+            </button>
+          </span>
+          <span
+            class="lg:hidden block items-start text-justify text-accent pl-2 border-l-contrast/40 border-l-[2px]"
+            ><span
+              [ngClass]="descriptionExpanded ? '' : 'max-h-[3lh]'"
+              class="relative max-w-full block overflow-hidden text-justify"
+              >{{ book.description }}</span
+            >
+            <button
+              class="text-contrast font-semibold"
+              (click)="descriptionExpanded = !descriptionExpanded"
+            >
+              {{ descriptionExpanded ? "Свернуть" : "Далее" }}
+            </button>
+          </span>
+        </div>
+        <div id="reviews" class="flex flex-col mt-[20px]">
+          <span class="font-semibold text-lg">Отзывы о книге</span>
         </div>
       </div>
-      <div class="sticky" [style.paddingTop]="verticalOffset + 'px'">
-        Купить за {{ book.price }}₽
+      <div
+        class="min-w-[200px] max-w-[200px] w-[200px] relative hidden lg:flex flex-col"
+      >
+        <div
+          class="min-w-[200px] max-w-[200px] h-[50%] fixed flex flex-col gap-4"
+        >
+          <button
+            *ngIf="currentUser() !== null"
+            class="text-base font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl hover:bg-mainshadow transition-all duration-150 select-none"
+          >
+            <fa-icon [icon]="faHeart" *ngIf="book.favourite" />
+            <fa-icon [icon]="faRegularHeart" *ngIf="!book.favourite" />
+            {{ book.favourite ? "Избранное" : "В избранное" }}
+          </button>
+          <button
+            *ngIf="currentUser() !== null"
+            class="text-base font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl hover:bg-mainshadow transition-all duration-150 select-none"
+            onclick="onFavouriteSwitch"
+          >
+            Купить за {{ book.price }}₽
+          </button>
+        </div>
       </div>
     </div>
   </div>

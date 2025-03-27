@@ -12,7 +12,13 @@ import { BookService } from '../../service/http/book.service';
 import { CommonModule } from '@angular/common';
 import { FileService } from '../../service/file.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowLeft, faStar } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowLeft,
+  faStar,
+  faHeart,
+} from '@fortawesome/free-solid-svg-icons';
+import { faHeart as RegularHeart } from '@fortawesome/free-regular-svg-icons';
+import { UserService } from '../../service/http/user.service';
 
 @Component({
   selector: 'app-book-page',
@@ -26,11 +32,15 @@ export class BookPageComponent implements OnInit, OnDestroy {
   router = inject(Router);
   bookService = inject(BookService);
   fileService = inject(FileService);
+  userService = inject(UserService);
   paramSubscription!: Subscription;
   bookModel$!: Observable<Book>;
-  verticalOffset = 0;
   faBack = faArrowLeft;
   faStar = faStar;
+  faHeart = faHeart;
+  faRegularHeart = RegularHeart;
+  descriptionExpanded = false;
+  currentUser = this.userService.CurrentUser();
 
   reviewsToString = (number: number) =>
     Math.abs(number) % 100 >= 5 && Math.abs(number) % 100 <= 20
@@ -41,9 +51,9 @@ export class BookPageComponent implements OnInit, OnDestroy {
       ? 'отзыва'
       : 'отзывов';
   ngOnInit(): void {
-    this.paramSubscription = this.route.params.subscribe((params) =>
-      this.reloadBookModel(params['name'])
-    );
+    this.paramSubscription = this.route.params.subscribe((params) => {
+      this.reloadBookModel(params['name']);
+    });
   }
   ngOnDestroy(): void {
     this.paramSubscription?.unsubscribe();
@@ -58,8 +68,8 @@ export class BookPageComponent implements OnInit, OnDestroy {
       map((value) => value as Book)
     );
   }
-  @HostListener('document:scroll', ['$event'])
-  onScroll(event: Event) {
-    this.verticalOffset = window.scrollY;
-  }
+
+  onFavouritesSwitch() {}
+
+  onBuyButtonClicked() {}
 }

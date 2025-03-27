@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterContentInit,
   AfterViewInit,
   ChangeDetectorRef,
   Component,
@@ -25,10 +24,9 @@ import {
   faAreaChart,
   faBars,
   faBook,
-  faBookBookmark,
   faBookReader,
-  faCartShopping,
   faClose,
+  faHeart,
   faHome,
   faNewspaper,
   faSpinner,
@@ -43,8 +41,7 @@ import HttpError, { HttpCodes } from '../../models/httperror.model';
 import { CheckboxComponent } from '../../shared/checkbox/checkbox.component';
 import { CatalogueComponent } from './catalogue/catalogue.component';
 import { UserLoginModel } from '../../models/user.model';
-import { last, Subscription } from 'rxjs';
-import { NotFoundPageComponent } from '../../pages/not-found-page/not-found-page.component';
+import { Subscription } from 'rxjs';
 import { ScrollMutexService } from '../../service/scroll-mutex.service';
 
 @Component({
@@ -119,8 +116,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     },
     {
       link: '/',
-      label: 'Отложенные',
-      icon: faBookBookmark,
+      label: 'Избранное',
+      icon: faHeart,
       visible: 'Auth',
     },
     {
