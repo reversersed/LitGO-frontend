@@ -71,6 +71,13 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'reader',
+    loadComponent: () =>
+      import('./pages/reader-page/reader-page.component').then(
+        (c) => c.ReaderPageComponent
+      ),
+  },
+  {
     path: 'login',
     canActivate: [UnauthorizedGuard],
     loadComponent: () =>

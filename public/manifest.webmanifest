@@ -14,5 +14,20 @@
       "type": "image/png",
       "purpose": "any"
     }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/desktop.png",
+      "sizes": "1910x964",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Home screen showing main navigation and featured content"
+    },
+    {
+      "src": "screenshots/mobile.png",
+      "sizes": "394x876",
+      "type": "image/png",
+      "label": "Home screen showing main navigation and featured content"
+    }
   ]
 }

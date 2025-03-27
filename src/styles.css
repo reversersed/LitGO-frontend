@@ -30,3 +30,7 @@
     --color-error: 150 0 0;
   }
 }
+
+.epub-container {
+  overflow-x: hidden !important;
+}

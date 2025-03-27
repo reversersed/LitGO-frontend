@@ -29,7 +29,7 @@ export class UserService {
     );
   }
   public CurrentUser(): Signal<UserLoginModel | null> {
-    return this.user;
+    return this.user.asReadonly();
   }
 
   public LogoutUser() {

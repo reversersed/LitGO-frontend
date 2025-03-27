@@ -39,7 +39,11 @@
           />
           <span *ngIf="book.pages">{{ book.pages }} страниц</span>
           <a
-            [routerLink]=""
+            [routerLink]="'/reader'"
+            [queryParams]="{
+              id: book.translitname,
+              old: '/book/' + book.translitname
+            }"
             class="w-full text-center bg-mainbg rounded-xl text-maintext mt-4 py-2 hover:bg-mainshadow transition-all duration-150 select-none"
             >Читать отрывок</a
           >
