@@ -1,6 +1,6 @@
 <div *ngIf="currentBook$ | async as book" class="w-full h-full relative flex">
   <div
-    class="w-fit h-full mt-0 bg-contrast/15 py-2 flex flex-col overflow-hidden duration-500 transition-all md:max-w-fit md:min-w-[200px] absolute md:relative"
+    class="w-fit h-full mt-0 bg-contrast md:bg-contrast/15 py-2 flex flex-col overflow-hidden duration-500 transition-all md:max-w-fit md:min-w-[200px] absolute md:relative"
     [ngClass]="isMenuOpen ? 'max-w-[800px] min-w-[200px]' : 'max-w-0 min-w-0'"
   >
     <a

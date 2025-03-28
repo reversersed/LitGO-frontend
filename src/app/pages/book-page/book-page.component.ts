@@ -20,11 +20,12 @@ import {
 import { faHeart as RegularHeart } from '@fortawesome/free-regular-svg-icons';
 import { UserService } from '../../service/http/user.service';
 import { SafeUrl } from '@angular/platform-browser';
+import { SkeletonComponent } from "../../components/skeleton/skeleton.component";
 
 @Component({
   selector: 'app-book-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, FontAwesomeModule],
+  imports: [CommonModule, RouterLink, FontAwesomeModule, SkeletonComponent],
   templateUrl: './book-page.component.html',
   styles: ``,
 })

@@ -30,14 +30,17 @@
       class="flex flex-col lg:grid lg:grid-cols-[200px_auto_200px] gap-6 mt-6"
     >
       <div
-        class="flex lg:min-w-[200px] lg:max-w-[200px] relative min-h-20 flex-col"
+        class="flex lg:min-w-[200px] lg:max-w-[200px] relative min-h-20 max-w-full flex-col"
       >
         <div class="lg:fixed lg:w-[200px] flex flex-col">
           <img
-            *ngIf="coverModel$ | async as cover"
+            *ngIf="coverModel$ | async as cover; else loadingImage"
             [src]="cover"
             class="object-contain rounded-xl"
           />
+          <ng-template #loadingImage>
+            <app-skeleton width="100%" height="100%" borderRadius="15px" />
+          </ng-template>
           <span *ngIf="book.pages">{{ book.pages }} страниц</span>
           <a
             [routerLink]="'/reader'"
