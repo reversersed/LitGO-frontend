@@ -9,6 +9,7 @@ import { BookService } from '../../service/http/book.service';
 import { CategoryService } from '../../service/http/category.service';
 import { of } from 'rxjs';
 import Category from '../../models/category.model';
+import { FileService } from '../../service/http/file.service';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -17,8 +18,10 @@ describe('HeaderComponent', () => {
   let authorService: jasmine.SpyObj<AuthorService>;
   let categoryService: jasmine.SpyObj<CategoryService>;
   let bookService: jasmine.SpyObj<BookService>;
+  let fileServiceSpy: jasmine.SpyObj<FileService>;
 
   beforeEach(async () => {
+    fileServiceSpy = jasmine.createSpyObj('FileService', ['getBookCover']);
     userServiceSpy = jasmine.createSpyObj('UserService', [
       'CurrentUser',
       'Login',
@@ -44,6 +47,10 @@ describe('HeaderComponent', () => {
         {
           provide: BookService,
           useValue: bookService,
+        },
+        {
+          provide: FileService,
+          useValue: fileServiceSpy,
         },
       ],
     }).compileComponents();

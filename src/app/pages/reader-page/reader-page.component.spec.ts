@@ -6,14 +6,17 @@ import { UserService } from '../../service/http/user.service';
 import { BookService } from '../../service/http/book.service';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
+import { FileService } from '../../service/http/file.service';
 
 describe('ReaderPageComponent', () => {
   let component: ReaderPageComponent;
   let fixture: ComponentFixture<ReaderPageComponent>;
   let userServiceSpy: jasmine.SpyObj<UserService>;
   let bookServiceSpy: jasmine.SpyObj<BookService>;
+  let fileServiceSpy: jasmine.SpyObj<FileService>;
 
   beforeEach(async () => {
+    fileServiceSpy = jasmine.createSpyObj('FileService', ['getBookFile']);
     userServiceSpy = jasmine.createSpyObj('UserService', [
       'CurrentUser',
       'Auth',
@@ -30,6 +33,10 @@ describe('ReaderPageComponent', () => {
         {
           provide: BookService,
           useValue: bookServiceSpy,
+        },
+        {
+          provide: FileService,
+          useValue: fileServiceSpy,
         },
       ],
       imports: [ReaderPageComponent],

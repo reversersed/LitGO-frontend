@@ -6,10 +6,9 @@ import { CategoryService } from '../../service/http/category.service';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import Book from '../../models/book.model';
-import Author from '../../models/author.model';
 import { UserService } from '../../service/http/user.service';
 import { signal } from '@angular/core';
-import exp from 'constants';
+import { FileService } from '../../service/http/file.service';
 
 describe('NewestBooksPageComponent', () => {
   let component: NewestBooksPageComponent;
@@ -17,8 +16,10 @@ describe('NewestBooksPageComponent', () => {
   let bookservice: jasmine.SpyObj<BookService>;
   let genreservice: jasmine.SpyObj<CategoryService>;
   let userService: jasmine.SpyObj<UserService>;
+  let fileServiceSpy: jasmine.SpyObj<FileService>;
 
   beforeEach(async () => {
+    fileServiceSpy = jasmine.createSpyObj('FileService', ['getBookCover']);
     bookservice = jasmine.createSpyObj<BookService>('BookService', ['find']);
     userService = jasmine.createSpyObj<UserService>('UserService', [
       'CurrentUser',
@@ -33,6 +34,10 @@ describe('NewestBooksPageComponent', () => {
         { provide: BookService, useValue: bookservice },
         { provide: CategoryService, useValue: genreservice },
         { provide: UserService, useValue: userService },
+        {
+          provide: FileService,
+          useValue: fileServiceSpy,
+        },
       ],
     }).compileComponents();
 

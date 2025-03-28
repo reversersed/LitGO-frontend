@@ -7,14 +7,20 @@ import { BookService } from '../../../service/http/book.service';
 import { of } from 'rxjs';
 import Book from '../../../models/book.model';
 import Author from '../../../models/author.model';
+import { FileService } from '../../../service/http/file.service';
 
 describe('SearchbarComponent', () => {
   let component: SearchbarComponent;
   let fixture: ComponentFixture<SearchbarComponent>;
   let authorService: jasmine.SpyObj<AuthorService>;
   let bookService: jasmine.SpyObj<BookService>;
+  let fileServiceSpy: jasmine.SpyObj<FileService>;
 
   beforeEach(async () => {
+    fileServiceSpy = jasmine.createSpyObj('FileService', [
+      'getBookCover',
+      'getAuthorProfile',
+    ]);
     authorService = jasmine.createSpyObj('AuthorService', ['getSuggestion']);
     bookService = jasmine.createSpyObj('BookService', ['getSuggestion']);
 
@@ -29,6 +35,10 @@ describe('SearchbarComponent', () => {
         {
           provide: BookService,
           useValue: bookService,
+        },
+        {
+          provide: FileService,
+          useValue: fileServiceSpy,
         },
       ],
     }).compileComponents();
