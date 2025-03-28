@@ -8,7 +8,7 @@ import Author from '../../../models/author.model';
 import { AuthorService } from '../../../service/http/author.service';
 import { BookService } from '../../../service/http/book.service';
 import { catchError, combineLatest, map, Observable, of } from 'rxjs';
-import { FileService } from '../../../service/file.service';
+import { FileService } from '../../../service/http/file.service';
 
 @Component({
   selector: 'app-searchbar',

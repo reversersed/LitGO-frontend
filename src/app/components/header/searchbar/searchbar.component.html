@@ -50,7 +50,8 @@
         class="flex flex-1 w-full h-auto px-1 py-1 sm:py-2 hover:bg-accent/10 rounded-xl transition-colors duration-200"
       >
         <img
-          [src]="fileService.getBookCoverPath(book)"
+          *ngIf="fileService.getBookCover(book) | async as cover"
+          [src]="cover"
           alt=""
           class="rounded-[5%] w-auto min-h-14 max-h-[72px] md:min-h-16 md:max-h-20 xl:min-h-20 xl:max-h-24 object-cover sm:block hidden"
         />
@@ -84,7 +85,7 @@
         class="flex w-full h-auto px-2 py-1 sm:py-1 hover:bg-accent/10 rounded-xl transition-colors duration-200"
       >
         <img
-          [src]="fileService.getAuthorProfilePath(author)"
+          [src]="fileService.getAuthorProfile(author)"
           alt=""
           class="rounded-full min-w-10 md:min-w-[72px] h-10 md:h-[72px] object-cover sm:block hidden"
         />

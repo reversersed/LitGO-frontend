@@ -10,7 +10,7 @@ import { catchError, map, Observable, of, Subscription } from 'rxjs';
 import Book from '../../models/book.model';
 import { BookService } from '../../service/http/book.service';
 import { CommonModule } from '@angular/common';
-import { FileService } from '../../service/file.service';
+import { FileService } from '../../service/http/file.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faArrowLeft,
@@ -19,6 +19,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as RegularHeart } from '@fortawesome/free-regular-svg-icons';
 import { UserService } from '../../service/http/user.service';
+import { SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-book-page',
@@ -35,6 +36,7 @@ export class BookPageComponent implements OnInit, OnDestroy {
   userService = inject(UserService);
   paramSubscription!: Subscription;
   bookModel$!: Observable<Book>;
+  coverModel$!: Observable<SafeUrl>;
   faBack = faArrowLeft;
   faStar = faStar;
   faHeart = faHeart;
@@ -65,7 +67,11 @@ export class BookPageComponent implements OnInit, OnDestroy {
         this.router.navigate(['/notfound'], { skipLocationChange: true });
         return of(null);
       }),
-      map((value) => value as Book)
+      map((value) => {
+        const v = value as Book;
+        this.coverModel$ = this.fileService.getBookCover(v);
+        return v;
+      })
     );
   }
 

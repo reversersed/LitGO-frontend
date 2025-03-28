@@ -520,6 +520,140 @@ export class BookClient {
 @Injectable({
     providedIn: 'root'
 })
+export class FileClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Get's book's epub file
+     * @param fileName (optional) @gotags: validate:"required" example:"bible-231125.epub"
+
+    Name of file to find with extension
+     * @return A successful response.
+     */
+    getBookFile(fileName: string | null | undefined): Observable<FilesFileResponse> {
+        let url_ = this.baseUrl + "/api/v1/files/book?";
+        if (fileName !== undefined && fileName !== null)
+            url_ += "fileName=" + encodeURIComponent("" + fileName) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBookFile(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBookFile(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FilesFileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FilesFileResponse>;
+        }));
+    }
+
+    protected processGetBookFile(response: HttpResponseBase): Observable<FilesFileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FilesFileResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Get's book cover's file
+     * @param fileName (optional) @gotags: validate:"required" example:"bible-231125.epub"
+
+    Name of file to find with extension
+     * @return A successful response.
+     */
+    getBookCover(fileName: string | null | undefined): Observable<FilesFileResponse> {
+        let url_ = this.baseUrl + "/api/v1/files/cover?";
+        if (fileName !== undefined && fileName !== null)
+            url_ += "fileName=" + encodeURIComponent("" + fileName) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBookCover(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBookCover(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FilesFileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FilesFileResponse>;
+        }));
+    }
+
+    protected processGetBookCover(response: HttpResponseBase): Observable<FilesFileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FilesFileResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class GenreClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -1646,6 +1780,46 @@ export class BooksGetBookResponse implements IBooksGetBookResponse {
 
 export interface IBooksGetBookResponse {
     book?: BooksBookModel | undefined;
+}
+
+export class FilesFileResponse implements IFilesFileResponse {
+    file?: string | undefined;
+    mimetype?: string | undefined;
+
+    constructor(data?: IFilesFileResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.file = _data["file"];
+            this.mimetype = _data["mimetype"];
+        }
+    }
+
+    static fromJS(data: any): FilesFileResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new FilesFileResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["file"] = this.file;
+        data["mimetype"] = this.mimetype;
+        return data;
+    }
+}
+
+export interface IFilesFileResponse {
+    file?: string | undefined;
+    mimetype?: string | undefined;
 }
 
 export class GenresCategoryModel implements IGenresCategoryModel {

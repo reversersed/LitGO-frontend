@@ -11,40 +11,15 @@
 >
   <div class="h-fit w-fit">
     <img
-      #image
-      *ngIf="animationStyle === 'observe'"
       [routerLink]="'/book/' + bookModel.translitname"
-      [src]="fileService.getBookCoverPath(bookModel)"
-      (mouseenter)="hover = true"
-      (mouseleave)="hover = false"
+      *ngIf="cover$() | async as cover; else imagePlaceholder"
+      [src]="cover"
       [ngClass]="
         alignMode === 'auto'
           ? 'w-fit max-h-[150px] md:max-h-[200px] md:h-auto'
           : alignMode === 'row'
           ? 'w-fit max-h-[150px]'
           : 'max-h-[200px] h-auto w-fit'
-      "
-      class="absolute opacity-0 z-[1] object-contain rounded cursor-pointer shadow-mainblack shadow-md transition-all origin-center min-w-[60px]"
-    />
-    <img
-      [routerLink]="
-        animationStyle !== 'observe'
-          ? '/book/' + bookModel.translitname
-          : undefined
-      "
-      [src]="fileService.getBookCoverPath(bookModel)"
-      [style.transform]="animationStyle === 'observe' && getRotationStyle()"
-      [ngClass]="
-        (animationStyle == 'scale'
-          ? 'md:hover:scale-110 md:hover:rotate-[2deg] duration-100 ease-in-out '
-          : animationStyle === 'observe'
-          ? 'duration-0'
-          : '') +
-        (alignMode === 'auto'
-          ? 'w-fit max-h-[150px] md:max-h-[200px] md:h-auto'
-          : alignMode === 'row'
-          ? 'w-fit max-h-[150px]'
-          : 'max-h-[200px] h-auto w-fit')
       "
       class="object-contain rounded cursor-pointer shadow-mainblack shadow-md transition-all origin-center min-w-[60px]"
     />
@@ -114,3 +89,23 @@
     />
   </div>
 </div>
+<ng-template #imagePlaceholder>
+  <app-skeleton
+    *ngIf="alignMode === 'auto'"
+    height="175px"
+    width="120px"
+    borderRadius="15px"
+  />
+  <app-skeleton
+    *ngIf="alignMode === 'row'"
+    height="175px"
+    width="120px"
+    borderRadius="15px"
+  />
+  <app-skeleton
+    *ngIf="alignMode === 'col'"
+    height="200px"
+    width="140px"
+    borderRadius="15px"
+  />
+</ng-template>

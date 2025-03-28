@@ -20,9 +20,18 @@
       </button>
     </div>
     <app-reader
+      *ngIf="currentFile$ | async as file; else loading"
       [allowFullRead]="book && allowUserReading()"
-      [bookFileUrl]="'eragon_670b926099c32e5fd62a6483.epub'"
-      class="w-full h-full"
+      [bookFileUrl]="file"
+      class="w-full h-[95%] md:h-full"
     />
   </div>
 </div>
+<ng-template #loading>
+  <div
+    class="text-4xl text-accent absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[100%] flex flex-col items-center"
+  >
+    <fa-icon [animation]="'spin-pulse'" [icon]="faSpinner" />
+    <span class="text-xl">Загрузка...</span>
+  </div>
+</ng-template>

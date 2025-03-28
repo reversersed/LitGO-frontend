@@ -34,7 +34,8 @@
       >
         <div class="lg:fixed lg:w-[200px] flex flex-col">
           <img
-            [src]="fileService.getBookCoverPath(book)"
+            *ngIf="coverModel$ | async as cover"
+            [src]="cover"
             class="object-contain rounded-xl"
           />
           <span *ngIf="book.pages">{{ book.pages }} страниц</span>

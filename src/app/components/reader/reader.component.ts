@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -15,7 +16,7 @@ import { Subscription } from 'rxjs';
 })
 export class ReaderComponent implements OnInit, OnDestroy {
   @Input() allowFullRead!: boolean;
-  @Input() bookFileUrl!: string;
+  @Input() bookFileUrl!: ArrayBuffer;
 
   router = inject(Router);
   route = inject(ActivatedRoute);
@@ -36,6 +37,7 @@ export class ReaderComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     try {
       this.book = EPUB.default(this.bookFileUrl);
+      await this.book.ready;
       this.rendition = this.book.renderTo('reader', {
         height: '96%',
         width: '100%',
@@ -70,6 +72,7 @@ export class ReaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.book.destroy();
     this.paramsSubscription?.unsubscribe();
   }
 
