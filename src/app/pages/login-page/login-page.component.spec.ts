@@ -10,6 +10,11 @@ describe('LoginPageComponent', () => {
   let service: jasmine.SpyObj<UserService>;
 
   beforeEach(async () => {
+    service = jasmine.createSpyObj('UserService', [
+      'CurrentUser',
+      'Auth',
+      'Login',
+    ]);
     await TestBed.configureTestingModule({
       imports: [LoginPageComponent],
       providers: [
