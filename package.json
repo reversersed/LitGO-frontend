@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "dev": "nswag run && ng serve",
+    "dev": "nswag run nswag.json && ng serve",
     "build": "ng build",
     "test": "ng test",
-    "gen": "nswag run"
+    "gen": "nswag run nswag.json"
   },
   "private": true,
   "dependencies": {

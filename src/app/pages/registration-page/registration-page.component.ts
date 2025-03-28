@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import HttpError, { HttpCodes } from '../../models/httperror.model';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-registration-page',
@@ -86,7 +87,7 @@ export class RegistrationPageComponent {
         error: (err) => {
           this.form.attempting = false;
           let error = err as HttpError;
-          
+
           switch (error.code) {
             case HttpCodes.Internal:
             case HttpCodes.Unavailable:
