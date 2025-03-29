@@ -8,7 +8,12 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-import { Observable as Obs, of as OfObservable } from 'rxjs';
+import {
+  HttpResponse as HR,
+  HttpResponseBase as HRB,
+  HttpErrorResponse as HER,
+} from '@angular/common/http';
+import { Observable as Obs, of, of as OfObservable } from 'rxjs';
 import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 'rxjs/operators';
 import { Observable, from as _observableFrom, throwError as _observableThrow, of as _observableOf } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
@@ -18,8 +23,17 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export class BaseClient {
   protected transformOptions(opt: any): Obs<any> {
-    opt.responseType = 'json';
     return OfObservable(opt);
+  }
+  protected transformResult(
+    url: string,
+    response: HRB,
+    processor: (response: HRB) => Obs<any>
+  ): Obs<any> {
+    if (response instanceof HER) {
+      return processor(response);
+    }
+    return processor(response);
   }
 }
 
@@ -67,11 +81,11 @@ export class AuthorClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processGetAuthors(response_);
+            return this.transformResult(url_, response_, (r) => this.processGetAuthors(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetAuthors(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processGetAuthors(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<AuthorsGetAuthorsResponse>;
                 }
@@ -144,11 +158,11 @@ export class AuthorClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processFindAuthors(response_);
+            return this.transformResult(url_, response_, (r) => this.processFindAuthors(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processFindAuthors(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processFindAuthors(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<AuthorsGetAuthorsResponse>;
                 }
@@ -221,11 +235,11 @@ export class BookClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processGetBook(response_);
+            return this.transformResult(url_, response_, (r) => this.processGetBook(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetBook(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processGetBook(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<BooksGetBookResponse>;
                 }
@@ -282,11 +296,11 @@ export class BookClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("post", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processCreateBook(response_);
+            return this.transformResult(url_, response_, (r) => this.processCreateBook(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCreateBook(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processCreateBook(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<BooksCreateBookResponse>;
                 }
@@ -362,11 +376,11 @@ export class BookClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processFindBook(response_);
+            return this.transformResult(url_, response_, (r) => this.processFindBook(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processFindBook(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processFindBook(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<BooksFindBookResponse>;
                 }
@@ -436,11 +450,11 @@ export class BookClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processGetBookByGenre(response_);
+            return this.transformResult(url_, response_, (r) => this.processGetBookByGenre(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetBookByGenre(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processGetBookByGenre(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<BooksGetBookByGenreResponse>;
                 }
@@ -503,11 +517,11 @@ export class BookClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processGetBookList(response_);
+            return this.transformResult(url_, response_, (r) => this.processGetBookList(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetBookList(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processGetBookList(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<BooksGetBookListResponse>;
                 }
@@ -580,11 +594,11 @@ export class FileClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processGetBookFile(response_);
+            return this.transformResult(url_, response_, (r) => this.processGetBookFile(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetBookFile(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processGetBookFile(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<FilesFileResponse>;
                 }
@@ -642,11 +656,11 @@ export class FileClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processGetBookCover(response_);
+            return this.transformResult(url_, response_, (r) => this.processGetBookCover(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetBookCover(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processGetBookCover(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<FilesFileResponse>;
                 }
@@ -719,11 +733,11 @@ export class GenreClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processGetOneOf(response_);
+            return this.transformResult(url_, response_, (r) => this.processGetOneOf(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetOneOf(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processGetOneOf(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<GenresGetCategoryOrGenreResponse>;
                 }
@@ -776,11 +790,11 @@ export class GenreClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processGetAll(response_);
+            return this.transformResult(url_, response_, (r) => this.processGetAll(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetAll(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processGetAll(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<GenresGetAllResponse>;
                 }
@@ -838,11 +852,11 @@ export class GenreClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processGetTree(response_);
+            return this.transformResult(url_, response_, (r) => this.processGetTree(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetTree(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processGetTree(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<GenresCategoryResponse>;
                 }
@@ -914,11 +928,11 @@ export class ReviewClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("post", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processCreateBookReview(response_);
+            return this.transformResult(url_, response_, (r) => this.processCreateBookReview(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCreateBookReview(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processCreateBookReview(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ReviewsCreateBookReviewResponse>;
                 }
@@ -987,11 +1001,11 @@ export class ReviewClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processGetBookReviews(response_);
+            return this.transformResult(url_, response_, (r) => this.processGetBookReviews(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetBookReviews(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processGetBookReviews(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ReviewsGetBookReviewsResponse>;
                 }
@@ -1068,11 +1082,11 @@ export class UserClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processGetUser(response_);
+            return this.transformResult(url_, response_, (r) => this.processGetUser(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetUser(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processGetUser(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<UsersUserModel>;
                 }
@@ -1129,11 +1143,11 @@ export class UserClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("post", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processAuth(response_);
+            return this.transformResult(url_, response_, (r) => this.processAuth(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAuth(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processAuth(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<SharedUserCredentials>;
                 }
@@ -1190,11 +1204,11 @@ export class UserClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("post", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processLogin(response_);
+            return this.transformResult(url_, response_, (r) => this.processLogin(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processLogin(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processLogin(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<UsersLoginResponse>;
                 }
@@ -1251,11 +1265,11 @@ export class UserClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("post", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processLogout(response_);
+            return this.transformResult(url_, response_, (r) => this.processLogout(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processLogout(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processLogout(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<SharedEmpty>;
                 }
@@ -1312,11 +1326,11 @@ export class UserClient extends BaseClient {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("post", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.processRegisterUser(response_);
+            return this.transformResult(url_, response_, (r) => this.processRegisterUser(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processRegisterUser(response_ as any);
+                    return this.transformResult(url_, response_, (r) => this.processRegisterUser(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<UsersLoginResponse>;
                 }
@@ -2797,10 +2811,7 @@ export class ApiException extends Error {
 }
 
 function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): Observable<any> {
-    if (result !== null && result !== undefined)
-        return _observableThrow(result);
-    else
-        return _observableThrow(new ApiException(message, status, response, headers, null));
+    return _observableThrow(new ApiException(message, status, response, headers, result));
 }
 
 function blobToText(blob: any): Observable<string> {

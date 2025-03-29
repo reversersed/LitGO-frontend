@@ -1,5 +1,12 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { catchError, throwError, timeout } from 'rxjs';
+import {
+  catchError,
+  map,
+  Observable,
+  switchMap,
+  throwError,
+  timeout,
+} from 'rxjs';
 import HttpError, { createNullError } from '../../../models/httperror.model';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
@@ -19,6 +26,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           errorMessage = createNullError();
         }
 
+        if (errorMessage instanceof Blob) {
+          return blobToText(errorMessage).pipe(
+            switchMap((val) => throwError(() => JSON.parse(val) as HttpError))
+          );
+        }
         return throwError(() => errorMessage);
       }
 
@@ -26,3 +38,19 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     })
   );
 };
+
+function blobToText(blob: any): Observable<string> {
+  return new Observable<string>((observer: any) => {
+    if (!blob) {
+      observer.next('');
+      observer.complete();
+    } else {
+      let reader = new FileReader();
+      reader.onload = (event) => {
+        observer.next((event.target as any).result);
+        observer.complete();
+      };
+      reader.readAsText(blob);
+    }
+  });
+}
