@@ -62,7 +62,9 @@
       "
       class="mt-2 text-base font-main tracking-wider border-mainshadow border-2 rounded-lg w-fit self-center py-1 px-4 transition-all duration-200"
     >
-      <span *ngIf="!form.attempting">Зарегистрироваться</span>
+      <span *ngIf="!form.attempting" class="text-mainblack"
+        >Зарегистрироваться</span
+      >
       <fa-icon
         *ngIf="form.attempting"
         [icon]="faSpinner"

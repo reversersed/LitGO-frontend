@@ -1,5 +1,5 @@
 <div
-  class="mt-[2px] z-[100] bg-mainwhite lg:w-auto h-auto rounded-2xl border-2 w-[70%] mr-[36px] sm:mr-0 border-mainshadow flex sm:min-w-[100px] md:min-w-[300px] items-center lg:h-12 lg:relative absolute top-1 lg:left-0 left-[15%] sm:left-[18%] lg:top-0"
+  class="mt-[2px] z-[100] dark:bg-mainshadow bg-mainwhite lg:w-auto h-auto rounded-2xl border-2 w-[70%] mr-[36px] sm:mr-0 border-mainshadow flex sm:min-w-[100px] md:min-w-[300px] items-center lg:h-12 lg:relative absolute top-1 lg:left-0 left-[15%] sm:left-[18%] lg:top-0"
 >
   <input
     id="search-input"
@@ -11,14 +11,14 @@
     (focusin)="suggestionOpen = true"
     (focusout)="suggestionOpen = false"
     (keyup.enter)="searchRedirect()"
-    class="z-50 border-0 outline-none p-1 lg:p-2 pl-4 w-full rounded-xl flex-1 font-main font-medium text-base text-accent focus:placeholder:opacity-50 placeholder:transition-opacity placeholder:duration-500 placeholder:ease-in"
+    class="dark:bg-mainshadow z-50 border-0 outline-none p-1 lg:p-2 pl-4 w-full rounded-xl flex-1 font-main font-medium text-base text-accent focus:placeholder:opacity-50 placeholder:transition-opacity placeholder:duration-500 placeholder:ease-in"
   />
 
   <button
     type="button"
     [routerLink]="query.length > 0 ? '/search' : undefined"
     [queryParams]="{ query: query }"
-    class="z-50 h-full py-1 lg:py-0 w-fit px-2 lg:px-4 border-0 bg-mainshadow active:bg-mainbg/80 text-maintext rounded-xl rounded-tl-xl rounded-bl-xl cursor-pointer hover:bg-mainbg transition-colors duration-300"
+    class="z-50 h-full py-1 lg:py-0 w-fit px-2 lg:px-4 border-0 bg-mainbg active:bg-mainbg/60 text-maintext rounded-xl rounded-tl-xl rounded-bl-xl cursor-pointer hover:bg-mainbg/70 transition-colors duration-300"
   >
     <fa-icon [icon]="faSearch" size="lg" />
   </button>

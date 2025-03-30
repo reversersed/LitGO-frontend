@@ -1,18 +1,70 @@
-<div *ngIf="currentBook$ | async as book" class="w-full h-full relative flex">
+<div
+  *ngIf="currentBook$ | async as book"
+  class="w-full h-full relative flex bg-mainwhite z-0"
+>
   <div
-    class="w-fit h-full mt-0 bg-contrast md:bg-contrast/15 py-2 flex flex-col overflow-hidden duration-500 transition-all md:max-w-fit md:min-w-[200px] absolute md:relative"
-    [ngClass]="isMenuOpen ? 'max-w-[800px] min-w-[200px]' : 'max-w-0 min-w-0'"
+    class="w-full sm:w-fit h-full mt-0 text-accent-light bg-body flex flex-col overflow-hidden duration-500 transition-all lg:max-w-fit lg:min-w-[200px] absolute lg:relative z-[100]"
+    [ngClass]="
+      isMenuOpen
+        ? 'max-w-full sm:max-w-[800px] min-w-[200px]'
+        : 'max-w-0 min-w-0'
+    "
   >
-    <a
-      [routerLink]="oldRoute ?? '/'"
-      class="hover:bg-contrast/40 transition-all duration-200 px-4 py-2 cursor-pointer mt-auto text-accent min-w-fit text-center"
-      >Вернуться</a
+    <div
+      class="w-full h-full mt-0 text-accent bg-contrast/20 py-2 flex flex-col overflow-hidden duration-500 transition-all md:max-w-fit md:min-w-[200px] absolute md:relative z-[100]"
     >
+      <span
+        class="overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px] w-fit self-center hidden lg:block font-semibold"
+        title="{{ book.authors[0].name }}.
+        {{ book.name }}."
+        >{{ book.authors[0].name }}. {{ book.name }}.</span
+      >
+      <div
+        *ngIf="bookChapters"
+        class="w-full flex h-full flex-1 flex-col min-h-0"
+      >
+        <span class="font-semibold text-center w-full"
+          >Оглавление
+          <button
+            class="rounded-full p-1 px-2 bg-contrast/80 text-mainwhite ml-auto flex mr-5 absolute sm:hidden right-0 top-1"
+            (click)="isMenuOpen = !isMenuOpen"
+          >
+            <fa-icon *ngIf="!isMenuOpen" [icon]="faMenu" />
+            <fa-icon *ngIf="isMenuOpen" [icon]="faClose" />
+          </button>
+        </span>
+        <div
+          class="w-full max-h-full overflow-y-auto overflow-x-clip no-scrollbar"
+        >
+          <div class="flex flex-col w-full min-h-fit">
+            <a
+              *ngFor="let chapter of bookChapters"
+              class="hover:bg-contrast/40 transition-all duration-200 px-4 py-2 cursor-pointer mt-auto max-w-full text-sm overflow-hidden md:whitespace-nowrap md:text-ellipsis"
+              (click)="selectedChapter = chapter; this.isMenuOpen = false"
+              title="{{ chapter.label }}"
+            >
+              {{ chapter.label }}
+            </a>
+          </div>
+        </div>
+      </div>
+      <a
+        [routerLink]="oldRoute ?? '/'"
+        class="hover:bg-contrast/40 transition-all duration-200 px-4 py-2 cursor-pointer mt-auto min-w-fit text-center shrink-0"
+        >Назад</a
+      >
+    </div>
   </div>
   <div class="flex flex-col w-full">
-    <div class="w-full bg-contrast/15 -mr-2 py-1 md:hidden">
+    <div
+      class="w-full max-h-fit max-w-full bg-contrast/15 -mr-2 py-1 lg:hidden flex flex-row flex-1 overflow-hidden"
+    >
+      <span
+        class="overflow-hidden whitespace-nowrap text-ellipsis max-w-full ml-2 text-sm md:text-base self-center font-semibold"
+        >{{ book.authors[0].name }}. {{ book.name }}.</span
+      >
       <button
-        class="rounded-full p-1 px-2 bg-contrast/80 text-mainwhite ml-auto flex mr-5"
+        class="rounded-full p-1 px-2 bg-contrast/80 text-mainwhite ml-auto flex mr-5 shrink-0"
         (click)="isMenuOpen = !isMenuOpen"
       >
         <fa-icon *ngIf="!isMenuOpen" [icon]="faMenu" />
@@ -23,7 +75,9 @@
       *ngIf="currentFile$ | async as file; else loading"
       [allowFullRead]="book && allowUserReading()"
       [bookFileUrl]="file"
-      class="w-full h-[95%] md:h-full"
+      [currentChapter]="selectedChapter"
+      (bookContent)="onBookContentCreated($event)"
+      class="w-full h-[95%] lg:h-full z-[10]"
     />
   </div>
 </div>

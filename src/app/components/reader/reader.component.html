@@ -1,4 +1,4 @@
-<div class="flex flex-col max-w-full h-full overflow-auto">
+<div class="flex flex-col max-w-full h-full overflow-auto bg-body">
   <div
     id="reader"
     class="relative overflow-hidden w-[95%] h-[95%] md:h-full p-0 justify-self-center"
@@ -15,11 +15,70 @@
 
 <ng-template #controls>
   <div
-    class="w-full flex flex-row justify-center mb-2 mt-auto"
-    [ariaDisabled]="isLoading"
+    class="w-full flex flex-row sm:gap-2 justify-center mb-2 mt-auto font-[480]"
+    [ngClass]="isLoading ? 'hidden' : ''"
   >
-    <button (click)="nextPage()" class="select-none" [disabled]="isLoading">
-      Дальше
+    <button
+      (click)="prevPage()"
+      class="bg-transparent border-none select-none disabled:pointer-events-none disabled:text-accent/50 disabled:border-accent/50 hover:bg-contrast hover:text-accent-light hover:border-contrast/80 text-accent border-[2px] px-1 rounded-md border-accent bg-mainwhite transition-colors duration-100"
+      [disabled]="currentSection <= 0"
+      title="Назад"
+    >
+      <fa-icon [icon]="faBack" />
     </button>
-  </div></ng-template
->
+
+    <button
+      (click)="setPage(1)"
+      class="bg-transparent border-none border-[2px] select-none disabled:pointer-events-none disabled:text-accent disabled:border-contrast/10 disabled:bg-contrast/40 lg:hover:bg-contrast lg:hover:text-accent-light lg:hover:border-contrast/80 text-accent px-2 rounded-md border-accent bg-mainwhite transition-colors duration-100"
+      [disabled]="currentSection === 0"
+    >
+      1
+    </button>
+
+    <span *ngIf="currentSection > 2" class="text-mainblack">...</span>
+
+    <button
+      class="bg-transparent border-none border-[2px] select-none disabled:pointer-events-none disabled:text-accent disabled:border-contrast/10 disabled:bg-contrast/40 lg:hover:bg-contrast lg:hover:text-accent-light lg:hover:border-contrast/80 text-accent px-2 rounded-md border-accent bg-mainwhite transition-colors duration-100"
+      (click)="setPage(currentSection)"
+      *ngIf="currentSection > 1"
+    >
+      {{ currentSection }}
+    </button>
+
+    <button
+      class="bg-transparent border-none border-[2px] select-none disabled:pointer-events-none disabled:text-accent disabled:border-contrast/10 disabled:bg-contrast/40 lg:hover:bg-contrast lg:hover:text-accent-light lg:hover:border-contrast/80 text-accent px-2 rounded-md border-accent bg-mainwhite transition-colors duration-100"
+      [disabled]="true"
+      *ngIf="currentSection < totalSections - 1 && currentSection > 0"
+    >
+      {{ currentSection + 1 }}
+    </button>
+
+    <button
+      class="bg-transparent border-none border-[2px] select-none disabled:pointer-events-none disabled:text-accent disabled:border-contrast/10 disabled:bg-contrast/40 lg:hover:bg-contrast lg:hover:text-accent-light lg:hover:border-contrast/80 text-accent px-2 rounded-md border-accent bg-mainwhite transition-colors duration-100"
+      (click)="setPage(currentSection + 2)"
+      *ngIf="currentSection < totalSections - 2"
+    >
+      {{ currentSection + 2 }}
+    </button>
+
+    <span *ngIf="currentSection < totalSections - 3" class="text-mainblack"
+      >...</span
+    >
+
+    <button
+      (click)="setPage(totalSections)"
+      class="bg-transparent border-none border-[2px] select-none disabled:pointer-events-none disabled:text-accent disabled:border-contrast/10 disabled:bg-contrast/40 lg:hover:bg-contrast lg:hover:text-accent-light lg:hover:border-contrast/80 text-accent px-2 rounded-md border-accent bg-mainwhite transition-colors duration-100"
+      [disabled]="currentSection === totalSections - 1"
+    >
+      {{ totalSections }}
+    </button>
+
+    <button
+      (click)="nextPage()"
+      class="bg-transparent border-none select-none disabled:pointer-events-none disabled:text-accent/50 disabled:border-accent/50 hover:bg-contrast hover:text-accent-light hover:border-contrast/80 text-accent border-[2px] px-1 rounded-md border-accent bg-mainwhite transition-colors duration-100"
+      title="Вперед"
+      [disabled]="currentSection >= totalSections - 1"
+    >
+      <fa-icon [icon]="faForward" />
+    </button></div
+></ng-template>

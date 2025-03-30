@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
 @layer base {
   :root {
     --color-bodybackground: 255 255 255;
@@ -15,19 +26,21 @@
     --color-accent-light: 244 244 252;
     --color-contrast: 61 61 199;
     --color-error: 150 0 0;
+    --color-overlay: 0 0 0;
   }
   :root[class~="dark"] {
-    --color-bodybackground: 255 255 255;
-    --color-maintext: 254 255 255;
-    --color-blacktext: 0 0 0;
-    --color-mainblack: 0 0 0;
-    --color-mainwhite: 255 255 255;
-    --color-mainbg: 58 175 169;
-    --color-mainshadow: 43 122 120;
-    --color-accent: 23 37 42;
-    --color-accent-light: 244 244 252;
-    --color-contrast: 61 61 199;
-    --color-error: 150 0 0;
+    --color-bodybackground: 23 23 30;
+    --color-maintext: 245 245 250;
+    --color-blacktext: 180 180 190;
+    --color-mainblack: 180 180 190;
+    --color-mainwhite: 245 245 250;
+    --color-mainbg: 53 78 133;
+    --color-mainshadow: 41 58 97;
+    --color-accent: 160 170 180;
+    --color-accent-light: 30 35 45;
+    --color-contrast: 100 150 255;
+    --color-error: 255 80 80;
+    --color-overlay: 0 0 0;
   }
 }
 

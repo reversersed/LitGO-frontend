@@ -2,7 +2,7 @@
   <div class="min-h-full flex flex-col">
     <!--header-->
     <div
-      class="flex flex-row flex-wrap gap-1 md:gap-2 text-blacktext font-main text-xs md:text-sm pl-5 lg:pl-0"
+      class="flex flex-row flex-wrap gap-1 md:gap-2 text-blacktext font-main text-xs md:text-sm pl-5 md:pl-0"
     >
       <a
         routerLink="/"
@@ -27,12 +27,12 @@
     </div>
     <!-- main body -->
     <div
-      class="flex flex-col lg:grid lg:grid-cols-[200px_auto_200px] gap-6 mt-6"
+      class="flex flex-col md:grid md:grid-cols-[200px_auto_200px] gap-6 mt-6"
     >
       <div
-        class="flex lg:min-w-[200px] lg:max-w-[200px] relative min-h-20 max-w-full flex-col"
+        class="flex md:min-w-[200px] md:max-w-[200px] relative min-h-20 max-w-full flex-col"
       >
-        <div class="lg:fixed lg:w-[200px] flex flex-col">
+        <div class="md:fixed md:w-[200px] flex flex-col">
           <img
             *ngIf="coverModel$ | async as cover; else loadingImage"
             [src]="cover"
@@ -41,7 +41,9 @@
           <ng-template #loadingImage>
             <app-skeleton width="100%" height="100%" borderRadius="15px" />
           </ng-template>
-          <span *ngIf="book.pages">{{ book.pages }} страниц</span>
+          <span *ngIf="book.pages" class="text-mainblack w-full text-center"
+            >{{ book.pages }} страниц</span
+          >
           <a
             [routerLink]="'/reader'"
             [queryParams]="{
@@ -52,35 +54,11 @@
             >Читать отрывок</a
           >
         </div>
-        <div
-          class="lg:hidden flex flex-col gap-1 mt-2"
-          *ngIf="currentUser() !== null"
-        >
-          <span class="text-accent font-semibold text-lg"
-            >Понравилась книга?</span
-          >
-          <div
-            class="flex flex-row w-full justify-center items-center h-fit gap-4"
-          >
-            <button
-              class="text-base font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl select-none"
-            >
-              <fa-icon [icon]="faHeart" *ngIf="book.favourite" />
-              <fa-icon [icon]="faRegularHeart" *ngIf="!book.favourite" />
-              {{ book.favourite ? "Избранное" : "В избранное" }}
-            </button>
-            <button
-              *ngIf="currentUser() !== null"
-              class="text-base font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl select-none"
-              onclick="onFavouriteSwitch"
-            >
-              Купить за {{ book.price }}₽
-            </button>
-          </div>
-        </div>
       </div>
       <div class="flex flex-col w-full">
-        <span class="font-semibold text-xl mb-2">{{ book.name }} </span>
+        <span class="font-semibold text-xl mb-2 text-mainblack"
+          >{{ book.name }}
+        </span>
         <span
           *ngIf="book.authors.length == 1"
           class="font-semibold text-blacktext/60"
@@ -113,7 +91,7 @@
               />{{ book.rating }}</span
             >
           </div>
-          <div class="w-[2px] h-[60%] bg-mainblack/20"></div>
+          <div class="w-[2px] h-[24px] bg-mainblack/20"></div>
           <div class="flex flex-col justify-center items-center">
             <span class="text-xl font-semibold text-blacktext/90 font-main">{{
               book.reviews
@@ -127,9 +105,11 @@
           </div>
         </div>
         <div class="flex flex-col mt-2">
-          <span class="text-base lg:text-lg font-semibold">Описание</span>
+          <span class="text-base lg:text-lg font-semibold text-mainblack"
+            >Описание</span
+          >
           <span
-            class="hidden lg:block items-start text-justify text-accent pl-2 border-l-contrast/40 border-l-[2px]"
+            class="hidden md:block items-start text-justify text-accent pl-2 border-l-contrast/40 border-l-[2px]"
             ><span
               [ngClass]="descriptionExpanded ? '' : 'line-clamp-3'"
               class="relative max-w-full"
@@ -144,7 +124,7 @@
             </button>
           </span>
           <span
-            class="lg:hidden block items-start text-justify text-accent pl-2 border-l-contrast/40 border-l-[2px]"
+            class="md:hidden block items-start text-justify text-accent pl-2 border-l-contrast/40 border-l-[2px]"
             ><span
               [ngClass]="descriptionExpanded ? '' : 'max-h-[3lh]'"
               class="relative max-w-full block overflow-hidden text-justify"
@@ -158,27 +138,51 @@
             </button>
           </span>
         </div>
+        <div class="md:hidden flex flex-col gap-1 mt-2">
+          <span class="text-accent font-semibold text-lg"
+            >Понравилась книга?</span
+          >
+          <div
+            class="flex flex-row w-full justify-center items-center h-fit gap-4"
+          >
+            <button
+              [disabled]="currentUser() === null"
+              class="text-base font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl select-none disabled:bg-mainbg/60 disabled:text-mainwhite/60"
+            >
+              <fa-icon [icon]="faHeart" *ngIf="book.favourite" />
+              <fa-icon [icon]="faRegularHeart" *ngIf="!book.favourite" />
+              {{ book.favourite ? "Избранное" : "В избранное" }}
+            </button>
+            <button
+              [disabled]="currentUser() === null"
+              class="text-base font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl select-none disabled:bg-mainbg/60 disabled:text-mainwhite/60"
+              onclick="onFavouriteSwitch"
+            >
+              Купить за {{ book.price }}₽
+            </button>
+          </div>
+        </div>
         <div id="reviews" class="flex flex-col mt-[20px]">
-          <span class="font-semibold text-lg">Отзывы о книге</span>
+          <span class="font-semibold text-lg text-mainblack"
+            >Отзывы о книге</span
+          >
         </div>
       </div>
       <div
-        class="min-w-[200px] max-w-[200px] w-[200px] relative hidden lg:flex flex-col"
+        class="min-w-[200px] max-w-[200px] w-[200px] relative hidden md:flex flex-col"
       >
-        <div
-          class="min-w-[200px] max-w-[200px] h-[50%] fixed flex flex-col gap-4"
-        >
+        <div class="text-base w-[200px] h-[50%] fixed flex flex-col gap-4">
           <button
-            *ngIf="currentUser() !== null"
-            class="text-base font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl hover:bg-mainshadow transition-all duration-150 select-none"
+            [disabled]="currentUser() === null"
+            class="font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl hover:bg-mainshadow transition-all duration-150 select-none disabled:bg-mainbg/60 disabled:text-mainwhite/60"
           >
             <fa-icon [icon]="faHeart" *ngIf="book.favourite" />
             <fa-icon [icon]="faRegularHeart" *ngIf="!book.favourite" />
             {{ book.favourite ? "Избранное" : "В избранное" }}
           </button>
           <button
-            *ngIf="currentUser() !== null"
-            class="text-base font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl hover:bg-mainshadow transition-all duration-150 select-none"
+            [disabled]="currentUser() === null"
+            class="font-normal text-mainwhite bg-mainbg py-1 px-2 rounded-xl hover:bg-mainshadow transition-all duration-150 select-none disabled:bg-mainbg/60 disabled:text-mainwhite/60"
             onclick="onFavouriteSwitch"
           >
             Купить за {{ book.price }}₽

@@ -18,7 +18,7 @@
   <label
     *ngIf="labelValue !== undefined"
     [for]="componentId"
-    class="absolute peer-disabled:text-blacktext/40 peer-placeholder-shown:translate-y-[5px] translate-x-[9px] font-main peer-placeholder-shown:text-accent/50 bg-mainwhite w-fit select-none peer-placeholder-shown:z-0 transition-all duration-200 text-accent -translate-y-[10px] z-20 peer-placeholder-shown:px-0 px-1 peer-placeholder-shown:text-base text-sm peer-focus:text-accent peer-focus:-translate-y-[10px] peer-focus:z-20 peer-focus:px-1 peer-focus:text-sm"
+    class="absolute peer-focus:bg-mainwhite peer-focus:dark:bg-body peer-disabled:text-blacktext/40 peer-placeholder-shown:translate-y-[5px] translate-x-[9px] font-main peer-placeholder-shown:text-accent/50 w-fit select-none peer-placeholder-shown:z-0 transition-all duration-200 text-accent -translate-y-[10px] z-20 peer-placeholder-shown:px-0 px-1 peer-placeholder-shown:text-base text-sm peer-focus:text-accent peer-focus:-translate-y-[10px] peer-focus:z-20 peer-focus:px-1 peer-focus:text-sm"
     [ngClass]="
       errorMessage !== undefined
         ? 'text-error peer-placeholder-shown:text-error peer-focus:text-error'

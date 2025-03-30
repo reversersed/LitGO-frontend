@@ -14,6 +14,7 @@ export default {
         contrast: "rgb(var(--color-contrast) / <alpha-value>)",
         error: "rgb(var(--color-error) / <alpha-value>)",
         blacktext: "rgb(var(--color-blacktext) / <alpha-value>)",
+        overlay: "rgb(var(--color-overlay) / <alpha-value>)",
       },
       fontFamily: {
         main: ["ui-sans-serif", "system-ui"],

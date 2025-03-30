@@ -9,7 +9,7 @@ import Book from '../../models/book.model';
 import { ReaderComponent } from '../../components/reader/reader.component';
 import { faBars, faClose, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { SafeUrl } from '@angular/platform-browser';
+import { NavItem } from 'epubjs';
 
 @Component({
   selector: 'app-reader-page',
@@ -37,6 +37,8 @@ export class ReaderPageComponent implements OnInit, OnDestroy {
   faMenu = faBars;
   faClose = faClose;
   faSpinner = faSpinner;
+  selectedChapter: NavItem | undefined;
+  bookChapters?: NavItem[];
 
   ngOnInit() {
     this.userService.Auth().subscribe();
@@ -64,5 +66,8 @@ export class ReaderPageComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.routeSubscription?.unsubscribe();
+  }
+  onBookContentCreated(content: NavItem[]) {
+    this.bookChapters = content;
   }
 }

@@ -1,9 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { SafeUrl } from '@angular/platform-browser';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAngleLeft,
+  faAngleRight,
+  faSpinner,
+} from '@fortawesome/free-solid-svg-icons';
 import * as EPUB from 'epubjs';
 import Section from 'epubjs/types/section';
 import { Subscription } from 'rxjs';
@@ -14,9 +27,11 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule, FontAwesomeModule],
   templateUrl: './reader.component.html',
 })
-export class ReaderComponent implements OnInit, OnDestroy {
+export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
   @Input() allowFullRead!: boolean;
   @Input() bookFileUrl!: ArrayBuffer;
+  @Input() currentChapter?: EPUB.NavItem;
+  @Output() bookContent = new EventEmitter<EPUB.NavItem[]>();
 
   router = inject(Router);
   route = inject(ActivatedRoute);
@@ -31,8 +46,11 @@ export class ReaderComponent implements OnInit, OnDestroy {
   isLoading = true;
 
   faSpinner = faSpinner;
+  faBack = faAngleLeft;
+  faForward = faAngleRight;
 
   paramsSubscription?: Subscription;
+  selectedChapter?: EPUB.NavItem;
 
   async ngOnInit(): Promise<void> {
     try {
@@ -46,9 +64,14 @@ export class ReaderComponent implements OnInit, OnDestroy {
         spread: 'none',
         overflow: 'auto',
       });
-      this.rendition.themes.default('reader.css');
+      if (this.isDarkTheme()) this.rendition.themes.default('reader.dark.css');
+      else this.rendition.themes.default('reader.css');
       await this.book.loaded.spine;
+      await this.book.loaded.navigation;
 
+      if (this.book.navigation.toc.length > 0) {
+        this.bookContent.emit(this.book.navigation.toc);
+      }
       this.book.spine.each((s: Section) => {
         this.sections.push(s.href);
         this.totalSections++;
@@ -63,36 +86,75 @@ export class ReaderComponent implements OnInit, OnDestroy {
 
     this.paramsSubscription = this.route.queryParams.subscribe({
       next: (params) => {
-        if (params['page'] === undefined) this.setQueryPageParam(1);
+        if (params['page'] === undefined) {
+          this.currentSection = 0;
+          this.selectedChapter = undefined;
+          this.setQueryPageParam();
+          return;
+        }
 
-        this.currentSection = params['page'] as number;
-        this.applyPage(this.currentSection);
+        this.currentSection = (params['page'] as number) - 1;
+        this.applyPage();
       },
     });
   }
 
   ngOnDestroy(): void {
+    console.log(this.currentSection);
     this.book.destroy();
     this.paramsSubscription?.unsubscribe();
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['currentChapter'] && this.currentChapter) {
+      this.setChapter(this.currentChapter);
+    }
+  }
 
-  async applyPage(idx: number) {
-    const index = idx - 1;
+  async applyPage() {
+    const index = this.currentSection;
     if (index < 0 || index >= this.totalSections) return;
 
-    this.currentSection = index;
-    await this.rendition?.display(this.sections[index]);
+    if (this.selectedChapter)
+      await this.rendition?.display(this.selectedChapter.href);
+    else await this.rendition?.display(this.sections[index]);
   }
 
   nextPage() {
-    this.setQueryPageParam(this.currentSection + 2);
+    if (this.currentSection >= this.totalSections - 1) return;
+    this.selectedChapter = undefined;
+    this.currentSection += 1;
+    this.setQueryPageParam();
+  }
+  prevPage() {
+    if (this.currentSection === 0) return;
+    this.selectedChapter = undefined;
+    this.currentSection -= 1;
+    this.setQueryPageParam();
+  }
+  setPage(page: number) {
+    this.currentSection = page - 1;
+    this.setQueryPageParam();
   }
 
-  setQueryPageParam(index: number) {
+  setQueryPageParam() {
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { page: index },
+      queryParams: { page: this.currentSection + 1 },
       queryParamsHandling: 'merge',
     });
+  }
+  setChapter(chapter: EPUB.NavItem) {
+    const section = this.sections.indexOf(chapter.href.split('#')[0]);
+    if (section === undefined) {
+      this.router.navigate(['/notfound']);
+      return;
+    }
+    this.selectedChapter = chapter;
+    this.currentSection = section;
+    this.setQueryPageParam();
+    this.applyPage();
+  }
+  isDarkTheme() {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
 }

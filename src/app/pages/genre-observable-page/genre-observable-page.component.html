@@ -9,7 +9,7 @@
     ><div *ngFor="let category of genres" class="mb-2 mt-4 flex flex-col">
       <a
         [routerLink]="'/genre/' + category.translitname"
-        class="hover:text-contrast transition-colors duration-200 w-fit cursor-pointer font-semibold font-main text-lg md:text-xl"
+        class="hover:text-contrast transition-colors duration-200 w-fit cursor-pointer font-semibold font-main text-lg md:text-xl text-mainblack"
         >{{ category.name }}
         <fa-icon size="1x" class="ml-1 font-normal" [icon]="faAngleRight"
       /></a>
