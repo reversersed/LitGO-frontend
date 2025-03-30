@@ -1,6 +1,6 @@
 <div
   *ngIf="currentBook$ | async as book"
-  class="w-full h-full relative flex bg-mainwhite z-0"
+  class="w-full h-full relative flex bg-body z-0"
 >
   <div
     class="w-full sm:w-fit h-full mt-0 text-accent-light bg-body flex flex-col overflow-hidden duration-500 transition-all lg:max-w-fit lg:min-w-[200px] absolute lg:relative z-[100]"
@@ -20,7 +20,7 @@
         >{{ book.authors[0].name }}. {{ book.name }}.</span
       >
       <div
-        *ngIf="bookChapters"
+        *ngIf="bookChapters && !isLoading"
         class="w-full flex h-full flex-1 flex-col min-h-0"
       >
         <span class="font-semibold text-center w-full"
@@ -40,7 +40,11 @@
             <a
               *ngFor="let chapter of bookChapters"
               class="hover:bg-contrast/40 transition-all duration-200 px-4 py-2 cursor-pointer mt-auto max-w-full text-sm overflow-hidden md:whitespace-nowrap md:text-ellipsis"
-              (click)="selectedChapter = chapter; this.isMenuOpen = false"
+              (click)="
+                selectedChapter = chapter;
+                this.isMenuOpen = false;
+                this.currentExpandedSection = undefined
+              "
               title="{{ chapter.label }}"
             >
               {{ chapter.label }}
@@ -48,10 +52,96 @@
           </div>
         </div>
       </div>
+
+      <a
+        *ngIf="!isLoading && readerStyle"
+        (click)="
+          settingsExpanded = !settingsExpanded;
+          currentExpandedSection = undefined
+        "
+        [ngClass]="
+          settingsExpanded
+            ? 'bg-contrast/40 dark:bg-body/60 border-contrast'
+            : 'border-transparent'
+        "
+        class="hover:bg-contrast/40 transition-all duration-200 px-4 py-2 cursor-pointer w-full text-center shrink-0 flex flex-row justify-center gap-2 select-none text-sm border-b-2 border-solid"
+        >Настройки
+        <div
+          class="transition-all duration-200"
+          [ngClass]="settingsExpanded ? 'rotate-180' : ''"
+        >
+          <fa-icon [icon]="faExpand" /></div
+      ></a>
+      <div
+        [ngClass]="settingsExpanded ? 'max-h-[400px]' : 'max-h-0'"
+        *ngFor="let setting of styleSetting"
+        class="min-w-full flex flex-col text-sm max-h-fit duration-500 transition-all ease-in-out overflow-hidden"
+      >
+        <a
+          (click)="
+            currentExpandedSection =
+              currentExpandedSection == setting.section
+                ? undefined
+                : setting.section
+          "
+          [ngClass]="
+            currentExpandedSection == setting.section
+              ? 'bg-contrast/40 dark:bg-body/60'
+              : undefined
+          "
+          class="hover:bg-contrast/40 transition-all duration-200 px-4 py-2 cursor-pointer w-full text-center shrink-0 flex flex-row justify-center gap-2 select-none"
+          >{{ setting.name }}
+          <div
+            class="transition-all duration-200"
+            [ngClass]="
+              currentExpandedSection === setting.section ? 'rotate-180' : ''
+            "
+          >
+            <fa-icon [icon]="faExpand" /></div
+        ></a>
+
+        <div
+          class="flex flex-col min-h-0 h-fit w-full transition-all duration-[1s] overflow-hidden border-y-2 border-solid"
+          [ngClass]="
+            currentExpandedSection == setting.section
+              ? 'max-h-[600px] border-contrast'
+              : 'max-h-0 border-transparent'
+          "
+        >
+          <a
+            *ngFor="let val of setting.values"
+            class="transition-all duration-200 px-4 py-2 cursor-pointer w-full text-center shrink-0 flex flex-row justify-center gap-2 select-none"
+            [ngClass]="
+              readerStyle &&
+              readerStyle[setting.topSection][setting.section] === val.value
+                ? 'bg-contrast/40 dark:bg-accent-light'
+                : 'hover:bg-contrast/40'
+            "
+            (click)="
+              reader?.changeStyleParam(
+                setting.topSection,
+                setting.section,
+                val.value
+              )
+            "
+            >{{ val.label }}</a
+          >
+        </div>
+      </div>
+      <div
+        [ngClass]="settingsExpanded ? 'max-h-[400px]' : 'max-h-0'"
+        class="flex overflow-hidden min-w-full transition-all duration-500"
+      >
+        <a
+          (click)="reader?.changeStyleParam('', '', '', true)"
+          class="hover:bg-contrast/40 transition-all duration-200 px-4 py-2 cursor-pointer text-center text-sm mt-auto overflow-hidden w-full"
+          ><fa-icon [icon]="faDefault" /> По умолчанию</a
+        >
+      </div>
       <a
         [routerLink]="oldRoute ?? '/'"
-        class="hover:bg-contrast/40 transition-all duration-200 px-4 py-2 cursor-pointer mt-auto min-w-fit text-center shrink-0"
-        >Назад</a
+        class="hover:bg-contrast/40 transition-all duration-200 px-4 py-2 cursor-pointer min-w-fit text-center shrink-0 text-sm mt-auto"
+        >Выход</a
       >
     </div>
   </div>
@@ -75,7 +165,9 @@
       *ngIf="currentFile$ | async as file; else loading"
       [allowFullRead]="book && allowUserReading()"
       [bookFileUrl]="file"
+      (isBookLoading)="isLoading = $event"
       [currentChapter]="selectedChapter"
+      (onStyleChanged)="readerStyle = $event"
       (bookContent)="onBookContentCreated($event)"
       class="w-full h-[95%] lg:h-full z-[10]"
     />
