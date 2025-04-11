@@ -133,48 +133,48 @@ export class ReaderPageComponent implements OnInit, OnDestroy {
     },
     {
       name: 'Интервал',
-      topSection: 'body',
+      topSection: '*',
       section: 'line-height',
       values: [
         {
           label: '1',
-          value: '1',
+          value: '1 !important',
         },
         {
           label: '1.15',
-          value: '1.15',
+          value: '1.15 !important',
         },
         {
           label: '1.25',
-          value: '1.25',
+          value: '1.25 !important',
         },
         {
           label: '1.5',
-          value: '1.5',
+          value: '1.5 !important',
         },
         {
           label: '1.75',
-          value: '1.75',
+          value: '1.75 !important',
         },
         {
           label: '2',
-          value: '2',
+          value: '2 !important',
         },
         {
           label: '2.25',
-          value: '2.25',
+          value: '2.25 !important',
         },
         {
           label: '2.5',
-          value: '2.5',
+          value: '2.5 !important',
         },
         {
           label: '2.75',
-          value: '2.75',
+          value: '2.75 !important',
         },
         {
           label: '3',
-          value: '3',
+          value: '3 !important',
         },
       ],
     },

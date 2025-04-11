@@ -30,10 +30,10 @@ interface Style {
     margin: string;
     padding: string;
     'box-sizing': string;
-    color?: string;
-    'line-height'?: string;
   };
   '*': {
+    'line-height'?: string;
+    color?: string;
     'font-family'?: string;
   };
   customSettings: {
@@ -181,10 +181,10 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
         margin: '0 auto !important',
         padding: '0 !important',
         'box-sizing': 'border-box !important',
-        color: this.isDarkTheme() ? 'rgb(180, 180, 190)' : undefined,
-        'line-height': '1.5',
       },
       '*': {
+        'line-height': '1.5 !important',
+        color: this.isDarkTheme() ? 'rgb(180, 180, 190) !important' : undefined,
         'font-family': 'LiberEmb !important',
       },
       customSettings: {
