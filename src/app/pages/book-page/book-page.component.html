@@ -1,4 +1,4 @@
-<ng-container *ngIf="bookModel$ | async as book; else fallback">
+<ng-container *ngIf="bookModel$ | async as book">
   <div class="min-h-full flex flex-col">
     <!--header-->
     <div
@@ -39,7 +39,7 @@
             class="object-contain rounded-xl"
           />
           <ng-template #loadingImage>
-            <app-skeleton width="100%" height="100%" borderRadius="15px" />
+            <app-skeleton width="100%" height="250px" borderRadius="15px" />
           </ng-template>
           <span *ngIf="book.pages" class="text-mainblack w-full text-center"
             >{{ book.pages }} страниц</span
@@ -86,7 +86,7 @@
             <span class="text-lg font-semibold text-blacktext/80"
               ><fa-icon
                 [icon]="faStar"
-                size="xs"
+                size="lg"
                 class="text-contrast mr-1"
               />{{ book.rating }}</span
             >
@@ -162,10 +162,382 @@
             </button>
           </div>
         </div>
-        <div id="reviews" class="flex flex-col mt-[20px]">
+        <div id="reviews" class="flex flex-col mt-[20px] mb-4">
           <span class="font-semibold text-lg text-mainblack"
             >Отзывы о книге</span
           >
+          <div class="flex w-full h-fit flex-col gap-4">
+            <select
+              class="border-2 pl-2 pr-8 py-1 border-accent/40 w-fit hover:border-contrast/80 transition-all duration-200 rounded-lg outline-none dark:bg-body dark:text-mainwhite"
+              *ngIf="!fetchingState"
+              (change)="OnSortSelected($event)"
+              [value]="selectedReviewSort"
+            >
+              <option value="new" selected class="dark:bg-body">
+                Сначала новые
+              </option>
+              <option value="old" class="dark:bg-body">Сначала старые</option>
+              <option value="liked" class="dark:bg-body">
+                С лучшей оценкой
+              </option>
+              <option value="disliked" class="dark:bg-body">
+                С худшей оценкой
+              </option>
+            </select>
+
+            <ng-container
+              *ngIf="currentUserReview$ | async as review; else writeReview"
+            >
+              <div class="flex flex-col text-mainblack">
+                <div
+                  class="flex justify-between w-full text-xs md:text-sm px-4"
+                >
+                  <span>{{ review.author.login }}</span>
+                  <span>{{ review.date | date : "shortDate" }}</span>
+                </div>
+                <span
+                  class="text-sm md:text-base bg-contrast/10 rounded-xl px-4 py-2 text-justify hyphens-auto"
+                  >{{ review.text }}</span
+                >
+                <div class="flex flex-row justify-between text-sm px-4">
+                  <div class="flex gap-1">
+                    <fa-icon
+                      [icon]="faStar"
+                      class="text-contrast"
+                      *ngFor="let i of [].constructor(review.rating)"
+                    />
+                    <fa-icon
+                      [icon]="faStar"
+                      class="text-accent"
+                      *ngFor="let i of [].constructor(5 - review.rating)"
+                    />
+                  </div>
+                  <div class="flex gap-3">
+                    <a
+                      class="hover:text-contrast transition-colors duration-150 cursor-pointer select-none"
+                      (click)="deleteReview(review.id)"
+                      >Удалить отзыв</a
+                    >
+                    <a
+                      *ngIf="
+                        currentUser() && currentAnswerExpanded !== review.id
+                      "
+                      class="hover:text-contrast transition-colors duration-150 cursor-pointer select-none"
+                      (click)="currentAnswerExpanded = review.id"
+                      >Ответить</a
+                    >
+                    <a
+                      [className]="
+                        (currentUser() &&
+                        review.currentUserAction == actionEnum.Like
+                          ? 'text-contrast'
+                          : '') +
+                        (currentUser()
+                          ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
+                          : '') +
+                        ' select-none'
+                      "
+                      (click)="currentUser() && onReviewLike(review.id)"
+                      >{{ review.likes }} <fa-icon [icon]="faLike"
+                    /></a>
+                    <a
+                      [className]="
+                        (currentUser() &&
+                        review.currentUserAction == actionEnum.Dislike
+                          ? 'text-contrast'
+                          : '') +
+                        (currentUser()
+                          ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
+                          : '') +
+                        ' select-none'
+                      "
+                      (click)="currentUser() && onReviewDislike(review.id)"
+                      >{{ review.dislikes }} <fa-icon [icon]="faDislike"
+                    /></a>
+                  </div>
+                </div>
+                <div
+                  *ngIf="currentAnswerExpanded === review.id"
+                  class="flex flex-col w-full text-sm my-2"
+                >
+                  <textarea
+                    placeholder="Введите текст..."
+                    rows="5"
+                    class="mb-2 rounded-xl px-4 py-2 outline-none resize-none text-mainblack bg-contrast/10"
+                    [(value)]="userAnswer"
+                    (input)="userAnswerInput($event.target)"
+                  ></textarea>
+                  <div class="self-end w-fit flex gap-2">
+                    <button
+                      (click)="sendReviewReply(review.id)"
+                      [disabled]="userAnswer.length < 10"
+                      class="enabled:hover:bg-contrast disabled:text-mainblack bg-contrast/80 dark:bg-contrast/30 dark:enabled:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite transition-colors duration-150 disabled:cursor-not-allowed cursor-pointer select-none px-2 py-1 rounded-xl"
+                    >
+                      Отправить
+                    </button>
+                    <a
+                      (click)="currentAnswerExpanded = undefined"
+                      class="hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite transition-colors duration-150 cursor-pointer select-none px-2 py-1 rounded-xl"
+                      >Закрыть</a
+                    >
+                  </div>
+                </div>
+                <div
+                  *ngIf="review.replies && review.replies.length > 0"
+                  class="flex flex-col mt-1 border-l-2 border-contrast pl-2 md:pl-4 gap-2"
+                >
+                  <span class="text-base font-semibold">Обсуждение</span>
+
+                  <div
+                    *ngFor="
+                      let reply of review.replies.slice(
+                        undefined,
+                        expandedReplies === review.id ? undefined : 2
+                      )
+                    "
+                    class="flex flex-col"
+                  >
+                    <div
+                      class="flex justify-between w-full text-xs md:text-sm px-4"
+                    >
+                      <span>{{ reply.author.login }}</span>
+                      <span>{{ reply.date | date : "shortDate" }}</span>
+                    </div>
+                    <span
+                      class="text-sm md:text-base bg-contrast/10 rounded-xl px-4 py-2 text-justify hyphens-auto"
+                      >{{ reply.text }}</span
+                    >
+                    <div class="flex flex-row self-end text-sm gap-3 px-4">
+                      <a
+                        [className]="
+                          (currentUser() &&
+                          reply.currentUserAction == actionEnum.Like
+                            ? 'text-contrast'
+                            : '') +
+                          (currentUser()
+                            ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
+                            : '') +
+                          ' select-none'
+                        "
+                        (click)="
+                          currentUser() && onReplyLike(review.id, reply.id)
+                        "
+                        >{{ reply.likes }} <fa-icon [icon]="faLike"
+                      /></a>
+                      <a
+                        [className]="
+                          (currentUser() &&
+                          reply.currentUserAction == actionEnum.Dislike
+                            ? 'text-contrast'
+                            : '') +
+                          (currentUser()
+                            ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
+                            : '') +
+                          ' select-none'
+                        "
+                        (click)="
+                          currentUser() && onReplyDislike(review.id, reply.id)
+                        "
+                        >{{ reply.dislikes }} <fa-icon [icon]="faDislike"
+                      /></a>
+                    </div>
+                  </div>
+
+                  <a
+                    *ngIf="
+                      review.replies.length > 2 && expandedReplies !== review.id
+                    "
+                    class="hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite w-fit px-2 py-1 rounded-xl transition-colors duration-150 cursor-pointer select-none"
+                    (click)="expandedReplies = review.id"
+                    >Показать все {{ review.replies.length }}</a
+                  >
+                  <a
+                    *ngIf="expandedReplies === review.id"
+                    class="hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite w-fit px-2 py-1 rounded-xl transition-colors duration-150 cursor-pointer select-non"
+                    (click)="expandedReplies = undefined"
+                    >Свернуть</a
+                  >
+                </div>
+              </div>
+            </ng-container>
+
+            <div *ngFor="let review of reviews">
+              <div class="flex flex-col text-mainblack">
+                <div
+                  class="flex justify-between w-full text-xs md:text-sm px-4"
+                >
+                  <span>{{ review.author.login }}</span>
+                  <span>{{ review.date | date : "shortDate" }}</span>
+                </div>
+                <span
+                  class="text-sm md:text-base bg-contrast/10 rounded-xl px-4 py-2 text-justify hyphens-auto"
+                  >{{ review.text }}</span
+                >
+                <div class="flex flex-row justify-between text-sm px-4">
+                  <div class="flex gap-1">
+                    <fa-icon
+                      [icon]="faStar"
+                      class="text-contrast"
+                      *ngFor="let i of [].constructor(review.rating)"
+                    />
+                    <fa-icon
+                      [icon]="faStar"
+                      class="text-accent"
+                      *ngFor="let i of [].constructor(5 - review.rating)"
+                    />
+                  </div>
+                  <div class="flex gap-3">
+                    <a
+                      *ngIf="
+                        currentUser() && currentAnswerExpanded !== review.id
+                      "
+                      class="hover:text-contrast transition-colors duration-150 cursor-pointer select-none"
+                      (click)="currentAnswerExpanded = review.id"
+                      >Ответить</a
+                    >
+                    <a
+                      [className]="
+                        (currentUser() &&
+                        review.currentUserAction == actionEnum.Like
+                          ? 'text-contrast'
+                          : '') +
+                        (currentUser()
+                          ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
+                          : '') +
+                        ' select-none'
+                      "
+                      (click)="currentUser() && onReviewLike(review.id)"
+                      >{{ review.likes }} <fa-icon [icon]="faLike"
+                    /></a>
+                    <a
+                      [className]="
+                        (currentUser() &&
+                        review.currentUserAction == actionEnum.Dislike
+                          ? 'text-contrast'
+                          : '') +
+                        (currentUser()
+                          ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
+                          : '') +
+                        ' select-none'
+                      "
+                      (click)="currentUser() && onReviewDislike(review.id)"
+                      >{{ review.dislikes }} <fa-icon [icon]="faDislike"
+                    /></a>
+                  </div>
+                </div>
+                <div
+                  *ngIf="currentAnswerExpanded === review.id"
+                  class="flex flex-col w-full text-sm my-2"
+                >
+                  <textarea
+                    placeholder="Введите текст..."
+                    rows="5"
+                    class="mb-2 rounded-xl px-4 py-2 outline-none resize-none text-mainblack bg-contrast/10"
+                    [(value)]="userAnswer"
+                    (input)="userAnswerInput($event.target)"
+                  ></textarea>
+                  <div class="self-end w-fit flex gap-2">
+                    <button
+                      (click)="sendReviewReply(review.id)"
+                      [disabled]="userAnswer.length < 10"
+                      class="enabled:hover:bg-contrast disabled:text-mainblack bg-contrast/80 dark:bg-contrast/30 dark:enabled:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite transition-colors duration-150 disabled:cursor-not-allowed cursor-pointer select-none px-2 py-1 rounded-xl"
+                    >
+                      Отправить
+                    </button>
+                    <a
+                      (click)="currentAnswerExpanded = undefined"
+                      class="hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite transition-colors duration-150 cursor-pointer select-none px-2 py-1 rounded-xl"
+                      >Закрыть</a
+                    >
+                  </div>
+                </div>
+                <div
+                  *ngIf="review.replies && review.replies.length > 0"
+                  class="flex flex-col mt-1 border-l-2 border-contrast pl-2 md:pl-4 gap-2"
+                >
+                  <span class="text-base font-semibold">Обсуждение</span>
+
+                  <div
+                    *ngFor="
+                      let reply of review.replies.slice(
+                        undefined,
+                        expandedReplies === review.id ? undefined : 2
+                      )
+                    "
+                    class="flex flex-col"
+                  >
+                    <div
+                      class="flex justify-between w-full text-xs md:text-sm px-4"
+                    >
+                      <span>{{ reply.author.login }}</span>
+                      <span>{{ reply.date | date : "shortDate" }}</span>
+                    </div>
+                    <span
+                      class="text-sm md:text-base bg-contrast/10 rounded-xl px-4 py-2 text-justify hyphens-auto"
+                      >{{ reply.text }}</span
+                    >
+                    <div class="flex flex-row self-end text-sm gap-3 px-4">
+                      <a
+                        [className]="
+                          (currentUser() &&
+                          reply.currentUserAction == actionEnum.Like
+                            ? 'text-contrast'
+                            : '') +
+                          (currentUser()
+                            ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
+                            : '') +
+                          ' select-none'
+                        "
+                        (click)="
+                          currentUser() && onReplyLike(review.id, reply.id)
+                        "
+                        >{{ reply.likes }} <fa-icon [icon]="faLike"
+                      /></a>
+                      <a
+                        [className]="
+                          (currentUser() &&
+                          reply.currentUserAction == actionEnum.Dislike
+                            ? 'text-contrast'
+                            : '') +
+                          (currentUser()
+                            ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
+                            : '') +
+                          ' select-none'
+                        "
+                        (click)="
+                          currentUser() && onReplyDislike(review.id, reply.id)
+                        "
+                        >{{ reply.dislikes }} <fa-icon [icon]="faDislike"
+                      /></a>
+                    </div>
+                  </div>
+
+                  <a
+                    *ngIf="
+                      review.replies.length > 2 && expandedReplies !== review.id
+                    "
+                    class="hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite w-fit px-2 py-1 rounded-xl transition-colors duration-150 cursor-pointer select-none"
+                    (click)="expandedReplies = review.id"
+                    >Показать все {{ review.replies.length }}</a
+                  >
+                  <a
+                    *ngIf="expandedReplies === review.id"
+                    class="hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite w-fit px-2 py-1 rounded-xl transition-colors duration-150 cursor-pointer select-non"
+                    (click)="expandedReplies = undefined"
+                    >Свернуть</a
+                  >
+                </div>
+              </div>
+            </div>
+
+            <ng-container *ngIf="fetchingState">
+              <app-skeleton class="w-full" height="100px" borderRadius="15px" />
+              <app-skeleton class="w-full" height="100px" borderRadius="15px" />
+              <app-skeleton class="w-full" height="100px" borderRadius="15px" />
+              <app-skeleton class="w-full" height="100px" borderRadius="15px" />
+              <app-skeleton class="w-full" height="100px" borderRadius="15px" />
+            </ng-container>
+          </div>
         </div>
       </div>
       <div
@@ -192,4 +564,64 @@
     </div>
   </div>
 </ng-container>
-<ng-template #fallback>asd</ng-template>
+<app-to-up-overlay />
+
+<ng-template #writeReview>
+  <div
+    *ngIf="currentUser()"
+    class="text-mainblack flex flex-col gap-2 pl-2 border-l-2 border-contrast/50"
+  >
+    <span class="font-semibold">Поделитесь своим опытом</span>
+    <textarea
+      placeholder="Напишите свое впечатление о книге..."
+      rows="5"
+      class="mb-2 rounded-xl px-4 py-2 outline-none resize-none text-mainblack bg-contrast/10"
+      [(value)]="userReview"
+      (input)="userReviewInput($event.target)"
+    ></textarea>
+    <div class="w-full flex justify-between">
+      <div class="flex w-fit text-xl items-center gap-2">
+        <span class="text-base">Оценка:</span>
+        <div class="flex gap-1 flex-row-reverse">
+          <a
+            class="peer/star1 hover:text-contrast/80 peer-hover/star2:text-contrast/80"
+            [ngClass]="userRating >= 5 ? 'text-contrast' : 'text-accent'"
+            (click)="userRating = 5"
+            ><fa-icon [icon]="faStar"
+          /></a>
+          <a
+            [ngClass]="userRating >= 4 ? 'text-contrast' : 'text-accent'"
+            (click)="userRating = 4"
+            class="peer/star2 hover:text-contrast/80 cursor-pointer peer-hover/star1:text-contrast/80 peer-hover/star2:text-contrast/80"
+            ><fa-icon [icon]="faStar"
+          /></a>
+          <a
+            [ngClass]="userRating >= 3 ? 'text-contrast' : 'text-accent'"
+            (click)="userRating = 3"
+            class="peer/star3 hover:text-contrast/80 cursor-pointer peer-hover/star4:text-contrast/80 peer-hover/star5:text-contrast/80 peer-hover/star1:text-contrast/80 peer-hover/star2:text-contrast/80"
+            ><fa-icon [icon]="faStar"
+          /></a>
+          <a
+            [ngClass]="userRating >= 2 ? 'text-contrast' : 'text-accent'"
+            (click)="userRating = 2"
+            class="peer/star4 hover:text-contrast/80 peer-hover/star1:text-contrast/80 peer-hover/star2:text-contrast/80 peer-hover/star3:text-contrast/80"
+            ><fa-icon [icon]="faStar"
+          /></a>
+          <a
+            [ngClass]="userRating >= 1 ? 'text-contrast' : 'text-accent'"
+            (click)="userRating = 1"
+            class="peer/star5 hover:text-contrast/80 cursor-pointer peer-hover/star1:text-contrast/80 peer-hover/star2:text-contrast/80 peer-hover/star3:text-contrast/80 peer-hover/star4:text-contrast/80"
+            ><fa-icon [icon]="faStar"
+          /></a>
+        </div>
+      </div>
+      <button
+        [disabled]="userReview.length < 20"
+        class="w-fit h-fit px-2 py-1 disabled:text-mainblack enabled:hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:enabled:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite rounded-xl disabled:cursor-not-allowed cursor-pointer enabled:hover:bg-contrast/80 transition-colors duration-150"
+        (click)="createReview()"
+      >
+        Отправить отзыв
+      </button>
+    </div>
+  </div>
+</ng-template>

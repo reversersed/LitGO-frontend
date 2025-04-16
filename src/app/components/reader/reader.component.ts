@@ -10,7 +10,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faAngleLeft,
@@ -44,7 +44,7 @@ interface Style {
 @Component({
   selector: 'app-reader',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule],
+  imports: [CommonModule, FontAwesomeModule, RouterLink],
   templateUrl: './reader.component.html',
 })
 export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
@@ -57,6 +57,10 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
 
   router = inject(Router);
   route = inject(ActivatedRoute);
+
+  currentBook?: string;
+
+  bookPageLimit: number = 999999999999;
 
   book!: EPUB.Book;
   rendition!: EPUB.Rendition;
@@ -111,6 +115,9 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
         this.totalSections++;
       });
 
+      if (!this.allowFullRead) {
+        this.bookPageLimit = Math.round(this.totalSections / 10);
+      }
       await this.rendition.display();
     } catch (err) {
       this.router.navigate(['/notfound']);
@@ -121,6 +128,7 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
 
     this.paramsSubscription = this.route.queryParams.subscribe({
       next: (params) => {
+        this.currentBook = params['id'];
         if (params['page'] === undefined) {
           this.currentSection = 0;
           this.selectedChapter = undefined;
@@ -145,8 +153,10 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async applyPage() {
-    const index = this.currentSection;
-    if (index < 0 || index >= this.totalSections) return;
+    let index = this.currentSection;
+
+    if (index < 0 || index >= this.totalSections || index > this.bookPageLimit)
+      return;
 
     if (this.selectedChapter)
       await this.rendition?.display(this.selectedChapter.href);

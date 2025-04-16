@@ -192,13 +192,15 @@
           <fa-icon [icon]="faFilter" size="sm" />
         </button>
         <select
-          class="border-2 pl-2 pr-8 py-1 border-accent/40 hover:border-contrast/80 transition-all duration-200 rounded-lg outline-none"
+          class="border-2 pl-2 pr-8 py-1 border-accent/40 hover:border-contrast/80 transition-all duration-200 rounded-lg outline-none dark:bg-body dark:text-mainwhite"
           *ngIf="Books !== undefined || fetchingState"
           (change)="OnSortSelected($event)"
           [value]="selectedSort"
         >
-          <option value="Popular" selected>Популярное</option>
-          <option value="Newest">Новинки</option>
+          <option value="Popular" selected class="dark:bg-body">
+            Популярное
+          </option>
+          <option value="Newest" class="dark:bg-body">Новинки</option>
         </select>
       </div>
       <ng-container *ngIf="Books || fetchingPipeError; else loader">
