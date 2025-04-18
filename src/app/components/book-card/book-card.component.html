@@ -35,7 +35,7 @@
     "
   >
     <a
-      class="text-blacktext font-semibold font-main mb-1 hyphens-auto hover:text-blacktext/80 duration-200 transition-colors"
+      class="text-mainblack font-semibold font-main mb-1 hyphens-auto hover:text-mainblack/80 duration-200 transition-colors"
       [routerLink]="'/book/' + bookModel.translitname"
       >{{ bookModel.name }}</a
     >
@@ -53,7 +53,7 @@
     </p>
     <p
       *ngIf="showPrice"
-      class="font-main text-blacktext font-bold mt-2 md:mt-1 text-xs md:text-sm"
+      class="font-main text-mainblack font-bold mt-2 md:mt-1 text-xs md:text-sm"
     >
       {{ bookModel.price }} ₽
     </p>

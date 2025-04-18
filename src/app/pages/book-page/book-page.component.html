@@ -2,28 +2,28 @@
   <div class="min-h-full flex flex-col">
     <!--header-->
     <div
-      class="flex flex-row flex-wrap gap-1 md:gap-2 text-blacktext font-main text-xs md:text-sm pl-5 md:pl-0"
+      class="flex flex-row flex-wrap gap-1 md:gap-2 text-mainblack font-main text-xs md:text-sm pl-5 md:pl-0"
     >
       <a
         routerLink="/"
-        class="hidden md:block text-blacktext/80 hover:text-contrast transition-all duration-150"
+        class="hidden md:block text-mainblack/80 hover:text-contrast transition-all duration-150"
         >Книги</a
       >
-      <span class="hidden md:block text-blacktext">/</span>
+      <span class="hidden md:block text-mainblack">/</span>
       <a
         [routerLink]="'/genre/' + book.genre.translitname"
-        class="hidden md:block text-blacktext/80 hover:text-contrast transition-all duration-150"
+        class="hidden md:block text-mainblack/80 hover:text-contrast transition-all duration-150"
         >{{ book.genre.name }}</a
       >
-      <span class="hidden md:block text-blacktext">/</span>
-      <fa-icon [icon]="faBack" class="block md:hidden text-blacktext/80" />
+      <span class="hidden md:block text-mainblack">/</span>
+      <fa-icon [icon]="faBack" class="block md:hidden text-mainblack/80" />
       <a
         [routerLink]="'/author/' + book.authors[0].translitname"
-        class="text-blacktext/80 hover:text-contrast transition-all duration-150"
+        class="text-mainblack/80 hover:text-contrast transition-all duration-150"
         >{{ book.authors[0].name }}</a
       >
-      <span class="hidden md:block text-blacktext">/</span>
-      <span class="text-blacktext/80 hidden md:block">{{ book.name }}</span>
+      <span class="hidden md:block text-mainblack">/</span>
+      <span class="text-mainblack/80 hidden md:block">{{ book.name }}</span>
     </div>
     <!-- main body -->
     <div
@@ -50,7 +50,7 @@
               id: book.translitname,
               old: '/book/' + book.translitname
             }"
-            class="w-full text-center bg-mainbg rounded-xl text-maintext mt-4 py-2 hover:bg-mainshadow transition-all duration-150 select-none"
+            class="w-full text-center bg-mainbg rounded-xl text-mainwhite mt-4 py-2 hover:bg-mainshadow transition-all duration-150 select-none"
             >Читать отрывок</a
           >
         </div>
@@ -61,7 +61,7 @@
         </span>
         <span
           *ngIf="book.authors.length == 1"
-          class="font-semibold text-blacktext/60"
+          class="font-semibold text-mainblack/60"
           >Автор
           <a
             class="text-contrast hover:text-contrast/80 transition-colors duration-200 ease-in-out"
@@ -71,7 +71,7 @@
         >
         <span
           *ngIf="book.authors.length > 1"
-          class="font-semibold text-blacktext/60"
+          class="font-semibold text-mainblack/60"
           >Авторы
           <a
             *ngFor="let author of book.authors"
@@ -83,7 +83,7 @@
 
         <div class="flex items-center gap-4 mt-2">
           <div class="flex flex-col justify-center items-center">
-            <span class="text-lg font-semibold text-blacktext/80"
+            <span class="text-lg font-semibold text-mainblack/80"
               ><fa-icon
                 [icon]="faStar"
                 size="lg"
@@ -93,7 +93,7 @@
           </div>
           <div class="w-[2px] h-[24px] bg-mainblack/20"></div>
           <div class="flex flex-col justify-center items-center">
-            <span class="text-xl font-semibold text-blacktext/90 font-main">{{
+            <span class="text-xl font-semibold text-mainblack/90 font-main">{{
               book.reviews
             }}</span>
             <a

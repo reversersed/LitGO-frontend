@@ -17,7 +17,7 @@
       ><fa-icon
         [icon]="faClose"
         size="xl"
-        [ngClass]="disabled ? 'text-blacktext/40' : 'text-blacktext'"
+        [ngClass]="disabled ? 'text-mainblack/40' : 'text-mainblack'"
         (click)="!disabled && ChangeModalState(false)"
     /></a>
     <div class="w-full h-full flex flex-col items-center">
@@ -45,12 +45,12 @@
             ? 'bg-error/80 enabled:hover:bg-error'
             : 'bg-mainshadow/80 enabled:hover:bg-mainbg'
         "
-        class="enabled:cursor-pointer w-fit px-6 py-1 enabled:hover:tracking-widest text-maintext rounded-xl transition-all duration-300"
+        class="enabled:cursor-pointer w-fit px-6 py-1 enabled:hover:tracking-widest text-mainwhite rounded-xl transition-all duration-300"
       /><fa-icon
         [icon]="faSpinner"
         [animation]="'spin-pulse'"
         size="xl"
-        class="text-maintext -mt-7 select-none"
+        class="text-mainwhite -mt-7 select-none"
         *ngIf="disabled"
       />
       <span

@@ -1,6 +1,6 @@
 <div class="flex flex-col items-center w-full mt-[5%] xl:mt-[2%]">
   <h1
-    class="text-center text-2xl font-main text-blacktext font-semibold mb-[20%] sm:mb-[10%] md:mb-[5%]"
+    class="text-center text-2xl font-main text-mainblack font-semibold mb-[20%] sm:mb-[10%] md:mb-[5%]"
   >
     Авторизация
   </h1>
@@ -42,7 +42,7 @@
       [ngClass]="
         attempingState
           ? 'border-mainshadow/60 bg-mainshadow/80'
-          : 'hover:bg-mainshadow hover:px-5 hover:text-maintext active:bg-mainbg active:border-mainbg'
+          : 'hover:bg-mainshadow hover:px-5 hover:text-mainwhite active:bg-mainbg active:border-mainbg'
       "
       class="mt-2 text-base font-main tracking-wider border-mainshadow border-2 rounded-lg w-fit self-center py-1 px-4 transition-all duration-200"
     >
@@ -52,7 +52,7 @@
         [icon]="faSpinner"
         animation="spin-pulse"
         size="lg"
-        class="text-maintext"
+        class="text-mainwhite"
       />
     </button>
     <span

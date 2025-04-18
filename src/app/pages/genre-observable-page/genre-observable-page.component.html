@@ -2,7 +2,7 @@
   class="h-auto w-full px-[2%] md:pl-[6%] md:pr-[2%] py-8 flex flex-col flex-1"
 >
   <span
-    class="text-blacktext font-bold font-main text-xl md:text-3xl mb-2 md:mb-4"
+    class="text-mainblack font-bold font-main text-xl md:text-3xl mb-2 md:mb-4"
     >Жанры</span
   >
   <ng-container *ngIf="genres$ | async as genres; else loader"
@@ -22,12 +22,12 @@
             class="transition-all duration-200"
             [ngClass]="
               genre.bookcount == 0
-                ? 'text-blacktext/60 hover:text-contrast/80'
+                ? 'text-mainblack/60 hover:text-contrast/80'
                 : 'text-contrast hover:text-contrast/80'
             "
             >{{ genre.name }}</span
           ><span
-            class="font-main !text-blacktext/60 ml-1"
+            class="font-main !text-mainblack/60 ml-1"
             [ngClass]="(genre.bookcount == 0 && 'hidden') || undefined"
             >{{ genre.bookcount }}</span
           ></a

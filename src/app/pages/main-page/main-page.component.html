@@ -5,7 +5,7 @@
     [ngClass]="books.length > 0 ? '' : 'hidden'"
     *ngIf="popularBooks$ | async as books; else popularBooksLoader"
   >
-    <span class="text-xl font-semibold text-blacktext"
+    <span class="text-xl font-semibold text-mainblack"
       >Читают сейчас
       <a [routerLink]="'/popular'"
         ><fa-icon [icon]="faAngleRight" class="ml-2" /></a
@@ -29,7 +29,7 @@
     [ngClass]="books.length > 0 ? '' : 'hidden'"
     *ngIf="newestBooks$ | async as books; else newestBooksLoader"
   >
-    <span class="text-xl font-semibold text-blacktext"
+    <span class="text-xl font-semibold text-mainblack"
       >Новинки литературы
       <a [routerLink]="'/new'"><fa-icon [icon]="faAngleRight" class="ml-2" /></a
     ></span>
@@ -50,7 +50,7 @@
 
 <!-- Loading templates -->
 <ng-template #popularBooksLoader>
-  <span class="text-xl font-semibold text-blacktext"
+  <span class="text-xl font-semibold text-mainblack"
     >Читают сейчас
     <a [routerLink]="'/popular'"
       ><fa-icon [icon]="faAngleRight" class="ml-2" /></a
@@ -66,7 +66,7 @@
 </ng-template>
 
 <ng-template #newestBooksLoader>
-  <span class="text-xl font-semibold text-blacktext"
+  <span class="text-xl font-semibold text-mainblack"
     >Новинки литературы
     <a [routerLink]="'/new'"><fa-icon [icon]="faAngleRight" class="ml-2" /></a
   ></span>

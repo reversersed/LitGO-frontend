@@ -7,7 +7,7 @@
   [danger]="true"
   [(visible)]="logoutModalOpen"
   ok="Выйти из аккаунта"
-  ><span class="text-blacktext text-center"
+  ><span class="text-mainblack text-center"
     >Для подтверждения действия нажмите кнопку ниже</span
   ></app-modal
 >
@@ -63,9 +63,9 @@
 >
   <div class="z-50 flex flex-row w-full lg:w-auto justify-center h-full">
     <h1
-      class="text-maintext m-0 font-main pt-2 pl-2 text-xl lg:p-0 tracking-[2px] lg:my-auto h-fit sm:block hidden"
+      class="text-mainwhite m-0 font-main pt-2 pl-2 text-xl lg:p-0 tracking-[2px] lg:my-auto h-fit sm:block hidden"
     >
-      <a id="main-logo" class="no-underline text-maintext" routerLink="/"
+      <a id="main-logo" class="no-underline text-mainwhite" routerLink="/"
         >LitGO</a
       >
     </h1>
@@ -73,7 +73,7 @@
       <button
         id="catalogue-button"
         (click)="switchCatalogue()"
-        class="bg-mainshadow transition-colors duration-200 z-[100] lg:min-w-[110px] p-2 text-sm lg:px-5 lg:py-3 m-1.5 border-0 rounded-xl cursor-pointer lg:m-2.5 text-maintext lg:text-sm font-semibold font-main hover:bg-mainshadow/7"
+        class="bg-mainshadow transition-colors duration-200 z-[100] lg:min-w-[110px] p-2 text-sm lg:px-5 lg:py-3 m-1.5 border-0 rounded-xl cursor-pointer lg:m-2.5 text-mainwhite lg:text-sm font-semibold font-main hover:bg-mainshadow/7"
       >
         <fa-icon
           *ngIf="catalogueOpen"
@@ -96,7 +96,7 @@
     >
       <fa-icon
         [icon]="sideMenuOpen ? faClose : faBars"
-        class="text-maintext"
+        class="text-mainwhite"
         size="xl"
       />
     </button>
@@ -108,14 +108,14 @@
     class="rounded-r-xl lg:rounded-none max-h-[50dvh] lg:max-h-max overflow-x-hidden overflow-y-auto lg:overflow-y-hidden shadow-sm shadow-mainblack lg:shadow-none bg-mainbg pr-6 pl-2 lg:pr-0 lg:pl-0 lg:left-0 top-10 w-fit mt-2 lg:mb-1 lg:top-0 lg:w-auto z-30 flex flex-col absolute lg:bg-transparent lg:flex-row lg:relative duration-800 transition-all ease-in"
     [ngClass]="[sideMenuOpen ? 'left-0' : '-left-full']"
   >
-    <div *ngFor="let link of links" class="text-maintext">
+    <div *ngFor="let link of links" class="text-mainwhite">
       <a
         *ngIf="
           link.visible === 'All' ||
           (link.visible === 'Auth' && userState() !== null) ||
           (link.visible === 'Unauth' && userState() === null)
         "
-        class="font-normal px-2 lg:pt-2 lg:pb-1 hover:text-accent hover:font-semibold lg:hover:text-maintext lg:hover:font-normal lg:hover:bg-accent/30 rounded-md transition-all m-2.5 text-md lg:w-auto items-center font-main no-underline cursor-pointer flex lg:flex-col"
+        class="font-normal px-2 lg:pt-2 lg:pb-1 hover:text-accent hover:font-semibold lg:hover:text-mainwhite lg:hover:font-normal lg:hover:bg-accent/30 rounded-md transition-all m-2.5 text-md lg:w-auto items-center font-main no-underline cursor-pointer flex lg:flex-col"
         [routerLink]="link.link"
         [ngClass]="link.addClass === undefined ? '' : link.addClass"
         (click)="link.action !== undefined && link.action()"
@@ -130,13 +130,13 @@
         }}</span>
       </a>
     </div>
-    <div class="w-full h-1 bg-maintext rounded-[150%] translate-x-[8px]"></div>
+    <div class="w-full h-1 bg-mainwhite rounded-[150%] translate-x-[8px]"></div>
     <div
       *ngFor="let link of bottomLinksArray"
-      class="text-maintext block lg:hidden"
+      class="text-mainwhite block lg:hidden"
     >
       <a
-        class="font-normal px-2 hover:text-accent hover:font-semibold lg:hover:text-maintext rounded-md transition-all m-2.5 text-base items-center font-main no-underline cursor-pointer flex"
+        class="font-normal px-2 hover:text-accent hover:font-semibold lg:hover:text-mainwhite rounded-md transition-all m-2.5 text-base items-center font-main no-underline cursor-pointer flex"
         [routerLink]="link.link"
       >
         <fa-icon
@@ -158,7 +158,7 @@
 <!-- bottom header nav buttons -->
 <div
   *ngIf="bottomMenuVisible"
-  class="fixed pb-1 hidden lg:flex flex-row justify-center items-start bg-mainbg text-maintext font-main text-base font-semibold gap-1 top-[64px] z-50 w-full shadow-md shadow-mainshadow"
+  class="fixed pb-1 hidden lg:flex flex-row justify-center items-start bg-mainbg text-mainwhite font-main text-base font-semibold gap-1 top-[64px] z-50 w-full shadow-md shadow-mainshadow"
 >
   <div
     #bottomWrapper
@@ -191,7 +191,7 @@
       >
         <div class="flex flex-col overflow-hidden rounded-xl h-full w-full">
           <a
-            class="select-none w-full z-10 px-4 py-2 hover:bg-contrast/10 transition-all duration-200 ease-in-out text-blacktext font-normal"
+            class="select-none w-full z-10 px-4 py-2 hover:bg-contrast/10 transition-all duration-200 ease-in-out text-mainblack font-normal"
             *ngFor="let link of bottomLinks.more"
             [routerLink]="link.link"
             >{{ link.label }}</a

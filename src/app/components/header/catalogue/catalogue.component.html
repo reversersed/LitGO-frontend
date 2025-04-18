@@ -14,9 +14,10 @@
       </div>
       <div class="ml-4 sm:ml-20 flex flex-col h-full font-main">
         <div class="flex flex-row">
-          <span class="text-base font-semibold sm:text-2xl sm:font-bold">{{
-            currentCategory.name
-          }}</span>
+          <span
+            class="text-base font-semibold sm:text-2xl sm:font-bold text-mainblack"
+            >{{ currentCategory.name }}</span
+          >
           <a
             [routerLink]="'/genre/' + currentCategory.translitname"
             class="ml-2 sm:ml-5 block pt-1 sm:pt-[5px] text-center items-center text-xs sm:text-lg sm:font-semibold text-contrast cursor-pointer hover:text-contrast/80 transition-colors duration-200"
@@ -42,13 +43,13 @@
               class="mb-2 w-fit"
             >
               <a
-                class="font-normal font-main hover:text-contrast text-blacktext break-words transition-colors duration-300 text-xs sm:text-base"
+                class="font-normal font-main hover:text-contrast text-mainblack break-words transition-colors duration-300 text-xs sm:text-base"
                 [routerLink]="'/genre/' + genre.translitname"
                 >{{ genre.name }}</a
               >
               <span
                 *ngIf="genre.bookcount > 0"
-                class="ml-1 text-sm font-light text-blacktext/60 underline decoration-dotted select-none"
+                class="ml-1 text-sm font-light text-mainblack/60 underline decoration-dotted select-none"
                 >{{ genre.bookcount }} {{ getBookNoun(genre.bookcount) }}</span
               >
             </li>
@@ -67,7 +68,7 @@
         class="inline-block w-full pl-4 sm:pl-[40px] lg:pl-[60px] pb-[30px]"
       >
         <a
-          class="text-blacktext hover:text-contrast/80 transition-all break-words duration-200 text-sm sm:text-xl font-semibold font-main mb-5"
+          class="text-mainblack hover:text-contrast/80 transition-all break-words duration-200 text-sm sm:text-xl font-semibold font-main mb-5"
           [routerLink]="'/genre/' + category.translitname"
           >{{ category.name }}</a
         >
@@ -83,7 +84,7 @@
                   ? genre.bookcount + ' ' + getBookNoun(genre.bookcount)
                   : ''
               "
-              class="mb-1 font-normal font-main hover:text-contrast text-blacktext break-words transition-colors duration-300 text-xs sm:text-base"
+              class="mb-1 font-normal font-main hover:text-contrast text-mainblack break-words transition-colors duration-300 text-xs sm:text-base"
               [routerLink]="'/genre/' + genre.translitname"
               >{{ genre.name }}</a
             >
@@ -93,7 +94,7 @@
         <a (click)="currentCategory = category" class="cursor-pointer">
           <p
             *ngIf="category.genres && category.genres.length > 5"
-            class="underline decoration-dotted hover:text-contrast text-blacktext/50 font-normal transition-colors duration-300 text-xs sm:text-base"
+            class="underline decoration-dotted hover:text-contrast text-mainblack/50 font-normal transition-colors duration-300 text-xs sm:text-base"
           >
             Все {{ category.genres.length }}
           </p>
@@ -129,7 +130,7 @@
           </ul>
 
           <p
-            class="mt-1 underline decoration-dotted hover:text-contrast text-blacktext/50 font-normal transition-colors duration-300 text-xs sm:text-base"
+            class="mt-1 underline decoration-dotted hover:text-contrast text-mainblack/50 font-normal transition-colors duration-300 text-xs sm:text-base"
           >
             <app-skeleton />
           </p>
