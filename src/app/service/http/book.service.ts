@@ -20,7 +20,7 @@ export class BookService {
     );
   }
   getSuggestion(query: string): Observable<Book[]> {
-    return this.apiClient.findBook(query, 2, 0, 0, undefined).pipe(
+    return this.apiClient.findBook(query, 2, 0, 0, 'Popular').pipe(
       first(),
       map((value) => {
         if (value instanceof BooksFindBookResponse)

@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -9,14 +9,19 @@ import { AuthorService } from '../../../service/http/author.service';
 import { BookService } from '../../../service/http/book.service';
 import { catchError, combineLatest, map, Observable, of } from 'rxjs';
 import { FileService } from '../../../service/http/file.service';
+import { LazyCoverDirective } from '../../../shared/directives/cover.lazy';
 
 @Component({
   selector: 'app-searchbar',
   standalone: true,
-  imports: [FontAwesomeModule, CommonModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FontAwesomeModule, CommonModule, RouterLink, LazyCoverDirective],
   templateUrl: './searchbar.component.html',
 })
 export class SearchbarComponent {
+  trackBook = (idx: number, book: Book) => book.id;
+  trackAuthor = (idx: number, author: Author) => author.id;
+
   constructor(private location: Location) {}
   searchRedirect() {
     this.location.go('search', 'query=' + this.query);
