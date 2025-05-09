@@ -81,6 +81,7 @@ export class BookPageComponent implements OnInit, OnDestroy {
   userReview: string = '';
   userRating: number = 1;
   selectedReviewSort: 'liked' | 'disliked' | 'new' | 'old' = 'new';
+  reviewWritingExpanded = false;
 
   userAnswerInput(target: EventTarget | null) {
     this.userAnswer = (target as HTMLInputElement).value;

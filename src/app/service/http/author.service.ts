@@ -20,4 +20,13 @@ export class AuthorService {
       })
     );
   }
+
+  getAuthor(name: string): Observable<Author> {
+    return this.apiClient.getAuthors(undefined, [name]).pipe(
+      map((v) => {
+        if (v.authors) return v.authors[0] as Author;
+        return {} as Author;
+      })
+    );
+  }
 }

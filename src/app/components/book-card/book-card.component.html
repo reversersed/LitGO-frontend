@@ -13,7 +13,7 @@
     <img
       [routerLink]="'/book/' + bookModel.translitname"
       *ngIf="cover$() | async as cover; else imagePlaceholder"
-      [src]="cover"
+      [src]="cover || '/no-image.png'"
       [ngClass]="
         alignMode === 'auto'
           ? 'w-fit max-h-[150px] md:max-h-[200px] md:h-auto'

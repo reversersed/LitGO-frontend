@@ -570,6 +570,68 @@ export class FileClient extends BaseClient {
     }
 
     /**
+     * Get's authors cover's file
+     * @param fileName (optional) @gotags: validate:"required" example:"bible-231125.epub"
+
+    Name of file to find with extension
+     * @return A successful response.
+     */
+    getAuthorCover(fileName: string | null | undefined): Observable<FilesFileResponse> {
+        let url_ = this.baseUrl + "/api/v1/files/author?";
+        if (fileName !== undefined && fileName !== null)
+            url_ += "fileName=" + encodeURIComponent("" + fileName) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetAuthorCover(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetAuthorCover(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FilesFileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FilesFileResponse>;
+        }));
+    }
+
+    protected processGetAuthorCover(response: HttpResponseBase): Observable<FilesFileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FilesFileResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
      * Get's book's epub file
      * @param fileName (optional) @gotags: validate:"required" example:"bible-231125.epub"
 

@@ -51,6 +51,20 @@ export const routes: Routes = [
             './pages/popular-books-page/popular-books-page.component'
           ).then((c) => c.PopularBooksPageComponent),
       },
+      {
+        path: 'author/:name',
+        loadComponent: () =>
+          import('./pages/author-page/author-page.component').then(
+            (c) => c.AuthorPageComponent
+          ),
+      },
+      {
+        path: 'search',
+        loadComponent: () =>
+          import('./pages/search-page/search-page.component').then(
+            (c) => c.SearchPageComponent
+          ),
+      },
     ],
   },
   {

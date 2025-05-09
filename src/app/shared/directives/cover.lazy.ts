@@ -25,14 +25,31 @@ export class LazyCoverDirective implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.input instanceof Book);
     if ((this.input as Book).picture !== undefined)
       this.fileService
         .getBookCover(this.input as Book)
         .pipe(take(1))
-        .subscribe((src) => {
-          this.el.nativeElement.src =
-            this.sanitizer.sanitize(SecurityContext.URL, src) || '';
+        .subscribe({
+          next: (src) => {
+            this.el.nativeElement.src =
+              this.sanitizer.sanitize(SecurityContext.URL, src) || '';
+          },
+          error: () => {
+            this.el.nativeElement.src = '/no-image.png';
+          },
+        });
+    else if ((this.input as Author).profilepicture !== undefined)
+      this.fileService
+        .getAuthorProfile(this.input as Author)
+        .pipe(take(1))
+        .subscribe({
+          next: (src) => {
+            this.el.nativeElement.src =
+              this.sanitizer.sanitize(SecurityContext.URL, src) || '';
+          },
+          error: () => {
+            this.el.nativeElement.src = '/no-image.png';
+          },
         });
   }
 }

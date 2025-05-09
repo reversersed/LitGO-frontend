@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import Book from '../../models/book.model';
 import { FileClient } from './gen/generated';
-import { first, map, shareReplay } from 'rxjs';
+import { first, map, of, shareReplay } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import Author from '../../models/author.model';
 
@@ -20,14 +20,18 @@ export class FileService {
     );
   }
   getBookFile(book: Book) {
-    return this.apiClient.getBookCover(book.filepath).pipe(
+    return this.apiClient.getBookFile(book.filepath).pipe(
       first(),
       shareReplay(1),
       map((a) => this.convertToByteArray(a.file ?? ''))
     );
   }
   getAuthorProfile(author: Author) {
-    return author.profilepicture;
+    return this.apiClient.getAuthorCover(author.profilepicture).pipe(
+      first(),
+      shareReplay(1),
+      map((a) => this.convertToFile(a.file ?? '', a.mimetype ?? ''))
+    );
   }
 
   private convertToByteArray(inputBlob: string) {

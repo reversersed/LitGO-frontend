@@ -1,0 +1,74 @@
+<ng-container *ngIf="authorModel$ | async as author; else loader">
+  <div class="min-h-full flex flex-col">
+    <!--header-->
+    <div
+      class="flex flex-row flex-wrap gap-1 md:gap-2 text-mainblack font-main text-xs md:text-sm pl-5 md:pl-0"
+    >
+      <a
+        routerLink="/"
+        class="text-mainblack/80 hover:text-contrast transition-all duration-150 cursor-pointer flex gap-1"
+      >
+        <fa-icon [icon]="faBack" class="block md:hidden" />Главная</a
+      >
+      <span class="hidden md:block text-mainblack">/</span>
+      <span class="text-mainblack/80 hidden md:block">{{ author.name }}</span>
+    </div>
+    <!-- main body -->
+    <div class="flex flex-col gap-6 mt-6">
+      <div class="flex w-full h-fit">
+        <img
+          *ngIf="coverModel$ | async as cover; else loadingImage"
+          [src]="cover"
+          class="object-cover rounded-full md:w-[150px] md:h-[150px] h-[100px] w-[100px]"
+        />
+        <div class="flex flex-col w-fit h-fit md:mt-2 ml-2 md:ml-5">
+          <span class="text-accent font-semibold text-xl md:text-2xl">{{
+            author.name
+          }}</span>
+          <span
+            class="text-mainblack text-lg mt-1 line-clamp-2 text-ellipsis"
+            >{{ author.about }}</span
+          >
+        </div>
+      </div>
+      <ng-template #loadingImage>
+        <app-skeleton
+          width="125px"
+          height="125px"
+          borderRadius="100%"
+          *ngIf="!noImage"
+        />
+        <img
+          *ngIf="noImage"
+          src="/no-image.png"
+          class="object-cover rounded-full md:w-[150px] md:h-[150px] h-[100px] w-[100px]"
+        />
+      </ng-template>
+    </div>
+  </div>
+</ng-container>
+<app-to-up-overlay />
+
+<ng-template #loader>
+  <div class="min-h-full flex flex-col">
+    <!--header-->
+    <div
+      class="flex flex-row flex-wrap gap-1 md:gap-2 text-mainblack font-main text-xs md:text-sm pl-5 md:pl-0"
+    >
+      <a
+        routerLink="/"
+        class="text-mainblack/80 hover:text-contrast transition-all duration-150 cursor-pointer flex gap-1"
+      >
+        <app-skeleton width="80px" height="20px" borderRadius="20px"
+      /></a>
+      <span class="hidden md:block text-mainblack">/</span>
+      <app-skeleton
+        width="100px"
+        height="20px"
+        borderRadius="20px"
+        class="hidden md:block"
+      />
+    </div>
+    <!-- main body -->
+  </div>
+</ng-template>

@@ -163,9 +163,18 @@
           </div>
         </div>
         <div id="reviews" class="flex flex-col mt-[20px] mb-4">
-          <span class="font-semibold text-lg text-mainblack"
-            >Отзывы о книге</span
-          >
+          <div class="flex justify-between items-center">
+            <span class="font-semibold text-lg text-mainblack"
+              >Отзывы о книге</span
+            >
+            <a
+              *ngIf="!reviewWritingExpanded && currentUser()"
+              class="text-contrast cursor-pointer hover:text-contrast/80 duration-150 transition-colors"
+              (click)="reviewWritingExpanded = true"
+            >
+              + Оставить отзыв
+            </a>
+          </div>
           <div class="flex w-full h-fit flex-col gap-4">
             <select
               class="border-2 pl-2 pr-8 py-1 border-accent/40 w-fit hover:border-contrast/80 transition-all duration-200 rounded-lg outline-none dark:bg-body dark:text-mainwhite"
@@ -292,7 +301,7 @@
                     *ngFor="
                       let reply of review.replies.slice(
                         undefined,
-                        expandedReplies === review.id ? undefined : 2
+                        expandedReplies === review.id ? undefined : 1
                       )
                     "
                     class="flex flex-col"
@@ -345,7 +354,7 @@
 
                   <a
                     *ngIf="
-                      review.replies.length > 2 && expandedReplies !== review.id
+                      review.replies.length > 1 && expandedReplies !== review.id
                     "
                     class="hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite w-fit px-2 py-1 rounded-xl transition-colors duration-150 cursor-pointer select-none"
                     (click)="expandedReplies = review.id"
@@ -461,7 +470,7 @@
                     *ngFor="
                       let reply of review.replies.slice(
                         undefined,
-                        expandedReplies === review.id ? undefined : 2
+                        expandedReplies === review.id ? undefined : 1
                       )
                     "
                     class="flex flex-col"
@@ -514,7 +523,7 @@
 
                   <a
                     *ngIf="
-                      review.replies.length > 2 && expandedReplies !== review.id
+                      review.replies.length > 1 && expandedReplies !== review.id
                     "
                     class="hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite w-fit px-2 py-1 rounded-xl transition-colors duration-150 cursor-pointer select-none"
                     (click)="expandedReplies = review.id"
@@ -568,7 +577,7 @@
 
 <ng-template #writeReview>
   <div
-    *ngIf="currentUser()"
+    *ngIf="currentUser() && reviewWritingExpanded"
     class="text-mainblack flex flex-col gap-2 pl-2 border-l-2 border-contrast/50"
   >
     <span class="font-semibold">Поделитесь своим опытом</span>
@@ -615,13 +624,21 @@
           /></a>
         </div>
       </div>
-      <button
-        [disabled]="userReview.length < 20"
-        class="w-fit h-fit px-2 py-1 disabled:text-mainblack enabled:hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:enabled:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite rounded-xl disabled:cursor-not-allowed cursor-pointer enabled:hover:bg-contrast/80 transition-colors duration-150"
-        (click)="createReview()"
-      >
-        Отправить отзыв
-      </button>
+      <div class="flex gap-2">
+        <button
+          [disabled]="userReview.length < 20"
+          class="w-fit h-fit px-2 py-1 disabled:text-mainblack enabled:hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:enabled:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite rounded-xl disabled:cursor-not-allowed cursor-pointer enabled:hover:bg-contrast/80 transition-colors duration-150"
+          (click)="createReview()"
+        >
+          Отправить отзыв
+        </button>
+        <button
+          class="w-fit h-fit px-2 py-1 disabled:text-mainblack enabled:hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:enabled:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite rounded-xl disabled:cursor-not-allowed cursor-pointer enabled:hover:bg-contrast/80 transition-colors duration-150"
+          (click)="reviewWritingExpanded = false"
+        >
+          Закрыть
+        </button>
+      </div>
     </div>
   </div>
 </ng-template>

@@ -25,7 +25,7 @@
 </div>
 <div
   *ngIf="data$ | async as data"
-  class="overflow-y-auto absolute mt-1 ml-[3%] sm:ml-[16.5%] lg:ml-0 min-h-fit shadow-sm shadow-mainblack dark:bg-body flex flex-col transition-all ease-in-out duration-200 w-auto max-w-[90%] sm:max-w-[70%] 2xl:max-w-[45%] lg:max-w-[50%] max-h-[90%] overflow-x-hidden bg-mainwhite rounded z-[100] p-2 origin-top-left"
+  class="overflow-y-auto absolute mt-1 ml-[3%] sm:ml-[16.5%] lg:ml-0 min-h-fit shadow-sm shadow-mainblack dark:bg-body flex flex-col transition-all ease-in-out duration-200 w-auto max-w-[90%] sm:max-w-[70%] 2xl:max-w-[45%] lg:max-w-[50%] max-h-[90%] overflow-x-hidden bg-mainwhite rounded z-[100] p-2 origin-top-left delay-100"
   [ngClass]="
     suggestionOpen &&
     (data.book.length > 0 || data.author.length > 0) &&
@@ -36,7 +36,7 @@
 >
   <h1
     *ngIf="data.book.length > 0 && data.author.length > 0"
-    class="text-lg sm:text-xl font-semibold sm:font-bold ml-2 mb-1"
+    class="text-lg sm:text-xl font-semibold sm:font-bold ml-2 mb-1 text-mainblack"
   >
     Книги
   </h1>
@@ -71,7 +71,7 @@
 
   <h1
     *ngIf="data.book.length > 0 && data.author.length > 0"
-    class="text-lg sm:text-xl font-semibold sm:font-bold ml-2 mb-1 sm:mb-2"
+    class="text-lg sm:text-xl font-semibold sm:font-bold ml-2 mb-1 sm:mb-2 text-mainblack"
   >
     Авторы
   </h1>
@@ -85,7 +85,8 @@
         class="flex w-full h-auto px-2 py-1 sm:py-1 hover:bg-accent/10 rounded-xl transition-colors duration-200"
       >
         <img
-          [src]="fileService.getAuthorProfile(author)"
+          lazyCover
+          [input]="author"
           alt=""
           class="rounded-full min-w-10 md:min-w-[72px] h-10 md:h-[72px] object-cover sm:block hidden"
         />
