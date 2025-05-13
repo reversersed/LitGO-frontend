@@ -1,208 +1,72 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { catchError, first, map, Observable, of } from 'rxjs';
 import Review from '../../models/review.model';
-import { ReviewsUserActionEnum } from './gen/generated';
+import {
+  ReviewClient,
+  ReviewCreateReviewReplyBody,
+  ReviewsCreateBookReviewRequest,
+} from './gen/generated';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReviewService {
-  createReview(text: string, rating: number): Observable<Review> {
-    return of({} as Review);
-  }
-  deleteReview(reviewId: string): Observable<string> {
-    return of(reviewId);
-  }
-  sendReviewReply(reviewId: string, text: string): Observable<Review> {
-    return of({
-      id: '123',
-      author: { login: 'a1' },
-      text: 'Это т',
-      rating: 5,
-      likes: 2,
-      dislikes: 55332,
-      currentUserAction: ReviewsUserActionEnum.NoAction,
-      date: new Date(),
-      replies: [
-        {
-          id: '123ds',
-          date: new Date(),
-          author: { login: 'admin' },
-          likes: 0,
-          dislikes: 0,
-          text: text,
-          currentUserAction: ReviewsUserActionEnum.NoAction,
-        },
-        {
-          id: '123',
-          date: new Date(),
-          author: { login: 'dssads' },
-          likes: 2,
-          dislikes: 3,
-          text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-          currentUserAction: ReviewsUserActionEnum.NoAction,
-        },
-        {
-          id: '123',
-          date: new Date(),
-          author: { login: 'dssads' },
-          likes: 2,
-          dislikes: 3,
-          text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-          currentUserAction: ReviewsUserActionEnum.NoAction,
-        },
-        {
-          id: '123',
-          date: new Date(),
-          author: { login: 'dssads' },
-          likes: 2,
-          dislikes: 3,
-          text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-          currentUserAction: ReviewsUserActionEnum.NoAction,
-        },
-      ],
-    } as Review);
-  }
-  changeReviewReplyAction(
-    reviewId: string,
-    replyId: string,
-    action: ReviewsUserActionEnum
+  apiClient = inject(ReviewClient);
+
+  createReview(
+    bookId: string,
+    text: string,
+    rating: number
   ): Observable<Review> {
-    return of({
-      id: '123',
-      author: { login: 'a1' },
-      text: 'Это т',
-      rating: 5,
-      likes: 2,
-      dislikes: 55332,
-      currentUserAction: ReviewsUserActionEnum.Like,
-      date: new Date(),
-      replies: [
-        {
-          id: '123',
-          date: new Date(),
-          author: { login: 'dssads' },
-          likes: 2,
-          dislikes: 3,
-          text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-          currentUserAction: action,
-        },
-        {
-          id: '123',
-          date: new Date(),
-          author: { login: 'dssads' },
-          likes: 2,
-          dislikes: 3,
-          text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-          currentUserAction: ReviewsUserActionEnum.NoAction,
-        },
-        {
-          id: '123',
-          date: new Date(),
-          author: { login: 'dssads' },
-          likes: 2,
-          dislikes: 3,
-          text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-          currentUserAction: ReviewsUserActionEnum.NoAction,
-        },
-      ],
-    } as Review);
+    return this.apiClient
+      .createBookReview({
+        text: text,
+        rating: rating,
+        bookId: bookId,
+      } as ReviewsCreateBookReviewRequest)
+      .pipe(
+        first(),
+        map((e, v) => e.review as unknown as Review)
+      );
   }
-  changeReviewAction(
+  deleteReview(bookId: string, reviewId: string): Observable<string> {
+    return this.apiClient.deleteBookReview(bookId, reviewId).pipe(
+      first(),
+      map((e, v) => e.deletedId ?? '')
+    );
+  }
+  sendReviewReply(
+    bookId: string,
     reviewId: string,
-    action: ReviewsUserActionEnum
+    text: string
   ): Observable<Review> {
-    return of({
-      id: '123',
-      author: { login: 'a1' },
-      text: 'Это т',
-      rating: 5,
-      likes: 2,
-      dislikes: 55332,
-      currentUserAction: action,
-      date: new Date(),
-      replies: [
-        {
-          id: '123',
-          date: new Date(),
-          author: { login: 'dssads' },
-          likes: 2,
-          dislikes: 3,
-          text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-          currentUserAction: ReviewsUserActionEnum.NoAction,
-        },
-        {
-          id: '123',
-          date: new Date(),
-          author: { login: 'dssads' },
-          likes: 2,
-          dislikes: 3,
-          text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-          currentUserAction: ReviewsUserActionEnum.NoAction,
-        },
-        {
-          id: '123',
-          date: new Date(),
-          author: { login: 'dssads' },
-          likes: 2,
-          dislikes: 3,
-          text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-          currentUserAction: ReviewsUserActionEnum.NoAction,
-        },
-      ],
-    } as Review);
+    return this.apiClient
+      .createReviewReply(bookId, reviewId, {
+        text: text,
+      } as ReviewCreateReviewReplyBody)
+      .pipe(
+        first(),
+        map((e, v) => e.review as unknown as Review)
+      );
   }
-  getCurrentUserBookReview(bookName: string): Observable<Review | undefined> {
-    return of(undefined);
+  getCurrentUserBookReview(bookId: string): Observable<Review | undefined> {
+    return this.apiClient.getCurrentUserBookReview(bookId).pipe(
+      first(),
+      catchError((e) => of(undefined)),
+      map((e) => e?.review as Review | undefined)
+    );
   }
   getBookReviews(
-    bookName: string,
+    bookId: string,
     count: number,
     offset: number,
-    sort: 'liked' | 'disliked' | 'new' | 'old'
+    sort: 'new' | 'old'
   ): Observable<Review[]> {
-    const array = [
-      {
-        id: '123',
-        author: { login: 'a1' },
-        text: 'Это т',
-        rating: 5,
-        likes: 2,
-        dislikes: 55332,
-        currentUserAction: ReviewsUserActionEnum.Like,
-        date: new Date(),
-        replies: [
-          {
-            id: '123',
-            date: new Date(),
-            author: { login: 'dssads' },
-            likes: 2,
-            dislikes: 3,
-            text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-            currentUserAction: ReviewsUserActionEnum.NoAction,
-          },
-          {
-            id: '123',
-            date: new Date(),
-            author: { login: 'dssads' },
-            likes: 2,
-            dislikes: 3,
-            text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-            currentUserAction: ReviewsUserActionEnum.NoAction,
-          },
-          {
-            id: '123',
-            date: new Date(),
-            author: { login: 'dssads' },
-            likes: 2,
-            dislikes: 3,
-            text: 'ттывпвптввапр апррапраптарптпа рап ррапраптвпивпаипвыап ывыуап  ыап ывап',
-            currentUserAction: ReviewsUserActionEnum.NoAction,
-          },
-        ],
-      },
-    ] as Review[];
-
-    return of(array.slice(offset, offset + count));
+    return this.apiClient
+      .getBookReviews(bookId, count * offset, count, sort)
+      .pipe(
+        first(),
+        map((e, v) => (e.reviews ?? ([] as Review[])) as Review[])
+      );
   }
 }

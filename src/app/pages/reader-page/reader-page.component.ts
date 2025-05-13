@@ -97,7 +97,7 @@ export class ReaderPageComponent implements OnInit, OnDestroy {
       ],
     },
     {
-      name: 'Размер текста',
+      name: 'Размер шрифта',
       topSection: 'customSettings',
       section: 'font',
       values: [

@@ -1028,6 +1028,140 @@ export class ReviewClient extends BaseClient {
     }
 
     /**
+     * Deletes book's review
+     * @param bookId @gotags: form:"bookId" validate:"required,primitiveid"
+     * @param reviewId @gotags: form:"reviewId" validate:"required,primitiveid"
+     * @return A successful response.
+     */
+    deleteBookReview(bookId: string, reviewId: string): Observable<ReviewsDeleteReviewResponse> {
+        let url_ = this.baseUrl + "/api/v1/review/{bookId}/{reviewId}";
+        if (bookId === undefined || bookId === null)
+            throw new Error("The parameter 'bookId' must be defined.");
+        url_ = url_.replace("{bookId}", encodeURIComponent("" + bookId));
+        if (reviewId === undefined || reviewId === null)
+            throw new Error("The parameter 'reviewId' must be defined.");
+        url_ = url_.replace("{reviewId}", encodeURIComponent("" + reviewId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("delete", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processDeleteBookReview(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processDeleteBookReview(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ReviewsDeleteReviewResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ReviewsDeleteReviewResponse>;
+        }));
+    }
+
+    protected processDeleteBookReview(response: HttpResponseBase): Observable<ReviewsDeleteReviewResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ReviewsDeleteReviewResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Adds new review to book
+     * @param bookId @gotags: form:"bookId" validate:"required,primitiveid"
+     * @param reviewId @gotags: form:"reviewId" validate:"required,primitiveid"
+     * @return A successful response.
+     */
+    createReviewReply(bookId: string, reviewId: string, body: ReviewCreateReviewReplyBody): Observable<ReviewsCreateReplyResponse> {
+        let url_ = this.baseUrl + "/api/v1/review/{bookId}/{reviewId}/reply";
+        if (bookId === undefined || bookId === null)
+            throw new Error("The parameter 'bookId' must be defined.");
+        url_ = url_.replace("{bookId}", encodeURIComponent("" + bookId));
+        if (reviewId === undefined || reviewId === null)
+            throw new Error("The parameter 'reviewId' must be defined.");
+        url_ = url_.replace("{reviewId}", encodeURIComponent("" + reviewId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("post", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processCreateReviewReply(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processCreateReviewReply(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ReviewsCreateReplyResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ReviewsCreateReplyResponse>;
+        }));
+    }
+
+    protected processCreateReviewReply(response: HttpResponseBase): Observable<ReviewsCreateReplyResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ReviewsCreateReplyResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
      * Get reviews of book with provided {id}
      * @param id Book ID to search reviews of
 
@@ -1038,9 +1172,10 @@ export class ReviewClient extends BaseClient {
      * @param pageSize (optional) Reviews count per page
 
     @gotags: form:"pagesize" validate:"gte=1"
+     * @param sort (optional) @gotags: form:"sort" validate:"oneof=new old"
      * @return A successful response.
      */
-    getBookReviews(id: string, page: number | null | undefined, pageSize: number | null | undefined): Observable<ReviewsGetBookReviewsResponse> {
+    getBookReviews(id: string, page: number | null | undefined, pageSize: number | null | undefined, sort: string | null | undefined): Observable<ReviewsGetBookReviewsResponse> {
         let url_ = this.baseUrl + "/api/v1/review/{id}?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1049,6 +1184,8 @@ export class ReviewClient extends BaseClient {
             url_ += "page=" + encodeURIComponent("" + page) + "&";
         if (pageSize !== undefined && pageSize !== null)
             url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sort !== undefined && sort !== null)
+            url_ += "sort=" + encodeURIComponent("" + sort) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1088,6 +1225,67 @@ export class ReviewClient extends BaseClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = ReviewsGetBookReviewsResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
+     * Gets current user's review
+     * @param id @gotags: form:"id" validate:"required,primitiveid"
+     * @return A successful response.
+     */
+    getCurrentUserBookReview(id: string): Observable<ReviewsGetCurrentUserReviewResponse> {
+        let url_ = this.baseUrl + "/api/v1/review/{id}/user";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetCurrentUserBookReview(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetCurrentUserBookReview(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ReviewsGetCurrentUserReviewResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ReviewsGetCurrentUserReviewResponse>;
+        }));
+    }
+
+    protected processGetCurrentUserBookReview(response: HttpResponseBase): Observable<ReviewsGetCurrentUserReviewResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ReviewsGetCurrentUserReviewResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else {
@@ -1424,6 +1622,42 @@ export class UserClient extends BaseClient {
             }));
         }
     }
+}
+
+export class ReviewCreateReviewReplyBody implements IReviewCreateReviewReplyBody {
+    text?: string | undefined;
+
+    constructor(data?: IReviewCreateReviewReplyBody) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.text = _data["text"];
+        }
+    }
+
+    static fromJS(data: any): ReviewCreateReviewReplyBody {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReviewCreateReviewReplyBody();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["text"] = this.text;
+        return data;
+    }
+}
+
+export interface IReviewCreateReviewReplyBody {
+    text?: string | undefined;
 }
 
 export class AuthorsAuthorModel implements IAuthorsAuthorModel {
@@ -2223,8 +2457,7 @@ export interface IProtobufAny {
 }
 
 export class ReviewsCreateBookReviewRequest implements IReviewsCreateBookReviewRequest {
-    creatorId?: string | undefined;
-    modelId?: string | undefined;
+    bookId?: string | undefined;
     rating?: number | undefined;
     text?: string | undefined;
 
@@ -2239,8 +2472,7 @@ export class ReviewsCreateBookReviewRequest implements IReviewsCreateBookReviewR
 
     init(_data?: any) {
         if (_data) {
-            this.creatorId = _data["creatorId"];
-            this.modelId = _data["modelId"];
+            this.bookId = _data["bookId"];
             this.rating = _data["rating"];
             this.text = _data["text"];
         }
@@ -2255,8 +2487,7 @@ export class ReviewsCreateBookReviewRequest implements IReviewsCreateBookReviewR
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["creatorId"] = this.creatorId;
-        data["modelId"] = this.modelId;
+        data["bookId"] = this.bookId;
         data["rating"] = this.rating;
         data["text"] = this.text;
         return data;
@@ -2264,8 +2495,7 @@ export class ReviewsCreateBookReviewRequest implements IReviewsCreateBookReviewR
 }
 
 export interface IReviewsCreateBookReviewRequest {
-    creatorId?: string | undefined;
-    modelId?: string | undefined;
+    bookId?: string | undefined;
     rating?: number | undefined;
     text?: string | undefined;
 }
@@ -2304,6 +2534,78 @@ export class ReviewsCreateBookReviewResponse implements IReviewsCreateBookReview
 
 export interface IReviewsCreateBookReviewResponse {
     review?: ReviewsReviewModel | undefined;
+}
+
+export class ReviewsCreateReplyResponse implements IReviewsCreateReplyResponse {
+    review?: ReviewsReviewModel | undefined;
+
+    constructor(data?: IReviewsCreateReplyResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.review = _data["review"] ? ReviewsReviewModel.fromJS(_data["review"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ReviewsCreateReplyResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReviewsCreateReplyResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["review"] = this.review ? this.review.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IReviewsCreateReplyResponse {
+    review?: ReviewsReviewModel | undefined;
+}
+
+export class ReviewsDeleteReviewResponse implements IReviewsDeleteReviewResponse {
+    deletedId?: string | undefined;
+
+    constructor(data?: IReviewsDeleteReviewResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.deletedId = _data["deletedId"];
+        }
+    }
+
+    static fromJS(data: any): ReviewsDeleteReviewResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReviewsDeleteReviewResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["deletedId"] = this.deletedId;
+        return data;
+    }
+}
+
+export interface IReviewsDeleteReviewResponse {
+    deletedId?: string | undefined;
 }
 
 export class ReviewsGetBookReviewsResponse implements IReviewsGetBookReviewsResponse {
@@ -2350,15 +2652,49 @@ export interface IReviewsGetBookReviewsResponse {
     reviews?: ReviewsReviewModel[] | undefined;
 }
 
+export class ReviewsGetCurrentUserReviewResponse implements IReviewsGetCurrentUserReviewResponse {
+    review?: ReviewsReviewModel | undefined;
+
+    constructor(data?: IReviewsGetCurrentUserReviewResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.review = _data["review"] ? ReviewsReviewModel.fromJS(_data["review"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ReviewsGetCurrentUserReviewResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReviewsGetCurrentUserReviewResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["review"] = this.review ? this.review.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IReviewsGetCurrentUserReviewResponse {
+    review?: ReviewsReviewModel | undefined;
+}
+
 export class ReviewsReviewModel implements IReviewsReviewModel {
     created?: string | undefined;
     creator?: ReviewsUserModel | undefined;
-    downvotes?: number | undefined;
     id?: string | undefined;
     rating?: number | undefined;
+    replies?: ReviewsReviewReplyModel[] | undefined;
     text?: string | undefined;
-    upvotes?: number | undefined;
-    userAction?: ReviewsUserActionEnum | undefined;
 
     constructor(data?: IReviewsReviewModel) {
         if (data) {
@@ -2373,12 +2709,14 @@ export class ReviewsReviewModel implements IReviewsReviewModel {
         if (_data) {
             this.created = _data["created"];
             this.creator = _data["creator"] ? ReviewsUserModel.fromJS(_data["creator"]) : <any>undefined;
-            this.downvotes = _data["downvotes"];
             this.id = _data["id"];
             this.rating = _data["rating"];
+            if (Array.isArray(_data["replies"])) {
+                this.replies = [] as any;
+                for (let item of _data["replies"])
+                    this.replies!.push(ReviewsReviewReplyModel.fromJS(item));
+            }
             this.text = _data["text"];
-            this.upvotes = _data["upvotes"];
-            this.userAction = _data["userAction"];
         }
     }
 
@@ -2393,12 +2731,14 @@ export class ReviewsReviewModel implements IReviewsReviewModel {
         data = typeof data === 'object' ? data : {};
         data["created"] = this.created;
         data["creator"] = this.creator ? this.creator.toJSON() : <any>undefined;
-        data["downvotes"] = this.downvotes;
         data["id"] = this.id;
         data["rating"] = this.rating;
+        if (Array.isArray(this.replies)) {
+            data["replies"] = [];
+            for (let item of this.replies)
+                data["replies"].push(item.toJSON());
+        }
         data["text"] = this.text;
-        data["upvotes"] = this.upvotes;
-        data["userAction"] = this.userAction;
         return data;
     }
 }
@@ -2406,18 +2746,58 @@ export class ReviewsReviewModel implements IReviewsReviewModel {
 export interface IReviewsReviewModel {
     created?: string | undefined;
     creator?: ReviewsUserModel | undefined;
-    downvotes?: number | undefined;
     id?: string | undefined;
     rating?: number | undefined;
+    replies?: ReviewsReviewReplyModel[] | undefined;
     text?: string | undefined;
-    upvotes?: number | undefined;
-    userAction?: ReviewsUserActionEnum | undefined;
 }
 
-export enum ReviewsUserActionEnum {
-    NoAction = "noAction",
-    Like = "like",
-    Dislike = "dislike",
+export class ReviewsReviewReplyModel implements IReviewsReviewReplyModel {
+    created?: string | undefined;
+    creator?: ReviewsUserModel | undefined;
+    id?: string | undefined;
+    text?: string | undefined;
+
+    constructor(data?: IReviewsReviewReplyModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.created = _data["created"];
+            this.creator = _data["creator"] ? ReviewsUserModel.fromJS(_data["creator"]) : <any>undefined;
+            this.id = _data["id"];
+            this.text = _data["text"];
+        }
+    }
+
+    static fromJS(data: any): ReviewsReviewReplyModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReviewsReviewReplyModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["created"] = this.created;
+        data["creator"] = this.creator ? this.creator.toJSON() : <any>undefined;
+        data["id"] = this.id;
+        data["text"] = this.text;
+        return data;
+    }
+}
+
+export interface IReviewsReviewReplyModel {
+    created?: string | undefined;
+    creator?: ReviewsUserModel | undefined;
+    id?: string | undefined;
+    text?: string | undefined;
 }
 
 export class ReviewsUserModel implements IReviewsUserModel {

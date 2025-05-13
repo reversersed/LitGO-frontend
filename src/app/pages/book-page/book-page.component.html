@@ -186,12 +186,6 @@
                 Сначала новые
               </option>
               <option value="old" class="dark:bg-body">Сначала старые</option>
-              <option value="liked" class="dark:bg-body">
-                С лучшей оценкой
-              </option>
-              <option value="disliked" class="dark:bg-body">
-                С худшей оценкой
-              </option>
             </select>
 
             <ng-container
@@ -235,34 +229,6 @@
                       (click)="currentAnswerExpanded = review.id"
                       >Ответить</a
                     >
-                    <a
-                      [className]="
-                        (currentUser() &&
-                        review.currentUserAction == actionEnum.Like
-                          ? 'text-contrast'
-                          : '') +
-                        (currentUser()
-                          ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
-                          : '') +
-                        ' select-none'
-                      "
-                      (click)="currentUser() && onReviewLike(review.id)"
-                      >{{ review.likes }} <fa-icon [icon]="faLike"
-                    /></a>
-                    <a
-                      [className]="
-                        (currentUser() &&
-                        review.currentUserAction == actionEnum.Dislike
-                          ? 'text-contrast'
-                          : '') +
-                        (currentUser()
-                          ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
-                          : '') +
-                        ' select-none'
-                      "
-                      (click)="currentUser() && onReviewDislike(review.id)"
-                      >{{ review.dislikes }} <fa-icon [icon]="faDislike"
-                    /></a>
                   </div>
                 </div>
                 <div
@@ -316,40 +282,6 @@
                       class="text-sm md:text-base bg-contrast/10 rounded-xl px-4 py-2 text-justify hyphens-auto"
                       >{{ reply.text }}</span
                     >
-                    <div class="flex flex-row self-end text-sm gap-3 px-4">
-                      <a
-                        [className]="
-                          (currentUser() &&
-                          reply.currentUserAction == actionEnum.Like
-                            ? 'text-contrast'
-                            : '') +
-                          (currentUser()
-                            ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
-                            : '') +
-                          ' select-none'
-                        "
-                        (click)="
-                          currentUser() && onReplyLike(review.id, reply.id)
-                        "
-                        >{{ reply.likes }} <fa-icon [icon]="faLike"
-                      /></a>
-                      <a
-                        [className]="
-                          (currentUser() &&
-                          reply.currentUserAction == actionEnum.Dislike
-                            ? 'text-contrast'
-                            : '') +
-                          (currentUser()
-                            ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
-                            : '') +
-                          ' select-none'
-                        "
-                        (click)="
-                          currentUser() && onReplyDislike(review.id, reply.id)
-                        "
-                        >{{ reply.dislikes }} <fa-icon [icon]="faDislike"
-                      /></a>
-                    </div>
                   </div>
 
                   <a
@@ -404,34 +336,6 @@
                       (click)="currentAnswerExpanded = review.id"
                       >Ответить</a
                     >
-                    <a
-                      [className]="
-                        (currentUser() &&
-                        review.currentUserAction == actionEnum.Like
-                          ? 'text-contrast'
-                          : '') +
-                        (currentUser()
-                          ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
-                          : '') +
-                        ' select-none'
-                      "
-                      (click)="currentUser() && onReviewLike(review.id)"
-                      >{{ review.likes }} <fa-icon [icon]="faLike"
-                    /></a>
-                    <a
-                      [className]="
-                        (currentUser() &&
-                        review.currentUserAction == actionEnum.Dislike
-                          ? 'text-contrast'
-                          : '') +
-                        (currentUser()
-                          ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
-                          : '') +
-                        ' select-none'
-                      "
-                      (click)="currentUser() && onReviewDislike(review.id)"
-                      >{{ review.dislikes }} <fa-icon [icon]="faDislike"
-                    /></a>
                   </div>
                 </div>
                 <div
@@ -485,40 +389,6 @@
                       class="text-sm md:text-base bg-contrast/10 rounded-xl px-4 py-2 text-justify hyphens-auto"
                       >{{ reply.text }}</span
                     >
-                    <div class="flex flex-row self-end text-sm gap-3 px-4">
-                      <a
-                        [className]="
-                          (currentUser() &&
-                          reply.currentUserAction == actionEnum.Like
-                            ? 'text-contrast'
-                            : '') +
-                          (currentUser()
-                            ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
-                            : '') +
-                          ' select-none'
-                        "
-                        (click)="
-                          currentUser() && onReplyLike(review.id, reply.id)
-                        "
-                        >{{ reply.likes }} <fa-icon [icon]="faLike"
-                      /></a>
-                      <a
-                        [className]="
-                          (currentUser() &&
-                          reply.currentUserAction == actionEnum.Dislike
-                            ? 'text-contrast'
-                            : '') +
-                          (currentUser()
-                            ? ' cursor-pointer hover:text-contrast/70 trasition-colors duration-150'
-                            : '') +
-                          ' select-none'
-                        "
-                        (click)="
-                          currentUser() && onReplyDislike(review.id, reply.id)
-                        "
-                        >{{ reply.dislikes }} <fa-icon [icon]="faDislike"
-                      /></a>
-                    </div>
                   </div>
 
                   <a

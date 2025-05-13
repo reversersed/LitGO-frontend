@@ -36,7 +36,6 @@ import { SkeletonComponent } from '../../components/skeleton/skeleton.component'
 import { ReviewService } from '../../service/http/review.service';
 import Review from '../../models/review.model';
 import { ToUpOverlayComponent } from '../../shared/to-up-overlay/to-up-overlay.component';
-import { ReviewsUserActionEnum } from '../../service/http/gen/generated';
 
 @Component({
   selector: 'app-book-page',
@@ -49,7 +48,6 @@ import { ReviewsUserActionEnum } from '../../service/http/gen/generated';
     ToUpOverlayComponent,
   ],
   templateUrl: './book-page.component.html',
-  styles: ``,
 })
 export class BookPageComponent implements OnInit, OnDestroy {
   route = inject(ActivatedRoute);
@@ -59,7 +57,6 @@ export class BookPageComponent implements OnInit, OnDestroy {
   userService = inject(UserService);
   reviewService = inject(ReviewService);
   paramSubscription!: Subscription;
-  actionEnum = ReviewsUserActionEnum;
   currentBook?: Book;
   bookModel$!: Observable<Book>;
   coverModel$!: Observable<SafeUrl>;
@@ -80,7 +77,7 @@ export class BookPageComponent implements OnInit, OnDestroy {
   expandedReplies?: string;
   userReview: string = '';
   userRating: number = 1;
-  selectedReviewSort: 'liked' | 'disliked' | 'new' | 'old' = 'new';
+  selectedReviewSort: 'new' | 'old' = 'new';
   reviewWritingExpanded = false;
 
   userAnswerInput(target: EventTarget | null) {
@@ -102,9 +99,6 @@ export class BookPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.paramSubscription = this.route.params.subscribe((params) => {
       this.reloadBookModel(params['name']);
-      this.currentUserReview$ = this.reviewService.getCurrentUserBookReview(
-        params['name']
-      );
     });
   }
   ngOnDestroy(): void {
@@ -116,7 +110,7 @@ export class BookPageComponent implements OnInit, OnDestroy {
     this.fetchingState = true;
     this.reviewService
       .getBookReviews(
-        this.currentBook.translitname,
+        this.currentBook.id,
         15,
         this.reviews.length,
         this.selectedReviewSort
@@ -146,83 +140,22 @@ export class BookPageComponent implements OnInit, OnDestroy {
           this.fetchingState = false;
           this.loadNextReviews();
         }
+        this.currentUserReview$ = this.reviewService.getCurrentUserBookReview(
+          this.currentBook.id
+        );
         return this.currentBook;
       })
     );
   }
-
-  onReviewDislike(reviewId: string) {
-    let rev = this.reviews.find((i) => i.id === reviewId);
-    if (!rev) return;
-
-    if (rev.currentUserAction === this.actionEnum.Dislike)
-      rev.currentUserAction = this.actionEnum.NoAction;
-    else rev.currentUserAction = this.actionEnum.Dislike;
-
+  deleteReview(reviewId: string) {
     this.reviewService
-      .changeReviewAction(reviewId, rev.currentUserAction)
+      .deleteReview(this.currentBook?.id ?? '', reviewId)
       .pipe(first())
-      .subscribe((v) => {
-        this.reviews = this.reviews.map((i) => (i.id === v.id ? v : i));
-      });
-  }
-  onReviewLike(reviewId: string) {
-    let rev = this.reviews.find((i) => i.id === reviewId);
-    if (!rev) return;
-
-    if (rev.currentUserAction === this.actionEnum.Like)
-      rev.currentUserAction = this.actionEnum.NoAction;
-    else rev.currentUserAction = this.actionEnum.Like;
-
-    this.reviewService
-      .changeReviewAction(reviewId, rev.currentUserAction)
-      .pipe(first())
-      .subscribe((v) => {
-        this.reviews = this.reviews.map((i) => (i.id === v.id ? v : i));
-      });
-  }
-
-  onReplyDislike(reviewId: string, replyId: string) {
-    const rev = this.reviews.find((i) => i.id === reviewId);
-    if (!rev) return;
-
-    const reply = rev.replies.find((r) => r.id === replyId);
-
-    this.reviewService
-      .changeReviewReplyAction(
-        reviewId,
-        replyId,
-        reply?.currentUserAction === this.actionEnum.Dislike
-          ? this.actionEnum.NoAction
-          : this.actionEnum.Dislike
-      )
-      .pipe(first())
-      .subscribe((v) => {
-        this.reviews = this.reviews.map((i) => (i.id === v.id ? v : i));
-      });
-  }
-  onReplyLike(reviewId: string, replyId: string) {
-    const rev = this.reviews.find((i) => i.id === reviewId);
-    if (!rev) return;
-
-    const reply = rev.replies.find((r) => r.id === replyId);
-
-    this.reviewService
-      .changeReviewReplyAction(
-        reviewId,
-        replyId,
-        reply?.currentUserAction === this.actionEnum.Like
-          ? this.actionEnum.NoAction
-          : this.actionEnum.Like
-      )
-      .pipe(first())
-      .subscribe((v) => {
-        this.reviews = this.reviews.map((i) => (i.id === v.id ? v : i));
-      });
+      .subscribe();
   }
   sendReviewReply(reviewId: string) {
     this.reviewService
-      .sendReviewReply(reviewId, this.userAnswer)
+      .sendReviewReply(this.currentBook?.id ?? '', reviewId, this.userAnswer)
       .pipe(first())
       .subscribe((v) => {
         this.userAnswer = '';
@@ -230,12 +163,12 @@ export class BookPageComponent implements OnInit, OnDestroy {
         this.reviews = this.reviews.map((i) => (i.id === v.id ? v : i));
       });
   }
-  deleteReview(reviewId: string) {
-    this.reviewService.deleteReview(reviewId).pipe(first()).subscribe();
-  }
+
   createReview() {
+    if (!this.currentBook) return;
+
     this.reviewService
-      .createReview(this.userReview, this.userRating)
+      .createReview(this.currentBook?.id, this.userReview, this.userRating)
       .pipe(first())
       .subscribe((a) => {
         if (this.currentBook)
@@ -248,8 +181,6 @@ export class BookPageComponent implements OnInit, OnDestroy {
     this.fetchingState = false;
     this.allReviewLoaded = false;
     this.selectedReviewSort = (event.target as HTMLSelectElement).value as
-      | 'liked'
-      | 'disliked'
       | 'new'
       | 'old';
 
