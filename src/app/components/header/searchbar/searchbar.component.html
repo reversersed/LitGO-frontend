@@ -10,7 +10,6 @@
     name=""
     (focusin)="suggestionOpen = true"
     (focusout)="suggestionOpen = false"
-    (keyup.enter)="searchRedirect()"
     class="dark:bg-mainshadow z-50 border-0 outline-none p-1 lg:p-2 pl-4 w-full rounded-xl flex-1 font-main font-medium text-base text-accent focus:placeholder:opacity-50 placeholder:transition-opacity placeholder:duration-500 placeholder:ease-in"
   />
 
@@ -19,6 +18,8 @@
     [routerLink]="query.length > 0 ? '/search' : undefined"
     [queryParams]="{ query: query }"
     class="z-50 h-full py-1 lg:py-0 w-fit px-2 lg:px-4 border-0 bg-mainbg active:bg-mainbg/60 text-mainwhite rounded-xl rounded-tl-xl rounded-bl-xl cursor-pointer hover:bg-mainbg/70 transition-colors duration-300"
+    (keyup.enter)="searchRedirect()"
+    *ngIf="false"
   >
     <fa-icon [icon]="faSearch" size="lg" />
   </button>

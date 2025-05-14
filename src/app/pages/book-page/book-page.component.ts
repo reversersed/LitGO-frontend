@@ -1,9 +1,13 @@
 import {
+  ChangeDetectorRef,
   Component,
+  effect,
   HostListener,
   inject,
+  OnChanges,
   OnDestroy,
   OnInit,
+  SimpleChanges,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
@@ -50,6 +54,7 @@ import { ToUpOverlayComponent } from '../../shared/to-up-overlay/to-up-overlay.c
   templateUrl: './book-page.component.html',
 })
 export class BookPageComponent implements OnInit, OnDestroy {
+  refresh = inject(ChangeDetectorRef);
   route = inject(ActivatedRoute);
   router = inject(Router);
   bookService = inject(BookService);
@@ -79,6 +84,9 @@ export class BookPageComponent implements OnInit, OnDestroy {
   userRating: number = 1;
   selectedReviewSort: 'new' | 'old' = 'new';
   reviewWritingExpanded = false;
+  userHasReview = false;
+  currentUserFilter = (value: Review, index: number, array: Review[]) =>
+    value.creator.login !== this.currentUser()?.login;
 
   userAnswerInput(target: EventTarget | null) {
     this.userAnswer = (target as HTMLInputElement).value;
@@ -95,6 +103,13 @@ export class BookPageComponent implements OnInit, OnDestroy {
       : (Math.abs(number) % 100) % 10 >= 2 && (Math.abs(number) % 100) % 10 <= 4
       ? 'отзыва'
       : 'отзывов';
+
+  constructor() {
+    effect(() => {
+      const _ = this.currentUser();
+      if (this.currentBook) this.reloadBookModel(this.currentBook.id ?? '');
+    });
+  }
 
   ngOnInit(): void {
     this.paramSubscription = this.route.params.subscribe((params) => {
@@ -140,9 +155,14 @@ export class BookPageComponent implements OnInit, OnDestroy {
           this.fetchingState = false;
           this.loadNextReviews();
         }
-        this.currentUserReview$ = this.reviewService.getCurrentUserBookReview(
-          this.currentBook.id
-        );
+        this.currentUserReview$ = this.reviewService
+          .getCurrentUserBookReview(this.currentBook.id)
+          .pipe(
+            map((e) => {
+              this.userHasReview = e !== undefined;
+              return e;
+            })
+          );
         return this.currentBook;
       })
     );
@@ -150,8 +170,12 @@ export class BookPageComponent implements OnInit, OnDestroy {
   deleteReview(reviewId: string) {
     this.reviewService
       .deleteReview(this.currentBook?.id ?? '', reviewId)
-      .pipe(first())
-      .subscribe();
+      .pipe(
+        map((e) => {
+          this.reviews = this.reviews.filter((r) => r.id !== e);
+        })
+      )
+      .subscribe(() => this.reloadBookModel(this.currentBook?.id ?? ''));
   }
   sendReviewReply(reviewId: string) {
     this.reviewService
@@ -173,6 +197,9 @@ export class BookPageComponent implements OnInit, OnDestroy {
       .subscribe((a) => {
         if (this.currentBook)
           this.reloadBookModel(this.currentBook.translitname);
+        this.userReview = '';
+        this.userRating = 1;
+        this.reviewWritingExpanded = false;
       });
   }
 

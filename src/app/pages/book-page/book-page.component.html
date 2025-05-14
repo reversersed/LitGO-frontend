@@ -168,7 +168,7 @@
               >Отзывы о книге</span
             >
             <a
-              *ngIf="!reviewWritingExpanded && currentUser()"
+              *ngIf="!reviewWritingExpanded && currentUser() && !userHasReview"
               class="text-contrast cursor-pointer hover:text-contrast/80 duration-150 transition-colors"
               (click)="reviewWritingExpanded = true"
             >
@@ -195,8 +195,8 @@
                 <div
                   class="flex justify-between w-full text-xs md:text-sm px-4"
                 >
-                  <span>{{ review.author.login }}</span>
-                  <span>{{ review.date | date : "shortDate" }}</span>
+                  <span>{{ review.creator.login }}</span>
+                  <span>{{ review.created * 1000 | date : "shortDate" }}</span>
                 </div>
                 <span
                   class="text-sm md:text-base bg-contrast/10 rounded-xl px-4 py-2 text-justify hyphens-auto"
@@ -258,7 +258,7 @@
                   </div>
                 </div>
                 <div
-                  *ngIf="review.replies && review.replies.length > 0"
+                  *ngIf="review.replies.reverse() && review.replies.length > 0"
                   class="flex flex-col mt-1 border-l-2 border-contrast pl-2 md:pl-4 gap-2"
                 >
                   <span class="text-base font-semibold">Обсуждение</span>
@@ -275,8 +275,10 @@
                     <div
                       class="flex justify-between w-full text-xs md:text-sm px-4"
                     >
-                      <span>{{ reply.author.login }}</span>
-                      <span>{{ reply.date | date : "shortDate" }}</span>
+                      <span>{{ reply.creator.login }}</span>
+                      <span>{{
+                        reply.created * 1000 | date : "shortDate"
+                      }}</span>
                     </div>
                     <span
                       class="text-sm md:text-base bg-contrast/10 rounded-xl px-4 py-2 text-justify hyphens-auto"
@@ -302,13 +304,23 @@
               </div>
             </ng-container>
 
-            <div *ngFor="let review of reviews">
+            <span
+              *ngIf="reviews.length === 0 && !userHasReview"
+              class="flex text-mainblack font-semibold self-center"
+              >{{
+                currentUser()
+                  ? "Напишите свой отзыв первым!"
+                  : "Отзывов пока нет..."
+              }}</span
+            >
+
+            <div *ngFor="let review of reviews.filter(currentUserFilter)">
               <div class="flex flex-col text-mainblack">
                 <div
                   class="flex justify-between w-full text-xs md:text-sm px-4"
                 >
-                  <span>{{ review.author.login }}</span>
-                  <span>{{ review.date | date : "shortDate" }}</span>
+                  <span>{{ review.creator.login }}</span>
+                  <span>{{ review.created * 1000 | date : "shortDate" }}</span>
                 </div>
                 <span
                   class="text-sm md:text-base bg-contrast/10 rounded-xl px-4 py-2 text-justify hyphens-auto"
@@ -365,7 +377,7 @@
                   </div>
                 </div>
                 <div
-                  *ngIf="review.replies && review.replies.length > 0"
+                  *ngIf="review.replies.reverse() && review.replies.length > 0"
                   class="flex flex-col mt-1 border-l-2 border-contrast pl-2 md:pl-4 gap-2"
                 >
                   <span class="text-base font-semibold">Обсуждение</span>
@@ -382,8 +394,10 @@
                     <div
                       class="flex justify-between w-full text-xs md:text-sm px-4"
                     >
-                      <span>{{ reply.author.login }}</span>
-                      <span>{{ reply.date | date : "shortDate" }}</span>
+                      <span>{{ reply.creator.login }}</span>
+                      <span>{{
+                        reply.created * 1000 | date : "shortDate"
+                      }}</span>
                     </div>
                     <span
                       class="text-sm md:text-base bg-contrast/10 rounded-xl px-4 py-2 text-justify hyphens-auto"
@@ -500,7 +514,7 @@
           class="w-fit h-fit px-2 py-1 disabled:text-mainblack enabled:hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:enabled:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite rounded-xl disabled:cursor-not-allowed cursor-pointer enabled:hover:bg-contrast/80 transition-colors duration-150"
           (click)="createReview()"
         >
-          Отправить отзыв
+          Отправить
         </button>
         <button
           class="w-fit h-fit px-2 py-1 disabled:text-mainblack enabled:hover:bg-contrast bg-contrast/80 dark:bg-contrast/30 dark:enabled:hover:bg-contrast/50 disabled:bg-contrast/10 text-mainwhite rounded-xl disabled:cursor-not-allowed cursor-pointer enabled:hover:bg-contrast/80 transition-colors duration-150"

@@ -6,6 +6,7 @@ import { BookService } from '../../service/http/book.service';
 import { UserService } from '../../service/http/user.service';
 import { FileService } from '../../service/http/file.service';
 import { provideHttpClient } from '@angular/common/http';
+import { ReviewService } from '../../service/http/review.service';
 
 describe('BookPageComponent', () => {
   let component: BookPageComponent;
@@ -13,10 +14,15 @@ describe('BookPageComponent', () => {
   let bookservice: jasmine.SpyObj<BookService>;
   let userServiceSpy: jasmine.SpyObj<UserService>;
   let fileServiceSpy: jasmine.SpyObj<FileService>;
+  let reviewServiceSpy: jasmine.SpyObj<ReviewService>;
 
   beforeEach(async () => {
     fileServiceSpy = jasmine.createSpyObj('FileService', ['getBookFile']);
     userServiceSpy = jasmine.createSpyObj('UserService', ['CurrentUser']);
+    reviewServiceSpy = jasmine.createSpyObj('ReviewService', [
+      'getCurrentUserBookReview',
+      'GetBookReviews',
+    ]);
     bookservice = jasmine.createSpyObj<BookService>('BookService', [
       'getBook',
       'getByGenre',
@@ -33,6 +39,10 @@ describe('BookPageComponent', () => {
         {
           provide: FileService,
           useValue: fileServiceSpy,
+        },
+        {
+          provide: ReviewService,
+          useValue: reviewServiceSpy,
         },
       ],
     }).compileComponents();

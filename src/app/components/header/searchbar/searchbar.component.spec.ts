@@ -52,6 +52,8 @@ describe('SearchbarComponent', () => {
     expect(component).toBeTruthy();
   });
   it('should call to api after search test was entered', () => {
+    fileServiceSpy.getBookCover.and.returnValue(of({}));
+    fileServiceSpy.getAuthorProfile.and.returnValue(of({}));
     let searchCallback = spyOn(component, 'searchsuggestionBooks').and.callFake(
       (e) => {
         expect((e.target as HTMLInputElement).value).toEqual('Война и мир');
