@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  ElementRef,
   EventEmitter,
   inject,
   Input,
@@ -9,6 +10,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -35,6 +37,8 @@ interface Style {
     'line-height'?: string;
     color?: string;
     'font-family'?: string;
+    'background-color': string;
+    border: string;
   };
   customSettings: {
     font: string;
@@ -54,6 +58,8 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
   @Output() bookContent = new EventEmitter<EPUB.NavItem[]>();
   @Output() isBookLoading = new EventEmitter<boolean>();
   @Output() onStyleChanged = new EventEmitter<any>();
+
+  readerElement?: Element;
 
   router = inject(Router);
   route = inject(ActivatedRoute);
@@ -79,10 +85,12 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
   selectedChapter?: EPUB.NavItem;
 
   currentStyle: any = this.getDefaultStyle();
+  paginationAllowed = false;
+  firstLinear = true;
 
   async ngOnInit(): Promise<void> {
     let styleProp = localStorage.getItem('reader-style-line-height');
-    if (styleProp !== null) this.currentStyle.body['line-height'] = styleProp;
+    if (styleProp !== null) this.currentStyle['*']['line-height'] = styleProp;
 
     styleProp = localStorage.getItem('reader-style-font-family');
     if (styleProp) this.currentStyle['*']['font-family'] = styleProp;
@@ -100,6 +108,8 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
         flow: 'scrolled',
         spread: 'none',
         overflow: 'auto',
+        snap: false,
+        manager: 'continuous',
       });
 
       this.updateStyle();
@@ -111,15 +121,29 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
         this.bookContent.emit(this.book.navigation.toc);
       }
       this.book.spine.each((s: Section) => {
+        if (s.index === 0) this.firstLinear = s.linear;
         this.sections.push(s.href);
         this.totalSections++;
       });
 
       if (!this.allowFullRead) {
-        this.bookPageLimit = Math.round(this.totalSections / 10);
+        this.bookPageLimit = Math.round(this.totalSections / 4);
       }
       await this.rendition.display();
+
+      this.readerElement = document.getElementsByClassName('epub-container')[0];
+      this.readerElement.addEventListener('scroll', (e) => {
+        if ((this.rendition.currentLocation() as any)?.start)
+          this.currentSection = (
+            this.rendition.currentLocation() as any
+          )?.start.index;
+        if (this.currentSection > this.bookPageLimit) {
+          (this.readerElement as HTMLElement).style.overflow = 'hidden';
+        }
+        this.setQueryPageParam();
+      });
     } catch (err) {
+      console.log(err);
       this.router.navigate(['/notfound']);
     } finally {
       this.isLoading = false;
@@ -130,7 +154,7 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
       next: (params) => {
         this.currentBook = params['id'];
         if (params['page'] === undefined) {
-          this.currentSection = 0;
+          this.currentSection = this.firstLinear ? 0 : 1;
           this.selectedChapter = undefined;
           this.setQueryPageParam();
           return;
@@ -155,6 +179,12 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
   async applyPage() {
     let index = this.currentSection;
 
+    if (index > this.bookPageLimit) {
+      (this.readerElement as HTMLElement).style.overflow = 'hidden';
+    } else {
+      (this.readerElement as HTMLElement).style.overflow = 'auto';
+    }
+
     if (index < 0 || index >= this.totalSections || index > this.bookPageLimit)
       return;
 
@@ -163,10 +193,10 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
     else await this.rendition?.display(this.sections[index]);
   }
   saveStyle() {
-    if (this.currentStyle.body['line-height'])
+    if (this.currentStyle['*']['line-height'])
       localStorage.setItem(
         'reader-style-line-height',
-        this.currentStyle.body['line-height'].toString()
+        this.currentStyle['*']['line-height'].toString()
       );
 
     if (this.currentStyle['*']['font-family'])
@@ -196,6 +226,8 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
         'line-height': '1.5 !important',
         color: this.isDarkTheme() ? 'rgb(180, 180, 190) !important' : undefined,
         'font-family': 'LiberEmb !important',
+        'background-color': 'transparent !important',
+        border: '0 !important',
       },
       customSettings: {
         font: '16px',

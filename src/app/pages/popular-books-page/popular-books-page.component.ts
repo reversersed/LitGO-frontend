@@ -63,6 +63,7 @@ export class PopularBooksPageComponent {
   }
   fetchBooks() {
     if (this.fetchingPipeError) return;
+
     this.genreService.getAll().subscribe({
       next: (value) => (this.currentCategory = value),
       error: () => (this.currentCategory = []),
@@ -81,6 +82,7 @@ export class PopularBooksPageComponent {
         next: (value) => {
           if (this.Books === undefined) this.Books = value;
           else this.Books?.push(...value);
+          if (value.length === 0) this.fetchingPipeError = true;
         },
         error: () => {
           this.fetchingPipeError = true;

@@ -81,6 +81,7 @@ export class NewestBooksPageComponent implements OnInit {
         next: (value) => {
           if (this.Books === undefined) this.Books = value;
           else this.Books?.push(...value);
+          if (value.length === 0) this.fetchingPipeError = true;
         },
         error: () => {
           this.fetchingPipeError = true;

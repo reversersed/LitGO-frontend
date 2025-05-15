@@ -13,7 +13,10 @@
     <fa-icon [animation]="'spin-pulse'" [icon]="faSpinner" />
     <span class="text-xl">Загрузка...</span>
   </div>
-  <ng-container *ngTemplateOutlet="controls"></ng-container>
+  <ng-container
+    *ngIf="paginationAllowed"
+    [ngTemplateOutlet]="controls"
+  ></ng-container>
 </div>
 
 <ng-template #controls>
