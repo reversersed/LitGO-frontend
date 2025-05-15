@@ -38,7 +38,7 @@ import { UserService } from '../../service/http/user.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { ReviewService } from '../../service/http/review.service';
-import Review from '../../models/review.model';
+import Review, { ReviewReply } from '../../models/review.model';
 import { ToUpOverlayComponent } from '../../shared/to-up-overlay/to-up-overlay.component';
 
 @Component({
@@ -87,6 +87,7 @@ export class BookPageComponent implements OnInit, OnDestroy {
   userHasReview = false;
   currentUserFilter = (value: Review, index: number, array: Review[]) =>
     value.creator.login !== this.currentUser()?.login;
+  replySort = (a: ReviewReply, b: ReviewReply) => b.created - a.created;
 
   userAnswerInput(target: EventTarget | null) {
     this.userAnswer = (target as HTMLInputElement).value;
@@ -184,7 +185,16 @@ export class BookPageComponent implements OnInit, OnDestroy {
       .subscribe((v) => {
         this.userAnswer = '';
         this.currentAnswerExpanded = undefined;
-        this.reviews = this.reviews.map((i) => (i.id === v.id ? v : i));
+        if (this.reviews.filter((i) => i.id === v.id).length === 0)
+          this.currentUserReview$ = this.reviewService
+            .getCurrentUserBookReview(this.currentBook?.id ?? '')
+            .pipe(
+              map((e) => {
+                this.userHasReview = e !== undefined;
+                return e;
+              })
+            );
+        else this.reviews = this.reviews.map((i) => (i.id === v.id ? v : i));
       });
   }
 

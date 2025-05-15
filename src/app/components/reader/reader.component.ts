@@ -10,7 +10,6 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -102,7 +101,7 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
       this.book = EPUB.default(this.bookFileUrl);
       await this.book.ready;
       this.rendition = this.book.renderTo('reader', {
-        height: '96%',
+        height: '100%',
         width: '100%',
         allowScriptedContent: true,
         flow: 'scrolled',

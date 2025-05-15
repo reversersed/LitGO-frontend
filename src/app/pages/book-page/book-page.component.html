@@ -258,7 +258,7 @@
                   </div>
                 </div>
                 <div
-                  *ngIf="review.replies.reverse() && review.replies.length > 0"
+                  *ngIf="review.replies.sort(replySort) && review.replies.length > 0"
                   class="flex flex-col mt-1 border-l-2 border-contrast pl-2 md:pl-4 gap-2"
                 >
                   <span class="text-base font-semibold">Обсуждение</span>
