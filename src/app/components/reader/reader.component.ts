@@ -55,6 +55,7 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
   @Input() bookFileUrl!: ArrayBuffer;
   @Input() currentChapter?: EPUB.NavItem;
   @Output() bookContent = new EventEmitter<EPUB.NavItem[]>();
+  @Output() bookBannedContent = new EventEmitter<string[]>();
   @Output() isBookLoading = new EventEmitter<boolean>();
   @Output() onStyleChanged = new EventEmitter<any>();
 
@@ -66,10 +67,12 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
   currentBook?: string;
 
   bookPageLimit: number = 999999999999;
+  bannedSections: string[] = [];
 
   book!: EPUB.Book;
   rendition!: EPUB.Rendition;
 
+  currentHref = '';
   currentSection = 0;
   totalSections = 0;
   sections: string[] = [];
@@ -126,20 +129,32 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
       });
 
       if (!this.allowFullRead) {
+        this.book.navigation.toc
+          .slice(this.book.navigation.toc.length / 4)
+          .forEach((t) => this.bannedSections.push(t.href));
         this.bookPageLimit = Math.round(this.totalSections / 4);
+        this.bookBannedContent.emit(this.bannedSections);
       }
       await this.rendition.display();
 
       this.readerElement = document.getElementsByClassName('epub-container')[0];
       this.readerElement.addEventListener('scroll', (e) => {
-        if ((this.rendition.currentLocation() as any)?.start)
+        if ((this.rendition.currentLocation() as any)?.start) {
+          this.currentHref = (
+            this.rendition.currentLocation() as any
+          )?.start.href;
           this.currentSection = (
             this.rendition.currentLocation() as any
           )?.start.index;
-        if (this.currentSection > this.bookPageLimit) {
+          this.setQueryPageParam();
+        }
+        if (
+          this.checkIfBanned() &&
+          this.bannedSections.length > 0 &&
+          this.currentHref.length > 0
+        ) {
           (this.readerElement as HTMLElement).style.overflow = 'hidden';
         }
-        this.setQueryPageParam();
       });
     } catch (err) {
       console.log(err);
@@ -178,7 +193,11 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
   async applyPage() {
     let index = this.currentSection;
 
-    if (index > this.bookPageLimit) {
+    if (
+      this.checkIfBanned() &&
+      this.bannedSections.length > 0 &&
+      this.currentHref.length > 0
+    ) {
       (this.readerElement as HTMLElement).style.overflow = 'hidden';
     } else {
       (this.readerElement as HTMLElement).style.overflow = 'auto';
@@ -286,5 +305,10 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
     if (restore) this.currentStyle = this.getDefaultStyle();
     else this.currentStyle[section][style] = value;
     this.updateStyle();
+  }
+  checkIfBanned(): boolean {
+    return (
+      this.bannedSections.filter((e) => e.includes(this.currentHref)).length > 0
+    );
   }
 }

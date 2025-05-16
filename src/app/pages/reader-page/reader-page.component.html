@@ -39,11 +39,12 @@
           <div class="flex flex-col w-full min-h-fit">
             <a
               *ngFor="let chapter of bookChapters"
-              class="hover:bg-contrast/40 transition-all duration-200 px-4 py-2 cursor-pointer mt-auto max-w-full text-sm overflow-hidden md:whitespace-nowrap md:text-ellipsis"
-              (click)="
-                selectedChapter = chapter;
-                this.isMenuOpen = false;
-                this.currentExpandedSection = undefined
+              class="transition-all duration-200 px-4 py-2 cursor-pointer mt-auto max-w-full text-sm overflow-hidden md:whitespace-nowrap md:text-ellipsis"
+              (click)="chapterSelection(chapter)"
+              [ngClass]="
+                checkIfBanned(chapter.href)
+                  ? 'select-none cursor-not-allowed text-accent/50'
+                  : 'hover:bg-contrast/40'
               "
               title="{{ chapter.label }}"
             >
@@ -169,6 +170,7 @@
       [currentChapter]="selectedChapter"
       (onStyleChanged)="readerStyle = $event"
       (bookContent)="onBookContentCreated($event)"
+      (bookBannedContent)="onBookContentBanned($event)"
       class="w-full h-full lg:h-full z-[10]"
     />
   </div>

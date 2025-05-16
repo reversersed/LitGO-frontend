@@ -56,6 +56,7 @@ export class ReaderPageComponent implements OnInit, OnDestroy {
   faDefault = faRotate;
   selectedChapter: NavItem | undefined;
   bookChapters?: NavItem[];
+  bookBannedChapters: string[] = [];
   readerStyle?: any;
 
   currentExpandedSection?: string;
@@ -210,5 +211,17 @@ export class ReaderPageComponent implements OnInit, OnDestroy {
   }
   onBookContentCreated(content: NavItem[]) {
     this.bookChapters = content;
+  }
+  onBookContentBanned(content: string[]) {
+    this.bookBannedChapters = content;
+  }
+  chapterSelection(chapter: NavItem) {
+    if (this.checkIfBanned(chapter.href)) return;
+    this.selectedChapter = chapter;
+    this.isMenuOpen = false;
+    this.currentExpandedSection = undefined;
+  }
+  checkIfBanned(href: string) {
+    return this.bookBannedChapters.filter((e) => e.includes(href)).length > 0;
   }
 }

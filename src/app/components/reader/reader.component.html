@@ -3,7 +3,7 @@
     id="reader"
     class="relative overflow-hidden w-[95%] h-[95%] md:h-full p-0 justify-self-center"
   >
-    <ng-container *ngIf="currentSection <= bookPageLimit; else banner" />
+    <ng-container *ngIf="!checkIfBanned(); else banner" />
   </div>
 
   <div
