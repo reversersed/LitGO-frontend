@@ -307,8 +307,9 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
     this.updateStyle();
   }
   checkIfBanned(): boolean {
-    return (
+    return this.currentSection > this.bookPageLimit;
+    /*return (
       this.bannedSections.filter((e) => e.includes(this.currentHref)).length > 0
-    );
+    );*/
   }
 }
