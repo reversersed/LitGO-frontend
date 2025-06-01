@@ -308,8 +308,5 @@ export class ReaderComponent implements OnInit, OnDestroy, OnChanges {
   }
   checkIfBanned(): boolean {
     return this.currentSection > this.bookPageLimit;
-    /*return (
-      this.bannedSections.filter((e) => e.includes(this.currentHref)).length > 0
-    );*/
   }
 }
