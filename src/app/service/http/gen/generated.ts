@@ -334,6 +334,76 @@ export class BookClient extends BaseClient {
     }
 
     /**
+     * Find books by author id
+     * @param authorId (optional) @gotags: form:"id" validate:"primitiveid,required_without_all=Translit"
+     * @param limit (optional) max objects to find
+
+    @gotags: form:"limit" validate:"required,gte=1,lte=50"
+     * @param page (optional) page to find
+
+    @gotags: form:"page" validate:"gte=0"
+     * @return A successful response.
+     */
+    getBookByAuthor(authorId: string | null | undefined, limit: number | null | undefined, page: number | null | undefined): Observable<BooksGetBookByAuthorResponse> {
+        let url_ = this.baseUrl + "/api/v1/book/author?";
+        if (authorId !== undefined && authorId !== null)
+            url_ += "authorId=" + encodeURIComponent("" + authorId) + "&";
+        if (limit !== undefined && limit !== null)
+            url_ += "limit=" + encodeURIComponent("" + limit) + "&";
+        if (page !== undefined && page !== null)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            withCredentials: true,
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetBookByAuthor(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetBookByAuthor(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BooksGetBookByAuthorResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BooksGetBookByAuthorResponse>;
+        }));
+    }
+
+    protected processGetBookByAuthor(response: HttpResponseBase): Observable<BooksGetBookByAuthorResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BooksGetBookByAuthorResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let resultdefault: any = null;
+            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            resultdefault = RpcStatus.fromJS(resultDatadefault);
+            return throwException("An unexpected error response.", status, _responseText, _headers, resultdefault);
+            }));
+        }
+    }
+
+    /**
      * Find book by query
      * @param query (optional) query to find
 
@@ -488,7 +558,7 @@ export class BookClient extends BaseClient {
     }
 
     /**
-     * Find authors list
+     * Find book list
      * @param id (optional) array of authors id to find
 
     @gotags: form:"id" validate:"primitiveid,required_without_all=Translit"
@@ -2017,6 +2087,50 @@ export class BooksFindBookResponse implements IBooksFindBookResponse {
 }
 
 export interface IBooksFindBookResponse {
+    books?: BooksBookModel[] | undefined;
+}
+
+export class BooksGetBookByAuthorResponse implements IBooksGetBookByAuthorResponse {
+    books?: BooksBookModel[] | undefined;
+
+    constructor(data?: IBooksGetBookByAuthorResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["books"])) {
+                this.books = [] as any;
+                for (let item of _data["books"])
+                    this.books!.push(BooksBookModel.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): BooksGetBookByAuthorResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new BooksGetBookByAuthorResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.books)) {
+            data["books"] = [];
+            for (let item of this.books)
+                data["books"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IBooksGetBookByAuthorResponse {
     books?: BooksBookModel[] | undefined;
 }
 

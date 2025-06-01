@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { UnauthorizedGuard } from './guards/unauthorized.guard';
+import { AuthorizedGuard } from './guards/authorized.guard';
 
 export const routes: Routes = [
   {
@@ -59,10 +60,11 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'search',
+        path: 'my',
+        canActivate: [AuthorizedGuard],
         loadComponent: () =>
-          import('./pages/search-page/search-page.component').then(
-            (c) => c.SearchPageComponent
+          import('./pages/my-books-page/my-books-page.component').then(
+            (c) => c.MyBooksPageComponent
           ),
       },
     ],

@@ -121,7 +121,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       visible: 'Auth',
     },
     {
-      link: '/',
+      link: '/my',
       label: 'Мои книги',
       icon: faBookReader,
       visible: 'Auth',

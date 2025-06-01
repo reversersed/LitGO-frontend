@@ -57,9 +57,20 @@
     >
       {{ bookModel.price }} ₽
     </p>
+    <a
+      *ngIf="showReaderLink"
+      [routerLink]="'/reader'"
+      [queryParams]="{
+        id: bookModel.translitname,
+        old: '/my'
+      }"
+      class="text-mainblack mt-auto max-w-full text-wrap hover:text-mainblack/80 duration-150 transition-colors"
+    >
+      Продолжить чтение
+    </a>
   </div>
   <div
-    *ngIf="user()"
+    *ngIf="user() && showFavourite"
     (click)="changeFavouriteStatus()"
     class="w-fit h-fit bg-transparent select-none cursor-pointer"
     [ngClass]="

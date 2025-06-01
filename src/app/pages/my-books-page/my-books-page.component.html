@@ -1,0 +1,21 @@
+<ng-container
+  class="flex flex-col gap-4"
+  *ngIf="books$ | async as currentBooks; else loading"
+>
+  <span class="w-fit h-fit text-mainblack font-semibold text-xl"
+    >Мои книги</span
+  >
+  <div class="flex flex-wrap gap-4 mt-4">
+    <app-book-card
+      *ngFor="let book of currentBooks"
+      [model]="book"
+      [price]="false"
+      [align]="'row'"
+      [favourite]="false"
+      [reader]="true"
+    ></app-book-card>
+  </div>
+</ng-container>
+<ng-template #loading>
+  <app-skeleton width="120px" borderRadius="15%"></app-skeleton>
+</ng-template>

@@ -20,7 +20,7 @@ import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { Observable } from 'rxjs';
 import { UserService } from '../../service/http/user.service';
 import { SafeUrl } from '@angular/platform-browser';
-import { SkeletonComponent } from "../skeleton/skeleton.component";
+import { SkeletonComponent } from '../skeleton/skeleton.component';
 
 @Component({
   selector: 'app-book-card',
@@ -32,6 +32,8 @@ export class BookCardComponent {
   @Input('model') bookModel!: Book;
   @Input('align') alignMode: 'auto' | 'row' | 'col' = 'auto';
   @Input('price') showPrice: boolean = true;
+  @Input('favourite') showFavourite: boolean = true;
+  @Input('reader') showReaderLink: boolean = false;
 
   fileService = inject(FileService);
   faStar = faStar;

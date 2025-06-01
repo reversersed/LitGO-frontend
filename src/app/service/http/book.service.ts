@@ -4,6 +4,7 @@ import { catchError, first, map, Observable, of } from 'rxjs';
 import {
   BookClient,
   BooksFindBookResponse,
+  BooksGetBookByAuthorResponse,
   BooksGetBookByGenreResponse,
 } from './gen/generated';
 
@@ -63,5 +64,15 @@ export class BookService {
           return value;
         })
       );
+  }
+  getBookByAuthor(authorId: string, limit: number, page: number) {
+    return this.apiClient.getBookByAuthor(authorId, limit, page).pipe(
+      first(),
+      map((value) => {
+        if (value instanceof BooksGetBookByAuthorResponse)
+          return value.books as unknown as Book[];
+        return value;
+      })
+    );
   }
 }
